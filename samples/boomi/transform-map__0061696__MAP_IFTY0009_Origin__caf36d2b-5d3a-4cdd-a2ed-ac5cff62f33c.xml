@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./New HR - Interfaces /JUPITER_COMPANY/HR_Master_Registration" componentId="caf36d2b-5d3a-4cdd-a2ed-ac5cff62f33c" version="1" name="MAP_IFTY0009_Origin" type="transform.map" createdDate="2021-01-15T07:39:46Z" createdBy="Daly.Fadhloun@avaxia-group.com" modifiedDate="2021-01-15T07:39:46Z" modifiedBy="Daly.Fadhloun@avaxia-group.com" deleted="false" currentVersion="true" folderName="HR_Master_Registration" folderId="RjozNjk0NzA4" copiedFromComponentId="8d2d321b-f12a-45d1-8833-df989335c8c7" copiedFromComponentVersion="26" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><Map xmlns="" fromProfile="2532c4a2-8e04-4480-9cea-0442580777f4" toProfile="2b5d9fb5-f734-431f-b15a-3dd67ec740d5"><Mappings><Mapping fromFunction="48" fromKey="2" fromType="function" toKey="55" toKeyPath="*[@key='1']/*[@key='55']" toNamePath="root/key" toType="profile"/><Mapping fromFunction="1" fromKey="3" fromType="function" toKey="2" toKeyPath="*[@key='1']/*[@key='2']" toNamePath="root/idou.sya_bg" toType="profile"/><Mapping fromFunction="2" fromKey="1" fromType="function" toKey="4" toKeyPath="*[@key='1']/*[@key='4']" toNamePath="root/furimst.sdate" toType="profile"/><Mapping fromFunction="3" fromKey="2" fromType="function" toKey="7" toKeyPath="*[@key='1']/*[@key='7']" toNamePath="root/furimst.kgin_cd_a" toType="profile"/><Mapping fromFunction="4" fromKey="2" fromType="function" toKey="8" toKeyPath="*[@key='1']/*[@key='8']" toNamePath="root/furimst.ksit_cd_a" toType="profile"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toKey="9" toKeyPath="*[@key='1']/*[@key='9']" toNamePath="root/furimst.kkoza_sb_a" toType="profile"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toKey="10" toKeyPath="*[@key='1']/*[@key='10']" toNamePath="root/furimst.kkoza_bg_a" toType="profile"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toKey="11" toKeyPath="*[@key='1']/*[@key='11']" toNamePath="root/furimst.kkoza_mg_a" toType="profile"/><Mapping fromFunction="6" fromKey="2" fromType="function" toKey="12" toKeyPath="*[@key='1']/*[@key='12']" toNamePath="root/furimst.kgin_cd_b" toType="profile"/><Mapping fromFunction="7" fromKey="3" fromType="function" toKey="13" toKeyPath="*[@key='1']/*[@key='13']" toNamePath="root/furimst.ksit_cd_b" toType="profile"/><Mapping fromFunction="8" fromKey="3" fromType="function" toKey="14" toKeyPath="*[@key='1']/*[@key='14']" toNamePath="root/furimst.kkoza_sb_b" toType="profile"/><Mapping fromFunction="9" fromKey="3" fromType="function" toKey="15" toKeyPath="*[@key='1']/*[@key='15']" toNamePath="root/furimst.kkoza_bg_b" toType="profile"/><Mapping fromFunction="10" fromKey="3" fromType="function" toKey="16" toKeyPath="*[@key='1']/*[@key='16']" toNamePath="root/furimst.kkoza_mg_b" toType="profile"/><Mapping fromFunction="11" fromKey="3" fromType="function" toKey="17" toKeyPath="*[@key='1']/*[@key='17']" toNamePath="root/furimst.kgaku_b" toType="profile"/><Mapping fromFunction="12" fromKey="2" fromType="function" toKey="18" toKeyPath="*[@key='1']/*[@key='18']" toNamePath="root/furimst.kgin_cd_c" toType="profile"/><Mapping fromFunction="13" fromKey="3" fromType="function" toKey="19" toKeyPath="*[@key='1']/*[@key='19']" toNamePath="root/furimst.ksit_cd_c" toType="profile"/><Mapping fromFunction="14" fromKey="3" fromType="function" toKey="20" toKeyPath="*[@key='1']/*[@key='20']" toNamePath="root/furimst.kkoza_sb_c" toType="profile"/><Mapping fromFunction="15" fromKey="3" fromType="function" toKey="21" toKeyPath="*[@key='1']/*[@key='21']" toNamePath="root/furimst.kkoza_bg_c" toType="profile"/><Mapping fromFunction="16" fromKey="3" fromType="function" toKey="22" toKeyPath="*[@key='1']/*[@key='22']" toNamePath="root/furimst.kkoza_mg_c" toType="profile"/><Mapping fromFunction="17" fromKey="3" fromType="function" toKey="23" toKeyPath="*[@key='1']/*[@key='23']" toNamePath="root/furimst.kgaku_c" toType="profile"/><Mapping fromFunction="18" fromKey="2" fromType="function" toKey="24" toKeyPath="*[@key='1']/*[@key='24']" toNamePath="root/furimst.kgin_cd_d" toType="profile"/><Mapping fromFunction="19" fromKey="3" fromType="function" toKey="25" toKeyPath="*[@key='1']/*[@key='25']" toNamePath="root/furimst.ksit_cd_d" toType="profile"/><Mapping fromFunction="21" fromKey="3" fromType="function" toKey="26" toKeyPath="*[@key='1']/*[@key='26']" toNamePath="root/furimst.kkoza_sb_d" toType="profile"/><Mapping fromFunction="22" fromKey="3" fromType="function" toKey="27" toKeyPath="*[@key='1']/*[@key='27']" toNamePath="root/furimst.kkoza_bg_d" toType="profile"/><Mapping fromFunction="23" fromKey="3" fromType="function" toKey="28" toKeyPath="*[@key='1']/*[@key='28']" toNamePath="root/furimst.kkoza_mg_d" toType="profile"/><Mapping fromFunction="24" fromKey="3" fromType="function" toKey="29" toKeyPath="*[@key='1']/*[@key='29']" toNamePath="root/furimst.kgaku_d" toType="profile"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toKey="34" toKeyPath="*[@key='1']/*[@key='34']" toNamePath="root/furimst.skoza_sb_a" toType="profile"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toKey="35" toKeyPath="*[@key='1']/*[@key='35']" toNamePath="root/furimst.skoza_bg_a" toType="profile"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toKey="36" toKeyPath="*[@key='1']/*[@key='36']" toNamePath="root/furimst.skoza_mg_a" toType="profile"/><Mapping fromFunction="25" fromKey="2" fromType="function" toKey="32" toKeyPath="*[@key='1']/*[@key='32']" toNamePath="root/furimst.sgin_cd_a" toType="profile"/><Mapping fromFunction="26" fromKey="2" fromType="function" toKey="33" toKeyPath="*[@key='1']/*[@key='33']" toNamePath="root/furimst.ssit_cd_a" toType="profile"/><Mapping fromFunction="28" fromKey="2" fromType="function" toKey="37" toKeyPath="*[@key='1']/*[@key='37']" toNamePath="root/furimst.sgin_cd_b" toType="profile"/><Mapping fromFunction="29" fromKey="3" fromType="function" toKey="38" toKeyPath="*[@key='1']/*[@key='38']" toNamePath="root/furimst.ssit_cd_b" toType="profile"/><Mapping fromFunction="30" fromKey="3" fromType="function" toKey="39" toKeyPath="*[@key='1']/*[@key='39']" toNamePath="root/furimst.skoza_sb_b" toType="profile"/><Mapping fromFunction="31" fromKey="3" fromType="function" toKey="40" toKeyPath="*[@key='1']/*[@key='40']" toNamePath="root/furimst.skoza_bg_b" toType="profile"/><Mapping fromFunction="32" fromKey="3" fromType="function" toKey="41" toKeyPath="*[@key='1']/*[@key='41']" toNamePath="root/furimst.skoza_mg_b" toType="profile"/><Mapping fromFunction="33" fromKey="3" fromType="function" toKey="42" toKeyPath="*[@key='1']/*[@key='42']" toNamePath="root/furimst.sgaku_b" toType="profile"/><Mapping fromFunction="34" fromKey="2" fromType="function" toKey="43" toKeyPath="*[@key='1']/*[@key='43']" toNamePath="root/furimst.sgin_cd_c" toType="profile"/><Mapping fromFunction="35" fromKey="3" fromType="function" toKey="44" toKeyPath="*[@key='1']/*[@key='44']" toNamePath="root/furimst.ssit_cd_c" toType="profile"/><Mapping fromFunction="36" fromKey="3" fromType="function" toKey="45" toKeyPath="*[@key='1']/*[@key='45']" toNamePath="root/furimst.skoza_sb_c" toType="profile"/><Mapping fromFunction="37" fromKey="3" fromType="function" toKey="46" toKeyPath="*[@key='1']/*[@key='46']" toNamePath="root/furimst.skoza_bg_c" toType="profile"/><Mapping fromFunction="38" fromKey="3" fromType="function" toKey="47" toKeyPath="*[@key='1']/*[@key='47']" toNamePath="root/furimst.skoza_mg_c" toType="profile"/><Mapping fromFunction="39" fromKey="3" fromType="function" toKey="48" toKeyPath="*[@key='1']/*[@key='48']" toNamePath="root/furimst.sgaku_c" toType="profile"/><Mapping fromFunction="40" fromKey="2" fromType="function" toKey="49" toKeyPath="*[@key='1']/*[@key='49']" toNamePath="root/furimst.sgin_cd_d" toType="profile"/><Mapping fromFunction="41" fromKey="3" fromType="function" toKey="50" toKeyPath="*[@key='1']/*[@key='50']" toNamePath="root/furimst.ssit_cd_d" toType="profile"/><Mapping fromFunction="42" fromKey="3" fromType="function" toKey="51" toKeyPath="*[@key='1']/*[@key='51']" toNamePath="root/furimst.skoza_sb_d" toType="profile"/><Mapping fromFunction="43" fromKey="3" fromType="function" toKey="52" toKeyPath="*[@key='1']/*[@key='52']" toNamePath="root/furimst.skoza_bg_d" toType="profile"/><Mapping fromFunction="44" fromKey="3" fromType="function" toKey="53" toKeyPath="*[@key='1']/*[@key='53']" toNamePath="root/furimst.skoza_mg_d" toType="profile"/><Mapping fromFunction="45" fromKey="3" fromType="function" toKey="54" toKeyPath="*[@key='1']/*[@key='54']" toNamePath="root/furimst.sgaku_d" toType="profile"/><Mapping fromKey="23951" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23951']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/PERNR" fromType="profile" toFunction="1" toKey="1" toType="function"/><Mapping fromKey="23957" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23957']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BEGDA" fromType="profile" toFunction="2" toKey="1" toType="function"/><Mapping fromKey="23953" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23953']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/SUBTY" fromType="profile" toFunction="2" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="2" toKey="3" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="3" toKey="1" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="4" toKey="1" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="6" toKey="3" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="6" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="7" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="8" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="9" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="10" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="11" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="12" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="13" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="14" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="15" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="16" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="17" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="18" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="19" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="21" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="22" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="23" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="24" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="28" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="29" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="30" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="31" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="32" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="33" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="34" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="35" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="36" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="37" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="38" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="39" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="40" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="41" toKey="1" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="42" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="43" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="44" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="45" toKey="1" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="7" toKey="2" toType="function"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toFunction="8" toKey="1" toType="function"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toFunction="9" toKey="1" toType="function"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toFunction="10" toKey="1" toType="function"/><Mapping fromKey="23974" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23974']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BETRG" fromType="profile" toFunction="11" toKey="2" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="12" toKey="3" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="13" toKey="2" toType="function"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toFunction="14" toKey="1" toType="function"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toFunction="15" toKey="1" toType="function"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toFunction="16" toKey="1" toType="function"/><Mapping fromKey="23974" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23974']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BETRG" fromType="profile" toFunction="17" toKey="2" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="18" toKey="3" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="19" toKey="2" toType="function"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toFunction="21" toKey="1" toType="function"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toFunction="22" toKey="1" toType="function"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toFunction="23" toKey="1" toType="function"/><Mapping fromKey="23974" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23974']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BETRG" fromType="profile" toFunction="24" toKey="2" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="25" toKey="1" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="26" toKey="1" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="28" toKey="3" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="29" toKey="2" toType="function"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toFunction="30" toKey="1" toType="function"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toFunction="31" toKey="1" toType="function"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toFunction="32" toKey="1" toType="function"/><Mapping fromKey="23974" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23974']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BETRG" fromType="profile" toFunction="33" toKey="2" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="34" toKey="3" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="35" toKey="2" toType="function"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toFunction="36" toKey="1" toType="function"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toFunction="37" toKey="1" toType="function"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toFunction="38" toKey="1" toType="function"/><Mapping fromKey="23974" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23974']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BETRG" fromType="profile" toFunction="39" toKey="2" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="40" toKey="3" toType="function"/><Mapping fromKey="23984" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23984']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKL" fromType="profile" toFunction="41" toKey="2" toType="function"/><Mapping fromKey="23987" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23987']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BKONT" fromType="profile" toFunction="42" toKey="1" toType="function"/><Mapping fromKey="23985" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23985']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BANKN" fromType="profile" toFunction="43" toKey="1" toType="function"/><Mapping fromKey="23980" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23980']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/EMFTX" fromType="profile" toFunction="44" toKey="1" toType="function"/><Mapping fromKey="23974" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23974']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BETRG" fromType="profile" toFunction="45" toKey="2" toType="function"/><Mapping fromKey="23951" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23951']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/PERNR" fromType="profile" toFunction="46" toKey="6" toType="function"/><Mapping fromKey="17728" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17718']/*[@key='17728']" fromNamePath="ZBAHE_HRMD_A09/IDOC/EDI_DC40/MANDT" fromType="profile" toFunction="46" toKey="5" toType="function"/><Mapping fromFunction="46" fromKey="4" fromType="function" toKey="56" toKeyPath="*[@key='1']/*[@key='56']" toNamePath="root/Company_code" toType="profile"/><Mapping fromKey="23957" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23957']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/BEGDA" fromType="profile" toFunction="48" toKey="2" toType="function"/><Mapping fromKey="23956" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23956']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/ENDDA" fromType="profile" toFunction="48" toKey="1" toType="function"/><Mapping fromKey="23951" fromKeyPath="*[@key='1']/*[@key='17714']/*[@key='17720']/*[@key='17818']/*[@key='18044']/*[@key='23951']" fromNamePath="ZBAHE_HRMD_A09/IDOC/E1PLOGI/E1PITYP/E1P0009/PERNR" fromType="profile" toFunction="48" toKey="3" toType="function"/></Mappings><Functions optimizeExecutionOrder="true"><FunctionStep cacheEnabled="true" cacheOption="none" category="String" key="1" name="Left Character Trim" position="1" sumEnabled="false" type="LeftTrim" x="10.0" y="10.0"><Inputs><Input key="1" name="Original String"/><Input default="7" key="2" name="Fix to Length"/></Inputs><Outputs><Output key="3" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep category="userdefined" id="eb9dc573-2c6d-4636-8adb-73435af56c8f" key="2" name="BEGDA_function" position="2" type="userdefined" x="30.0" y="134.0"><Inputs><Input key="1" name="BEGDA"/><Input key="2" name="subty"/><Input key="3" name="ENDA"/></Inputs><Outputs><Output key="1" name="output"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" key="3" name="Right Character Trim" position="3" sumEnabled="false" type="RightTrim" x="30.0" y="284.0"><Inputs><Input key="1" name="Original String"/><Input default="4" key="2" name="Fix to Length"/></Inputs><Outputs><Output key="2" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="4" name="Scripting" position="4" sumEnabled="false" type="Scripting" x="30.0" y="408.0"><Inputs><Input key="1" name="str"/></Inputs><Outputs><Output key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" preserveOrder="true" useComponent="false"><ScriptToExecute>output = str.substring(4, 8)</ScriptToExecute><Input dataType="character" index="1" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="6" name="Scripting" position="6" sumEnabled="false" type="Scripting" x="30.0" y="512.0"><Inputs><Input key="1" name="enda"/><Input key="3" name="str"/></Inputs><Outputs><Output key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" preserveOrder="true" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(0, 4) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="3" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="7" name="Scripting" position="7" sumEnabled="false" type="Scripting" x="30.0" y="636.0"><Inputs><Input key="1" name="enda"/><Input key="2" name="str"/></Inputs><Outputs><Output key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" preserveOrder="true" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(4, 7) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="str"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="8" name="Scripting" position="8" sumEnabled="false" type="Scripting" x="30.0" y="772.0"><Inputs><Input key="1" name="input"/><Input key="2" name="enda"/></Inputs><Outputs><Output key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" preserveOrder="true" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="9" name="Scripting" position="9" sumEnabled="false" type="Scripting" x="30.0" y="930.0"><Inputs><Input key="1" name="input"/><Input key="2" name="enda"/></Inputs><Outputs><Output key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" preserveOrder="true" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="10" name="Scripting" position="10" sumEnabled="false" type="Scripting" x="30.0" y="1102.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="11" name="Scripting" position="11" sumEnabled="false" type="Scripting" x="30.0" y="1226.0"><Inputs><Input key="1" name="enda"/><Input key="2" name="input"/></Inputs><Outputs><Output key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" preserveOrder="true" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input * 100 ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="input"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="12" name="Scripting" position="12" sumEnabled="false" type="Scripting" x="30.0" y="1350.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="3" name="str"/></Inputs><Outputs><Output isReset="false" key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(0, 4) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="3" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="13" name="Scripting" position="13" sumEnabled="false" type="Scripting" x="30.0" y="1474.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="str"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(4, 7) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="str"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="14" name="Scripting" position="14" sumEnabled="false" type="Scripting" x="30.0" y="1598.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="15" name="Scripting" position="15" sumEnabled="false" type="Scripting" x="30.0" y="1722.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="16" name="Scripting" position="16" sumEnabled="false" type="Scripting" x="30.0" y="1846.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="17" name="Scripting" position="17" sumEnabled="false" type="Scripting" x="30.0" y="1974.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="input"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input * 100 ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="input"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="18" name="Scripting" position="18" sumEnabled="false" type="Scripting" x="30.0" y="2098.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="3" name="str"/></Inputs><Outputs><Output isReset="false" key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(0, 4) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="3" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="19" name="Scripting" position="19" sumEnabled="false" type="Scripting" x="30.0" y="2226.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="str"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(4, 7) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="str"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="21" name="Scripting" position="21" sumEnabled="false" type="Scripting" x="30.0" y="2357.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="22" name="Scripting" position="22" sumEnabled="false" type="Scripting" x="30.0" y="2481.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="23" name="Scripting" position="23" sumEnabled="false" type="Scripting" x="30.0" y="2605.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="24" name="Scripting" position="24" sumEnabled="false" type="Scripting" x="30.0" y="2729.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="input"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input * 100 ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="input"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" enabled="true" key="25" name="Right Character Trim" position="25" sumEnabled="false" type="RightTrim" x="30.0" y="2853.0"><Inputs><Input isReset="false" key="1" name="Original String"/><Input default="4" isReset="false" key="2" name="Fix to Length"/></Inputs><Outputs><Output isReset="false" key="2" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="26" name="Scripting" position="26" sumEnabled="false" type="Scripting" x="30.0" y="2977.0"><Inputs><Input isReset="false" key="1" name="str"/></Inputs><Outputs><Output isReset="false" key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>output = str.substring(4, 8)</ScriptToExecute><Input dataType="character" index="1" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="28" name="Scripting" position="28" sumEnabled="false" type="Scripting" x="30.0" y="3075.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="3" name="str"/></Inputs><Outputs><Output isReset="false" key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(0, 4) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="3" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="29" name="Scripting" position="29" sumEnabled="false" type="Scripting" x="30.0" y="3204.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="str"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(4, 7) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="str"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="30" name="Scripting" position="30" sumEnabled="false" type="Scripting" x="30.0" y="3406.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="31" name="Scripting" position="31" sumEnabled="false" type="Scripting" x="30.0" y="3530.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="32" name="Scripting" position="32" sumEnabled="false" type="Scripting" x="30.0" y="3658.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="33" name="Scripting" position="33" sumEnabled="false" type="Scripting" x="30.0" y="3782.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="input"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input * 100 ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="input"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="34" name="Scripting" position="34" sumEnabled="false" type="Scripting" x="30.0" y="3906.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="3" name="str"/></Inputs><Outputs><Output isReset="false" key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(0, 4) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="3" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="35" name="Scripting" position="35" sumEnabled="false" type="Scripting" x="30.0" y="4030.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="str"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(4, 7) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="str"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="36" name="Scripting" position="36" sumEnabled="false" type="Scripting" x="30.0" y="4154.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="37" name="Scripting" position="37" sumEnabled="false" type="Scripting" x="30.0" y="4278.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="38" name="Scripting" position="38" sumEnabled="false" type="Scripting" x="30.0" y="4402.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="39" name="Scripting" position="39" sumEnabled="false" type="Scripting" x="30.0" y="4526.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="input"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input * 100 ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="input"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="40" name="Scripting" position="40" sumEnabled="false" type="Scripting" x="30.0" y="4650.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="3" name="str"/></Inputs><Outputs><Output isReset="false" key="2" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(0, 4) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="3" name="str"/><Output index="2" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="41" name="Scripting" position="41" sumEnabled="false" type="Scripting" x="30.0" y="4774.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="str"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = str.substring(4, 7) ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="str"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="42" name="Scripting" position="42" sumEnabled="false" type="Scripting" x="30.0" y="4898.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="43" name="Scripting" position="43" sumEnabled="false" type="Scripting" x="30.0" y="5028.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="44" name="Scripting" position="44" sumEnabled="false" type="Scripting" x="30.0" y="5152.0"><Inputs><Input isReset="false" key="1" name="input"/><Input isReset="false" key="2" name="enda"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="input"/><Input dataType="character" index="2" name="enda"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="45" name="Scripting" position="45" sumEnabled="false" type="Scripting" x="30.0" y="5276.0"><Inputs><Input isReset="false" key="1" name="enda"/><Input isReset="false" key="2" name="input"/></Inputs><Outputs><Output isReset="false" key="3" name="output"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if ( enda === '99991231') {
+
+  output = input * 100 ;
+
+}
+
+else {
+
+output = 'cl'
+
+}</ScriptToExecute><Input dataType="character" index="1" name="enda"/><Input dataType="character" index="2" name="input"/><Output index="3" name="output"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Lookup" enabled="true" key="46" name="Sql Lookup" position="46" sumEnabled="false" type="SqlLookup" x="30.0" y="5400.0"><Inputs><Input key="5" name="MANDT"/><Input key="6" name="PERNR"/></Inputs><Outputs><Output key="4" name="BUKRS"/></Outputs><Configuration><SqlLookup connection="b4e00b1a-3109-4b54-bba5-216db28a6471" executionType="sql" spResultOption="resultset" storedProcedureName=""><SqlToExecute>SELECT BUKRS FROM SAPPR1.PA0001 WHERE MANDT= ? AND PERNR = ?
+LIMIT 1</SqlToExecute><Input dataType="character" index="5" name="MANDT"/><Input dataType="character" index="6" name="PERNR"/><Output dataType="character" index="4" name="BUKRS"/></SqlLookup></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" key="48" name="String Concat" position="48" sumEnabled="false" type="StringConcat" x="10.0" y="5663.0"><Inputs><Input key="1" name="ENDA"/><Input key="2" name="BEGDA"/><Input key="3" name="PERNR"/></Inputs><Outputs><Output key="2" name="Result"/></Outputs><Configuration><StringConcat delimiter=""/></Configuration></FunctionStep></Functions><Defaults><Default toKey="3" value="0"/><Default toKey="5" value="1"/><Default toKey="6" value="1"/><Default toKey="30" value="1"/><Default toKey="31" value="1"/></Defaults><DocumentCacheJoins/></Map></bns:object></bns:Component>

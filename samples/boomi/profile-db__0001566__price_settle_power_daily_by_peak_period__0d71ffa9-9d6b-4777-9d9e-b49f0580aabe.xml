@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./JERA_US/JERAUS" componentId="0d71ffa9-9d6b-4777-9d9e-b49f0580aabe" version="1" name="price_settle_power_daily_by_peak_period" type="profile.db" createdDate="2021-09-01T13:19:25Z" createdBy="hamdy.fadhloun@avaxia-group.com" modifiedDate="2021-09-01T13:19:25Z" modifiedBy="hamdy.fadhloun@avaxia-group.com" deleted="false" currentVersion="true" folderName="JERAUS" folderId="Rjo0MjUyMTA5" copiedFromComponentId="9340c175-044c-465f-8ffa-644f00b54500" copiedFromComponentVersion="5" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><DatabaseProfile xmlns="" strict="true" version="2"><ProfileProperties><DatabaseGeneralInfo executionType="dbread"/></ProfileProperties><DataElements><DBStatement isNode="true" key="2" name="Statement" statementType="select" storedProcedure="" tableName=""><DBFields isNode="true" key="3" name="Fields" type="result_set"><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="5" mandatory="false" name="Days_Back"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement></DBFields><DBParameters isNode="true" key="4" name="Parameters"/><sql>use devRisk;
+
+select ABS (DATEDIFF(DAY, GETDATE(), max(settle_date)))-1 from price_settle_power_daily_by_peak_period ; 
+
+
+
+
+</sql></DBStatement></DataElements></DatabaseProfile></bns:object></bns:Component>

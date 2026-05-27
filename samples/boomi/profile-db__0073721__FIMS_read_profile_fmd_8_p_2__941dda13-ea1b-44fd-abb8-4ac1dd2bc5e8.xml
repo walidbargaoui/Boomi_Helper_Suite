@@ -1,0 +1,1682 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./Ingestion 3a Project" componentId="941dda13-ea1b-44fd-abb8-4ac1dd2bc5e8" version="1" name="FIMS_read_profile_fmd_8 p 2" type="profile.db" createdDate="2021-05-23T18:18:43Z" createdBy="Omar.fehri@avaxia-group.com" modifiedDate="2021-05-23T18:18:43Z" modifiedBy="Omar.fehri@avaxia-group.com" deleted="false" currentVersion="true" folderName="Ingestion 3a Project" folderId="RjozNzE3NzI1" copiedFromComponentId="31e2e860-d068-4bff-911a-d8ea4a406d4b" copiedFromComponentVersion="4" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><DatabaseProfile xmlns="" strict="true" version="2"><ProfileProperties><DatabaseGeneralInfo executionType="dbread"/></ProfileProperties><DataElements><DBStatement isNode="true" key="2" name="Statement" statementType="select" storedProcedure="" tableName=""><DBFields isNode="true" key="3" name="Fields" type="result_set"><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="168" mandatory="false" name="purchase_id"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="169" mandatory="false" name="year_str"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="170" mandatory="false" name="fuel_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="171" mandatory="false" name="receipt_payment_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="172" mandatory="false" name="issue_id"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="173" mandatory="false" name="item_first_payment_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="174" mandatory="false" name="item_first_accounting_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="175" mandatory="false" name="item_first_accounting_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="176" mandatory="false" name="item_first_payment_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="177" mandatory="false" name="item_first_payment_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="178" mandatory="false" name="item_last_payment_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="179" mandatory="false" name="item_last_accounting_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="180" mandatory="false" name="item_last_accounting_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="181" mandatory="false" name="item_last_payment_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="182" mandatory="false" name="item_last_payment_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="183" mandatory="false" name="fare_first_payment_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="184" mandatory="false" name="fare_first_accounting_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="185" mandatory="false" name="fare_first_accounting_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="186" mandatory="false" name="fare_first_payment_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="187" mandatory="false" name="fare_first_payment_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="188" mandatory="false" name="fare_last_payment_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="189" mandatory="false" name="fare_last_accounting_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="190" mandatory="false" name="fare_last_accounting_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="191" mandatory="false" name="fare_last_payment_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="192" mandatory="false" name="fare_last_payment_tax_price"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="193" mandatory="false" name="acceptance_ratio"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="194" mandatory="false" name="propane_butane_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="195" mandatory="false" name="calorie_quantity_btu"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="196" mandatory="false" name="weight_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="197" mandatory="false" name="total_calorie_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="198" mandatory="false" name="total_weight_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="199" mandatory="false" name="acceptance_total_calorie_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="200" mandatory="false" name="lnpg_density_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="201" mandatory="false" name="acceptance_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="202" mandatory="false" name="contact_quantity_try"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="203" mandatory="false" name="contact_quantity_sales"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="204" mandatory="false" name="landing_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="205" mandatory="false" name="methane_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="206" mandatory="false" name="ethane_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="207" mandatory="false" name="propane_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="208" mandatory="false" name="isobutane_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="209" mandatory="false" name="normal_butane_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="210" mandatory="false" name="isopentane_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="211" mandatory="false" name="sulfur_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="212" mandatory="false" name="hydrogen_sulfide"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="213" mandatory="false" name="moisture_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="214" mandatory="false" name="nitrogen_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="215" mandatory="false" name="oxigen_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="216" mandatory="false" name="carbon_dioxide_quantity"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="217" mandatory="false" name="project_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="218" mandatory="false" name="inventory_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="219" mandatory="false" name="shop_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="220" mandatory="false" name="cargo_bl"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="221" mandatory="false" name="delivery_condition_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="222" mandatory="false" name="ship_name"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="223" mandatory="false" name="loading_area_name"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="224" mandatory="false" name="brand_name"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="225" mandatory="false" name="remarks"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="226" mandatory="false" name="finish_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="227" mandatory="false" name="lift_plan_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="228" mandatory="false" name="lift_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="229" mandatory="false" name="accounting_ym"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="230" mandatory="false" name="customs_clearance_date"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="231" mandatory="false" name="customs_clearance_type"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement></DBFields><DBParameters isNode="true" key="4" name="Parameters"><DBParameter isMappable="false" isNode="true" key="136" name="ref_1"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="137" name="ref_2"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="138" name="ref_3"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="139" name="ref_4"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="140" name="ref_5"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="141" name="ref_6"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="142" name="ref_7"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="143" name="ref_8"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="144" name="ref_9"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="145" name="ref_10"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="146" name="ref_11"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="147" name="ref_12"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="148" name="ref_13"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="149" name="ref_14"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="150" name="ref_15"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="151" name="ref_16"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="152" name="ref_17"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="153" name="ref_18"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="154" name="ref_19"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="155" name="ref_20"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="156" name="ref_21"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="157" name="ref_22"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="158" name="ref_23"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="159" name="ref_24"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="160" name="ref_25"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="161" name="ref_26"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="162" name="ref_27"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="163" name="ref_28"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="164" name="ref_29"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="165" name="ref_30"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="166" name="ref_31"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter><DBParameter isMappable="false" isNode="true" key="167" name="ref_32"><DataFormat><ProfileCharacterFormat/></DataFormat></DBParameter></DBParameters><sql>select t1.purchase_id, t1.year_str, t1.fuel_type, t1.receipt_payment_type, t1.issue_id,
+t1.item_first_payment_date, t1.item_first_accounting_price, t1.item_first_accounting_tax_price, t1.item_first_payment_price, t1.item_first_payment_tax_price,
+t2.item_last_payment_date, t2.item_last_accounting_price, t2.item_last_accounting_tax_price, t2.item_last_payment_price, t2.item_last_payment_tax_price,
+t3.fare_first_payment_date, t3.fare_first_accounting_price, t3.fare_first_accounting_tax_price, t3.fare_first_payment_price, t3.fare_first_payment_tax_price,
+t4.fare_last_payment_date, t4.fare_last_accounting_price, t4.fare_last_accounting_tax_price, t4.fare_last_payment_price, t4.fare_last_payment_tax_price,
+"S00000000"."燃種別データ_ガス"."受入比率" as acceptance_ratio, 
+"S00000000"."燃種別データ_ガス"."プロパン・ブタン区分" as propane_butane_type, 
+"S00000000"."燃種別データ_ガス"."熱量_btu" as calorie_quantity_btu, 
+"S00000000"."燃種別データ_ガス"."重量" as weight_quantity, 
+"S00000000"."燃種別データ_ガス"."総発熱量" as total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総重量" as total_weight_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総熱量" as acceptance_total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."lnpg密度" as lnpg_density_quantity, 
+"S00000000"."燃種別データ_ガス"."受入容積" as acceptance_quantity, 
+"S00000000"."燃種別データ_ガス"."取引容量_試運転" as contact_quantity_try, 
+"S00000000"."燃種別データ_ガス"."取引容量_営業運転" as contact_quantity_sales, 
+"S00000000"."燃種別データ_ガス"."着桟年月日" as landing_date, 
+"S00000000"."燃種別データ_ガス"."メタン" as methane_quantity, 
+"S00000000"."燃種別データ_ガス"."エタン" as ethane_quantity, 
+"S00000000"."燃種別データ_ガス"."プロパン" as propane_quantity,
+"S00000000"."燃種別データ_ガス"."イソブタン" as isobutane_quantity,
+"S00000000"."燃種別データ_ガス"."ノルマルブタン" as normal_butane_quantity,
+"S00000000"."燃種別データ_ガス"."イソペンタン" as isopentane_quantity,
+"S00000000"."燃種別データ_ガス"."硫黄" as sulfur_quantity,
+"S00000000"."燃種別データ_ガス"."硫化水素" as hydrogen_sulfide,
+"S00000000"."燃種別データ_ガス"."水分" as moisture_quantity,
+"S00000000"."燃種別データ_ガス"."窒素" as nitrogen_quantity,
+"S00000000"."燃種別データ_ガス"."酸素" as oxigen_quantity,
+"S00000000"."燃種別データ_ガス"."二酸化炭素" as carbon_dioxide_quantity,
+"S00000000"."燃種別データ_ガス"."プロジェクト" as project_type,
+t1.inventory_type,
+t1.shop_type,
+t1.cargo_bl,
+t1.delivery_condition_type,
+t1.ship_name,
+t1.loading_area_name,
+t1.brand_name,
+t1.remarks,
+t1.finish_date,
+t1.lift_plan_date,
+t1.lift_date,
+t1.accounting_ym,
+t1.customs_clearance_date,
+t1.customs_clearance_type
+
+from 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as item_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t1
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as item_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t2
+on t1.purchase_id = t2.purchase_id and
+t1.year_str = t2.year_str and
+t1.fuel_type = t2.fuel_type and
+t1.receipt_payment_type = t2.receipt_payment_type and
+t1.issue_id = t2.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as fare_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t3
+on t1.purchase_id = t3.purchase_id and
+t1.year_str = t3.year_str and
+t1.fuel_type = t3.fuel_type and
+t1.receipt_payment_type = t3.receipt_payment_type and
+t1.issue_id = t3.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as fare_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t4
+on t1.purchase_id = t4.purchase_id and
+t1.year_str = t4.year_str and
+t1.fuel_type = t4.fuel_type and
+t1.receipt_payment_type = t4.receipt_payment_type and
+t1.issue_id = t4.issue_id
+
+inner join 
+"S00000000"."燃種別データ_ガス" on
+"S00000000"."燃種別データ_ガス"."購入受入id" = t1.purchase_id
+
+UNION
+
+select t1.purchase_id, t1.year_str, t1.fuel_type, t1.receipt_payment_type, t1.issue_id,
+t1.item_first_payment_date, t1.item_first_accounting_price, t1.item_first_accounting_tax_price, t1.item_first_payment_price, t1.item_first_payment_tax_price,
+t2.item_last_payment_date, t2.item_last_accounting_price, t2.item_last_accounting_tax_price, t2.item_last_payment_price, t2.item_last_payment_tax_price,
+t3.fare_first_payment_date, t3.fare_first_accounting_price, t3.fare_first_accounting_tax_price, t3.fare_first_payment_price, t3.fare_first_payment_tax_price,
+t4.fare_last_payment_date, t4.fare_last_accounting_price, t4.fare_last_accounting_tax_price, t4.fare_last_payment_price, t4.fare_last_payment_tax_price,
+"S00000000"."燃種別データ_ガス"."受入比率" as acceptance_ratio, 
+"S00000000"."燃種別データ_ガス"."プロパン・ブタン区分" as propane_butane_type, 
+"S00000000"."燃種別データ_ガス"."熱量_btu" as calorie_quantity_btu, 
+"S00000000"."燃種別データ_ガス"."重量" as weight_quantity, 
+"S00000000"."燃種別データ_ガス"."総発熱量" as total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総重量" as total_weight_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総熱量" as acceptance_total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."lnpg密度" as lnpg_density_quantity, 
+"S00000000"."燃種別データ_ガス"."受入容積" as acceptance_quantity, 
+"S00000000"."燃種別データ_ガス"."取引容量_試運転" as contact_quantity_try, 
+"S00000000"."燃種別データ_ガス"."取引容量_営業運転" as contact_quantity_sales, 
+"S00000000"."燃種別データ_ガス"."着桟年月日" as landing_date, 
+"S00000000"."燃種別データ_ガス"."メタン" as methane_quantity, 
+"S00000000"."燃種別データ_ガス"."エタン" as ethane_quantity, 
+"S00000000"."燃種別データ_ガス"."プロパン" as propane_quantity,
+"S00000000"."燃種別データ_ガス"."イソブタン" as isobutane_quantity,
+"S00000000"."燃種別データ_ガス"."ノルマルブタン" as normal_butane_quantity,
+"S00000000"."燃種別データ_ガス"."イソペンタン" as isopentane_quantity,
+"S00000000"."燃種別データ_ガス"."硫黄" as sulfur_quantity,
+"S00000000"."燃種別データ_ガス"."硫化水素" as hydrogen_sulfide,
+"S00000000"."燃種別データ_ガス"."水分" as moisture_quantity,
+"S00000000"."燃種別データ_ガス"."窒素" as nitrogen_quantity,
+"S00000000"."燃種別データ_ガス"."酸素" as oxigen_quantity,
+"S00000000"."燃種別データ_ガス"."二酸化炭素" as carbon_dioxide_quantity,
+"S00000000"."燃種別データ_ガス"."プロジェクト" as project_type,
+t1.inventory_type,
+t1.shop_type,
+t1.cargo_bl,
+t1.delivery_condition_type,
+t1.ship_name,
+t1.loading_area_name,
+t1.brand_name,
+t1.remarks,
+t1.finish_date,
+t1.lift_plan_date,
+t1.lift_date,
+t1.accounting_ym,
+t1.customs_clearance_date,
+t1.customs_clearance_type
+
+from
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as item_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t2
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as item_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+) t1
+on t2.purchase_id = t1.purchase_id and
+t2.year_str = t1.year_str and
+t2.fuel_type = t1.fuel_type and
+t2.receipt_payment_type = t1.receipt_payment_type and
+t2.issue_id = t1.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as fare_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t3
+on t2.purchase_id = t3.purchase_id and
+t2.year_str = t3.year_str and
+t2.fuel_type = t3.fuel_type and
+t2.receipt_payment_type = t3.receipt_payment_type and
+t2.issue_id = t3.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as fare_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t4
+on t2.purchase_id = t4.purchase_id and
+t2.year_str = t4.year_str and
+t2.fuel_type = t4.fuel_type and
+t2.receipt_payment_type = t4.receipt_payment_type and
+t2.issue_id = t4.issue_id
+
+inner join 
+"S00000000"."燃種別データ_ガス" on
+"S00000000"."燃種別データ_ガス"."購入受入id" = t1.purchase_id
+
+UNION
+
+select t1.purchase_id, t1.year_str, t1.fuel_type, t1.receipt_payment_type, t1.issue_id,
+t1.item_first_payment_date, t1.item_first_accounting_price, t1.item_first_accounting_tax_price, t1.item_first_payment_price, t1.item_first_payment_tax_price,
+t2.item_last_payment_date, t2.item_last_accounting_price, t2.item_last_accounting_tax_price, t2.item_last_payment_price, t2.item_last_payment_tax_price,
+t3.fare_first_payment_date, t3.fare_first_accounting_price, t3.fare_first_accounting_tax_price, t3.fare_first_payment_price, t3.fare_first_payment_tax_price,
+t4.fare_last_payment_date, t4.fare_last_accounting_price, t4.fare_last_accounting_tax_price, t4.fare_last_payment_price, t4.fare_last_payment_tax_price,
+"S00000000"."燃種別データ_ガス"."受入比率" as acceptance_ratio, 
+"S00000000"."燃種別データ_ガス"."プロパン・ブタン区分" as propane_butane_type, 
+"S00000000"."燃種別データ_ガス"."熱量_btu" as calorie_quantity_btu, 
+"S00000000"."燃種別データ_ガス"."重量" as weight_quantity, 
+"S00000000"."燃種別データ_ガス"."総発熱量" as total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総重量" as total_weight_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総熱量" as acceptance_total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."lnpg密度" as lnpg_density_quantity, 
+"S00000000"."燃種別データ_ガス"."受入容積" as acceptance_quantity, 
+"S00000000"."燃種別データ_ガス"."取引容量_試運転" as contact_quantity_try, 
+"S00000000"."燃種別データ_ガス"."取引容量_営業運転" as contact_quantity_sales, 
+"S00000000"."燃種別データ_ガス"."着桟年月日" as landing_date, 
+"S00000000"."燃種別データ_ガス"."メタン" as methane_quantity, 
+"S00000000"."燃種別データ_ガス"."エタン" as ethane_quantity, 
+"S00000000"."燃種別データ_ガス"."プロパン" as propane_quantity,
+"S00000000"."燃種別データ_ガス"."イソブタン" as isobutane_quantity,
+"S00000000"."燃種別データ_ガス"."ノルマルブタン" as normal_butane_quantity,
+"S00000000"."燃種別データ_ガス"."イソペンタン" as isopentane_quantity,
+"S00000000"."燃種別データ_ガス"."硫黄" as sulfur_quantity,
+"S00000000"."燃種別データ_ガス"."硫化水素" as hydrogen_sulfide,
+"S00000000"."燃種別データ_ガス"."水分" as moisture_quantity,
+"S00000000"."燃種別データ_ガス"."窒素" as nitrogen_quantity,
+"S00000000"."燃種別データ_ガス"."酸素" as oxigen_quantity,
+"S00000000"."燃種別データ_ガス"."二酸化炭素" as carbon_dioxide_quantity,
+"S00000000"."燃種別データ_ガス"."プロジェクト" as project_type,
+t1.inventory_type,
+t1.shop_type,
+t1.cargo_bl,
+t1.delivery_condition_type,
+t1.ship_name,
+t1.loading_area_name,
+t1.brand_name,
+t1.remarks,
+t1.finish_date,
+t1.lift_plan_date,
+t1.lift_date,
+t1.accounting_ym,
+t1.customs_clearance_date,
+t1.customs_clearance_type
+
+from
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as fare_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t3
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as item_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+) t1
+on t3.purchase_id = t1.purchase_id and
+t3.year_str = t1.year_str and
+t3.fuel_type = t1.fuel_type and
+t3.receipt_payment_type = t1.receipt_payment_type and
+t3.issue_id = t1.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as item_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t2
+on t3.purchase_id = t2.purchase_id and
+t3.year_str = t2.year_str and
+t3.fuel_type = t2.fuel_type and
+t3.receipt_payment_type = t2.receipt_payment_type and
+t3.issue_id = t2.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as fare_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t4
+on t3.purchase_id = t4.purchase_id and
+t3.year_str = t4.year_str and
+t3.fuel_type = t4.fuel_type and
+t3.receipt_payment_type = t4.receipt_payment_type and
+t3.issue_id = t4.issue_id
+
+inner join 
+"S00000000"."燃種別データ_ガス" on
+"S00000000"."燃種別データ_ガス"."購入受入id" = t1.purchase_id
+
+UNION
+
+select t1.purchase_id, t1.year_str, t1.fuel_type, t1.receipt_payment_type, t1.issue_id,
+t1.item_first_payment_date, t1.item_first_accounting_price, t1.item_first_accounting_tax_price, t1.item_first_payment_price, t1.item_first_payment_tax_price,
+t2.item_last_payment_date, t2.item_last_accounting_price, t2.item_last_accounting_tax_price, t2.item_last_payment_price, t2.item_last_payment_tax_price,
+t3.fare_first_payment_date, t3.fare_first_accounting_price, t3.fare_first_accounting_tax_price, t3.fare_first_payment_price, t3.fare_first_payment_tax_price,
+t4.fare_last_payment_date, t4.fare_last_accounting_price, t4.fare_last_accounting_tax_price, t4.fare_last_payment_price, t4.fare_last_payment_tax_price,
+"S00000000"."燃種別データ_ガス"."受入比率" as acceptance_ratio, 
+"S00000000"."燃種別データ_ガス"."プロパン・ブタン区分" as propane_butane_type, 
+"S00000000"."燃種別データ_ガス"."熱量_btu" as calorie_quantity_btu, 
+"S00000000"."燃種別データ_ガス"."重量" as weight_quantity, 
+"S00000000"."燃種別データ_ガス"."総発熱量" as total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総重量" as total_weight_quantity, 
+"S00000000"."燃種別データ_ガス"."受入総熱量" as acceptance_total_calorie_quantity, 
+"S00000000"."燃種別データ_ガス"."lnpg密度" as lnpg_density_quantity, 
+"S00000000"."燃種別データ_ガス"."受入容積" as acceptance_quantity, 
+"S00000000"."燃種別データ_ガス"."取引容量_試運転" as contact_quantity_try, 
+"S00000000"."燃種別データ_ガス"."取引容量_営業運転" as contact_quantity_sales, 
+"S00000000"."燃種別データ_ガス"."着桟年月日" as landing_date, 
+"S00000000"."燃種別データ_ガス"."メタン" as methane_quantity, 
+"S00000000"."燃種別データ_ガス"."エタン" as ethane_quantity, 
+"S00000000"."燃種別データ_ガス"."プロパン" as propane_quantity,
+"S00000000"."燃種別データ_ガス"."イソブタン" as isobutane_quantity,
+"S00000000"."燃種別データ_ガス"."ノルマルブタン" as normal_butane_quantity,
+"S00000000"."燃種別データ_ガス"."イソペンタン" as isopentane_quantity,
+"S00000000"."燃種別データ_ガス"."硫黄" as sulfur_quantity,
+"S00000000"."燃種別データ_ガス"."硫化水素" as hydrogen_sulfide,
+"S00000000"."燃種別データ_ガス"."水分" as moisture_quantity,
+"S00000000"."燃種別データ_ガス"."窒素" as nitrogen_quantity,
+"S00000000"."燃種別データ_ガス"."酸素" as oxigen_quantity,
+"S00000000"."燃種別データ_ガス"."二酸化炭素" as carbon_dioxide_quantity,
+"S00000000"."燃種別データ_ガス"."プロジェクト" as project_type,
+t1.inventory_type,
+t1.shop_type,
+t1.cargo_bl,
+t1.delivery_condition_type,
+t1.ship_name,
+t1.loading_area_name,
+t1.brand_name,
+t1.remarks,
+t1.finish_date,
+t1.lift_plan_date,
+t1.lift_date,
+t1.accounting_ym,
+t1.customs_clearance_date,
+t1.customs_clearance_type
+
+from
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as fare_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t4
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as item_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+) t1
+on t4.purchase_id = t1.purchase_id and
+t4.year_str = t1.year_str and
+t4.fuel_type = t1.fuel_type and
+t4.receipt_payment_type = t1.receipt_payment_type and
+t4.issue_id = t1.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+max("S00000000"."諸掛・品代_金額"."支払年月日") as item_last_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as item_last_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as item_last_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as item_last_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as item_last_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000000' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t2
+on t4.purchase_id = t2.purchase_id and
+t4.year_str = t2.year_str and
+t4.fuel_type = t2.fuel_type and
+t4.receipt_payment_type = t2.receipt_payment_type and
+t4.issue_id = t2.issue_id
+
+left join 
+(select 
+d1."購入受入id" as purchase_id, 
+d1."年度" as year_str,
+d1."燃種" as fuel_type,
+d1."受払種別" as receipt_payment_type,
+d1."発行番号" as issue_id,
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.customs_clearance_date,
+d1.customs_clearance_type,
+d1.accounting_ym,
+min("S00000000"."諸掛・品代_金額"."支払年月日") as fare_first_payment_date,
+sum("S00000000"."諸掛・品代_金額"."計上金額") as fare_first_accounting_price, 
+sum("S00000000"."諸掛・品代_金額"."計上消費税額") as fare_first_accounting_tax_price,
+sum("S00000000"."諸掛・品代_金額"."支払金額") as fare_first_payment_price,
+sum("S00000000"."諸掛・品代_金額"."支払消費税額") as fare_first_payment_tax_price
+from "S00000000"."諸掛・品代_金額"
+inner join 
+
+(select 
+"S00000000"."購入受入"."購入受入id",
+"S00000000"."購入受入"."在庫区分" as inventory_type,
+"S00000000"."購入受入"."年度",
+"S00000000"."購入受入"."燃種",
+"S00000000"."購入受入"."受払種別",
+"S00000000"."購入受入"."発行番号",
+"S00000000"."購入受入"."店所"as shop_type,
+"S00000000"."購入受入"."カーゴ_bl" as cargo_bl,
+"S00000000"."購入受入"."受渡条件" as delivery_condition_type,
+"S00000000"."購入受入"."輸送船名"as ship_name,
+"S00000000"."購入受入"."積地"as loading_area_name,
+"S00000000"."購入受入"."銘柄"as brand_name,
+"S00000000"."購入受入"."備考" as remarks,
+"S00000000"."購入受入"."積完了年月日"as finish_date,
+"S00000000"."購入受入"."揚荷予定完了年月日" as lift_plan_date,
+"S00000000"."購入受入"."揚完了年月日"as lift_date,
+"S00000000"."購入受入"."通関年月日"as customs_clearance_date,
+"S00000000"."購入受入"."通関区分"as customs_clearance_type,
+"S00000000"."諸掛・品代"."諸掛・品代id",
+"S00000000"."諸掛・品代"."諸掛",
+"S00000000"."諸掛・品代_金額"."承認日時",
+"S00000000"."諸掛・品代_金額"."計上年月"as accounting_ym
+from "S00000000"."購入受入" 
+inner join "S00000000"."諸掛・品代"
+on 
+"S00000000"."諸掛・品代"."購入_年度" = "S00000000"."購入受入"."年度" and
+"S00000000"."諸掛・品代"."購入_発行番号" = "S00000000"."購入受入"."発行番号" and
+"S00000000"."諸掛・品代"."購入_受払種別" = "S00000000"."購入受入"."受払種別" and
+"S00000000"."諸掛・品代"."購入_燃種" = "S00000000"."購入受入"."燃種" 
+inner join "S00000000"."諸掛・品代_金額"
+on
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = "S00000000"."諸掛・品代"."諸掛・品代id"
+where
+"S00000000"."購入受入"."燃種" ='2700' and
+"S00000000"."諸掛・品代"."諸掛" in ('000000','000001') and
+"S00000000"."諸掛・品代_金額"."当初／精算区分" = '1' and
+to_date(cast("S00000000"."諸掛・品代_金額"."承認日時" as TEXT), 'YYYY/MM/DD HH24:MI:SS') between to_date(?,'YYYY-MM-DD') - INTERVAL '7 days' and to_date(?,'YYYY-MM-DD')) as d1
+
+on d1."諸掛" = '000001' and
+"S00000000"."諸掛・品代_金額"."諸掛・品代id" = d1."諸掛・品代id"
+group by
+d1."購入受入id",d1."年度", d1."燃種", d1."受払種別", d1."発行番号",
+d1.inventory_type,
+d1.shop_type,
+d1.cargo_bl,
+d1.delivery_condition_type,
+d1.ship_name,
+d1.loading_area_name,
+d1.brand_name,
+d1.remarks,
+d1.finish_date,
+d1.lift_plan_date,
+d1.lift_date,
+d1.accounting_ym,
+d1.customs_clearance_date,
+d1.customs_clearance_type
+
+) t3
+on t4.purchase_id = t3.purchase_id and
+t4.year_str = t3.year_str and
+t4.fuel_type = t3.fuel_type and
+t4.receipt_payment_type = t3.receipt_payment_type and
+t4.issue_id = t3.issue_id
+
+inner join 
+"S00000000"."燃種別データ_ガス" on
+"S00000000"."燃種別データ_ガス"."購入受入id" = t1.purchase_id</sql></DBStatement></DataElements></DatabaseProfile></bns:object></bns:Component>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./Joget_Workflow/Partner Portal" componentId="60c64cbc-1fe9-44fc-8a55-7bc59ad800e4" version="1" name="Sync_Berth_Master" type="profile.db" createdDate="2021-05-12T01:02:44Z" createdBy="walid.bargaoui@avaxia-group.com" modifiedDate="2021-05-12T01:02:44Z" modifiedBy="walid.bargaoui@avaxia-group.com" deleted="false" currentVersion="true" folderName="Partner Portal" folderId="RjozNjc4OTUx" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><DatabaseProfile xmlns="" strict="true" version="2"><ProfileProperties><DatabaseGeneralInfo executionType="dbwrite"/></ProfileProperties><DataElements><DBStatement isNode="true" key="5" name="Statement" statementType="standardinsertupdatedelete" storedProcedure="" tableName=""><DBFields isNode="true" key="6" name="Fields"><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="7" mandatory="false" name="berthId"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="8" mandatory="false" name="berthHistoryNo"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="9" mandatory="false" name="startDate"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="10" mandatory="false" name="endDate"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="11" mandatory="false" name="berthName"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="12" mandatory="false" name="berthHistoryNo"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="13" mandatory="false" name="startDate"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="14" mandatory="false" name="endDate"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="15" mandatory="false" name="berthName"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement></DBFields><sql>INSERT INTO pp_berth_master
+(
+  berthId
+ ,berthHistoryNo
+ ,startDate
+ ,endDate
+ ,berthName
+)
+VALUES
+(
+  ? -- berthId - VARCHAR(10) NOT NULL
+ ,? -- berthHistoryNo - VARCHAR(10)
+ ,? -- startDate - VARCHAR(10)
+ ,? -- endDate - VARCHAR(10)
+ ,? -- berthName - VARCHAR(255)
+)
+on duplicate key update
+berthHistoryNo = ?
+,startDate = ?
+,endDate = ?
+,berthName = ?</sql></DBStatement></DataElements></DatabaseProfile></bns:object></bns:Component>

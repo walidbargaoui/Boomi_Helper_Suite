@@ -1,0 +1,331 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`applyAiResolution merge snapshot > merges a canned Qwen correction patch into the deterministic draft 1`] = `
+{
+  "destinationProfileName": "Polished Destination Profile",
+  "lastWarning": "Snapshot: a stable Qwen warning.",
+  "mappingSetWarnings": [
+    "Resolver: review currency conversion edge case at R12.",
+  ],
+  "ok": true,
+  "projectConfidence": 0.92,
+  "projectOwner": "Qwen reviewer",
+  "provider": "ollama",
+  "unresolved": [
+    "Field Mapping!R1",
+    "Field Mapping!R99",
+  ],
+}
+`;
+
+exports[`applyAiResolution merge snapshot > snapshot for generated FMD workbook deterministic output 1`] = `
+{
+  "endpointCount": 0,
+  "fieldCountsByProfile": {},
+  "mappingSetCount": 0,
+  "mappingSets": [],
+  "profileCount": 0,
+  "profileNames": [],
+  "profileShapes": [],
+  "project": {
+    "destinationSystem": "ServiceNow",
+    "name": "Seiren Trading Order Intake",
+    "processId": "SRSN001",
+    "sourceSystem": "SharePoint",
+    "status": "Draft",
+  },
+  "sectionCount": 6,
+  "sectionTypes": [
+    "documentLog",
+    "jobHandling",
+    "overview",
+    "overview",
+    "reference",
+    "reference",
+  ],
+  "unresolvedRefCount": 0,
+  "warningCount": 2,
+}
+`;
+
+exports[`deterministic resolver regression fixtures > matches snapshot for Boomi設計書_SRSN001_セーレン商事_受注_in.xlsx 1`] = `
+{
+  "endpointCount": 11,
+  "fieldCountsByProfile": {
+    "u_temp_edi_seiren_recieve": 47,
+    "セーレンEDIエラーファイル": 44,
+    "セーレン受注データファイル": 36,
+    "証跡ファイル": 52,
+  },
+  "mappingSetCount": 3,
+  "mappingSets": [
+    {
+      "destination": "セーレンEDIエラーファイル",
+      "name": "マッピング（ServieNow→セーレンEDIエラーファイル）",
+      "ruleCount": 44,
+      "ruleTypeBreakdown": {
+        "direct": 39,
+        "function": 5,
+      },
+      "source": "u_temp_edi_seiren_recieve",
+      "strategy": "grouped",
+    },
+    {
+      "destination": "証跡ファイル",
+      "name": "マッピング（ServieNow→証跡ファイル)",
+      "ruleCount": 53,
+      "ruleTypeBreakdown": {
+        "direct": 45,
+        "function": 8,
+      },
+      "source": "u_temp_edi_seiren_recieve",
+      "strategy": "grouped",
+    },
+    {
+      "destination": "u_temp_edi_seiren_recieve",
+      "name": "マッピング（セーレン受注データファイル→ServieNow）",
+      "ruleCount": 46,
+      "ruleTypeBreakdown": {
+        "direct": 36,
+        "function": 10,
+      },
+      "source": "セーレン受注データファイル",
+      "strategy": "grouped",
+    },
+  ],
+  "profileCount": 5,
+  "profileNames": [
+    "u_temp_edi_seiren_recieve",
+    "u_temp_edi_seiren_recieve",
+    "セーレンEDIエラーファイル",
+    "セーレン受注データファイル",
+    "証跡ファイル",
+  ],
+  "profileShapes": [
+    "destination/API/JSON",
+    "destination/Flat File/TSV",
+    "destination/Flat File/TSV",
+    "source/Flat File/TSV",
+    "source/Flat File/TSV",
+  ],
+  "project": {
+    "destinationSystem": "ServiceNow",
+    "name": "セーレン商事_受注_in",
+    "processId": "SRSN001",
+    "sourceSystem": "SharePoint",
+    "status": "Draft",
+  },
+  "sectionCount": 17,
+  "sectionTypes": [
+    "documentLog",
+    "documentLog",
+    "environment",
+    "environment",
+    "jobHandling",
+    "overview",
+    "overview",
+    "overview",
+    "reference",
+    "reference",
+    "reference",
+    "reference",
+    "reference",
+    "reference",
+    "reference",
+    "reference",
+    "sample",
+  ],
+  "unresolvedRefCount": 3,
+  "warningCount": 3,
+}
+`;
+
+exports[`deterministic resolver regression fixtures > matches snapshot for FMD_To_SFs_Phone_v1.7.xlsx 1`] = `
+{
+  "endpointCount": 3,
+  "fieldCountsByProfile": {
+    "Account Management System": 2,
+    "SuccessFactors": 4,
+  },
+  "mappingSetCount": 1,
+  "mappingSets": [
+    {
+      "destination": "SuccessFactors",
+      "name": "Field Mapping",
+      "ruleCount": 4,
+      "ruleTypeBreakdown": {
+        "constant": 2,
+        "direct": 2,
+      },
+      "source": "Account Management System",
+      "strategy": "grouped",
+    },
+  ],
+  "profileCount": 2,
+  "profileNames": [
+    "Account Management System",
+    "SuccessFactors",
+  ],
+  "profileShapes": [
+    "destination/Flat File/TSV",
+    "source/Flat File/TSV",
+  ],
+  "project": {
+    "destinationSystem": "SuccessFactors",
+    "name": "FMD_To_SFs_Phone_v1.7",
+    "processId": "FMD_To_SFs_Phone_v1.7",
+    "sourceSystem": "Account Management System",
+    "status": "Draft",
+  },
+  "sectionCount": 5,
+  "sectionTypes": [
+    "documentLog",
+    "environment",
+    "explanation",
+    "explanation",
+    "jobHandling",
+  ],
+  "unresolvedRefCount": 1,
+  "warningCount": 3,
+}
+`;
+
+exports[`deterministic resolver regression fixtures > matches snapshot for FMD_sheet_FOX_算定結果ステータス・業務日付更新.xlsx 1`] = `
+{
+  "endpointCount": 0,
+  "fieldCountsByProfile": {},
+  "mappingSetCount": 0,
+  "mappingSets": [],
+  "profileCount": 0,
+  "profileNames": [],
+  "profileShapes": [],
+  "project": {
+    "destinationSystem": "Destination / 送信先",
+    "name": "FMD_sheet_FOX_算定結果ステータス・業務日付更新",
+    "processId": "FMD_sheet_FOX_算定結果ステータス・業務日付更新",
+    "sourceSystem": "Source / 送信元",
+    "status": "Draft",
+  },
+  "sectionCount": 9,
+  "sectionTypes": [
+    "documentLog",
+    "environment",
+    "explanation",
+    "jobHandling",
+    "overview",
+    "reference",
+    "reference",
+    "sample",
+    "sample",
+  ],
+  "unresolvedRefCount": 1,
+  "warningCount": 2,
+}
+`;
+
+exports[`deterministic resolver regression fixtures > matches snapshot for G06 - Employee Expense FMD V1.3.xlsx 1`] = `
+{
+  "endpointCount": 0,
+  "fieldCountsByProfile": {
+    "Concur": 12,
+    "Concur System": 14,
+    "S/4HANA Cloud Employee Expense Odata API": 27,
+    "S/4HC": 29,
+  },
+  "mappingSetCount": 2,
+  "mappingSets": [
+    {
+      "destination": "S/4HANA Cloud Employee Expense Odata API",
+      "name": "Employee Expense Field Mapping",
+      "ruleCount": 31,
+      "ruleTypeBreakdown": {
+        "direct": 18,
+        "function": 13,
+      },
+      "source": "Concur System",
+      "strategy": "grouped",
+    },
+    {
+      "destination": "S/4HC",
+      "name": "Journal Entry Field Mapping",
+      "ruleCount": 38,
+      "ruleTypeBreakdown": {
+        "constant": 3,
+        "direct": 22,
+        "function": 13,
+      },
+      "source": "Concur",
+      "strategy": "grouped",
+    },
+  ],
+  "profileCount": 4,
+  "profileNames": [
+    "Concur",
+    "Concur System",
+    "S/4HANA Cloud Employee Expense Odata API",
+    "S/4HC",
+  ],
+  "profileShapes": [
+    "destination/API/JSON",
+    "destination/Flat File/TSV",
+    "source/API/JSON",
+    "source/API/JSON",
+  ],
+  "project": {
+    "destinationSystem": "S/4HANA Cloud Employee Expense Odata API",
+    "name": "G06 - Employee Expense FMD V1.3",
+    "processId": "G06 - Employee Expense FMD V1.3",
+    "sourceSystem": "Concur System",
+    "status": "Draft",
+  },
+  "sectionCount": 10,
+  "sectionTypes": [
+    "documentLog",
+    "environment",
+    "explanation",
+    "jobHandling",
+    "overview",
+    "overview",
+    "reference",
+    "sample",
+    "sample",
+    "sample",
+  ],
+  "unresolvedRefCount": 2,
+  "warningCount": 2,
+}
+`;
+
+exports[`deterministic resolver regression fixtures > matches snapshot for 【販売管理】FMD_IFID043_SMSO_TO_TOPS_EBK_FILE_DAILY(通告管理)_v1.00.xlsx 1`] = `
+{
+  "endpointCount": 2,
+  "fieldCountsByProfile": {},
+  "mappingSetCount": 0,
+  "mappingSets": [],
+  "profileCount": 0,
+  "profileNames": [],
+  "profileShapes": [],
+  "project": {
+    "destinationSystem": "Destination / 送信先",
+    "name": "【販売管理】FMD_IFID043_SMSO_TO_TOPS_EBK_FILE_DAILY(通告管理)_v1.00",
+    "processId": "FMD_IFID043",
+    "sourceSystem": "Source / 送信元",
+    "status": "Draft",
+  },
+  "sectionCount": 10,
+  "sectionTypes": [
+    "documentLog",
+    "environment",
+    "explanation",
+    "jobHandling",
+    "overview",
+    "reference",
+    "reference",
+    "reference",
+    "sample",
+    "sample",
+  ],
+  "unresolvedRefCount": 1,
+  "warningCount": 3,
+}
+`;

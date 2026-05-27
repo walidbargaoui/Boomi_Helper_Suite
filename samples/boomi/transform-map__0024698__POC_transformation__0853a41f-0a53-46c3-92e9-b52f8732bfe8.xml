@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./POC" componentId="0853a41f-0a53-46c3-92e9-b52f8732bfe8" version="1" name="POC_transformation" type="transform.map" createdDate="2020-01-06T08:03:55Z" createdBy="walid.bargaoui@avaxia-group.com" modifiedDate="2020-01-06T08:03:55Z" modifiedBy="walid.bargaoui@avaxia-group.com" deleted="false" currentVersion="true" folderName="POC" folderId="RjoyOTk4NzMw" copiedFromComponentId="88ff559a-d2e0-4dac-83d6-c9b376aaf3b1" copiedFromComponentVersion="53" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><Map xmlns="" fromProfile="026b6f34-2b1e-4b2c-ae7f-04d1c8b23360" toProfile="b38d961d-69c8-4ada-8066-38992050d33e"><Mappings><Mapping fromKey="46" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='46']" fromNamePath="Record/Elements/Entry number" fromType="profile" toKey="65" toKeyPath="*[@key='1']/*[@key='2']/*[@key='65']" toNamePath="Record/Elements/Record_detail_Number レコード明細№" toType="profile"/><Mapping fromKey="15" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='15']" fromNamePath="Record/Elements/Value date" fromType="profile" toKey="66" toKeyPath="*[@key='1']/*[@key='2']/*[@key='66']" toNamePath="Record/Elements/Document_date 伝票日付" toType="profile"/><Mapping fromKey="7" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='7']" fromNamePath="Record/Elements/Transaction company" fromType="profile" toKey="68" toKeyPath="*[@key='1']/*[@key='2']/*[@key='68']" toNamePath="Record/Elements/Company_code 会社コード" toType="profile"/><Mapping fromKey="15" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='15']" fromNamePath="Record/Elements/Value date" fromType="profile" toKey="69" toKeyPath="*[@key='1']/*[@key='2']/*[@key='69']" toNamePath="Record/Elements/Transfer_Date 転記日付" toType="profile"/><Mapping fromKey="17" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='17']" fromNamePath="Record/Elements/Entry currency" fromType="profile" toKey="72" toKeyPath="*[@key='1']/*[@key='2']/*[@key='72']" toNamePath="Record/Elements/Currency_code 通貨コード" toType="profile"/><Mapping fromKey="58" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='58']" fromNamePath="Record/Elements/Transaction number" fromType="profile" toKey="75" toKeyPath="*[@key='1']/*[@key='2']/*[@key='75']" toNamePath="Record/Elements/Header_textヘッダテキスト" toType="profile"/><Mapping fromKey="40" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='40']" fromNamePath="Record/Elements/User zone 1" fromType="profile" toKey="88" toKeyPath="*[@key='1']/*[@key='2']/*[@key='88']" toNamePath="Record/Elements/Profit_center 利益センタ" toType="profile"/><Mapping fromKey="57" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='57']" fromNamePath="Record/Elements/Reference GL entry" fromType="profile" toKey="90" toKeyPath="*[@key='1']/*[@key='2']/*[@key='90']" toNamePath="Record/Elements/text_item 明細テキスト" toType="profile"/><Mapping fromKey="43" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='43']" fromNamePath="Record/Elements/User zone 4" fromType="profile" toKey="93" toKeyPath="*[@key='1']/*[@key='2']/*[@key='93']" toNamePath="Record/Elements/Payment_methods 支払方法" toType="profile"/><Mapping fromKey="44" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='44']" fromNamePath="Record/Elements/User zone 5" fromType="profile" toKey="104" toKeyPath="*[@key='1']/*[@key='2']/*[@key='104']" toNamePath="Record/Elements/Refenrence_key1 参照キー1" toType="profile"/><Mapping fromKey="44" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='44']" fromNamePath="Record/Elements/User zone 5" fromType="profile" toKey="106" toKeyPath="*[@key='1']/*[@key='2']/*[@key='106']" toNamePath="Record/Elements/Refenrence_key3 参照キー3" toType="profile"/><Mapping fromKey="44" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='44']" fromNamePath="Record/Elements/User zone 5" fromType="profile" toKey="107" toKeyPath="*[@key='1']/*[@key='2']/*[@key='107']" toNamePath="Record/Elements/Central_bank_code 中央銀行コード" toType="profile"/><Mapping fromKey="58" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='58']" fromNamePath="Record/Elements/Transaction number" fromType="profile" toFunction="2" toKey="1" toType="function"/><Mapping fromFunction="2" fromKey="3" fromType="function" toKey="67" toKeyPath="*[@key='1']/*[@key='2']/*[@key='67']" toNamePath="Record/Elements/Document_type 伝票タイプ" toType="profile"/><Mapping fromKey="21" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='21']" fromNamePath="Record/Elements/Rate" fromType="profile" toFunction="5" toKey="1" toType="function"/><Mapping fromFunction="5" fromKey="2" fromType="function" toKey="73" toKeyPath="*[@key='1']/*[@key='2']/*[@key='73']" toNamePath="Record/Elements/Rate レート" toType="profile"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="6" toKey="1" toType="function"/><Mapping fromKey="16" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='16']" fromNamePath="Record/Elements/Debit/Credit type" fromType="profile" toFunction="6" toKey="2" toType="function"/><Mapping fromFunction="6" fromKey="3" fromType="function" toKey="79" toKeyPath="*[@key='1']/*[@key='2']/*[@key='79']" toNamePath="Record/Elements/Transfer_key転記キー" toType="profile"/><Mapping fromKey="10" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='10']" fromNamePath="Record/Elements/GL account code" fromType="profile" toFunction="7" toKey="2" toType="function"/><Mapping fromKey="42" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='42']" fromNamePath="Record/Elements/User zone 3" fromType="profile" toFunction="7" toKey="3" toType="function"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="7" toKey="1" toType="function"/><Mapping fromFunction="7" fromKey="4" fromType="function" toKey="80" toKeyPath="*[@key='1']/*[@key='2']/*[@key='80']" toNamePath="Record/Elements/Account_code 勘定コード" toType="profile"/><Mapping fromKey="10" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='10']" fromNamePath="Record/Elements/GL account code" fromType="profile" toFunction="11" toKey="1" toType="function"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="11" toKey="2" toType="function"/><Mapping fromFunction="11" fromKey="3" fromType="function" toKey="81" toKeyPath="*[@key='1']/*[@key='2']/*[@key='81']" toNamePath="Record/Elements/Alternative reconciliation_account code代替統制勘定コード" toType="profile"/><Mapping fromKey="17" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='17']" fromNamePath="Record/Elements/Entry currency" fromType="profile" toFunction="12" toKey="1" toType="function"/><Mapping fromFunction="12" fromKey="3" fromType="function" toKey="84" toKeyPath="*[@key='1']/*[@key='2']/*[@key='84']" toNamePath="Record/Elements/Document_currency _amount 伝票通貨額" toType="profile"/><Mapping fromKey="18" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='18']" fromNamePath="Record/Elements/Entry amount" fromType="profile" toFunction="12" toKey="4" toType="function"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="13" toKey="1" toType="function"/><Mapping fromKey="15" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='15']" fromNamePath="Record/Elements/Value date" fromType="profile" toFunction="13" toKey="3" toType="function"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="15" toKey="1" toType="function"/><Mapping fromKey="42" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='42']" fromNamePath="Record/Elements/User zone 3" fromType="profile" toFunction="15" toKey="2" toType="function"/><Mapping fromFunction="15" fromKey="3" fromType="function" toKey="97" toKeyPath="*[@key='1']/*[@key='2']/*[@key='97']" toNamePath="Record/Elements/Partner パートナ" toType="profile"/><Mapping fromKey="41" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='41']" fromNamePath="Record/Elements/User zone 2" fromType="profile" toFunction="18" toKey="1" toType="function"/><Mapping fromFunction="18" fromKey="2" fromType="function" toKey="103" toKeyPath="*[@key='1']/*[@key='2']/*[@key='103']" toNamePath="Record/Elements/Client_bank_ID 取引銀行ID" toType="profile"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="19" toKey="2" toType="function"/><Mapping fromFunction="19" fromKey="1" fromType="function" toKey="105" toKeyPath="*[@key='1']/*[@key='2']/*[@key='105']" toNamePath="Record/Elements/Refenrence_key2 参照キー2" toType="profile"/><Mapping fromKey="40" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='40']" fromNamePath="Record/Elements/User zone 1" fromType="profile" toFunction="19" toKey="3" toType="function"/><Mapping fromKey="41" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='41']" fromNamePath="Record/Elements/User zone 2" fromType="profile" toFunction="21" toKey="1" toType="function"/><Mapping fromFunction="21" fromKey="3" fromType="function" toKey="114" toKeyPath="*[@key='1']/*[@key='2']/*[@key='114']" toNamePath="Record/Elements/Account_ID 口座ID" toType="profile"/><Mapping fromKey="8" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='8']" fromNamePath="Record/Elements/GL ID" fromType="profile" toFunction="23" toKey="2" toType="function"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toFunction="23" toKey="1" toType="function"/><Mapping fromFunction="23" fromKey="3" fromType="function" toKey="89" toKeyPath="*[@key='1']/*[@key='2']/*[@key='89']" toNamePath="Record/Elements/Sortkey ソートキー" toType="profile"/><Mapping fromKey="10" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='10']" fromNamePath="Record/Elements/GL account code" fromType="profile" toFunction="24" toKey="1" toType="function"/><Mapping fromKey="40" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='40']" fromNamePath="Record/Elements/User zone 1" fromType="profile" toFunction="24" toKey="2" toType="function"/><Mapping fromFunction="24" fromKey="3" fromType="function" toKey="87" toKeyPath="*[@key='1']/*[@key='2']/*[@key='87']" toNamePath="Record/Elements/Cost_center 原価センタ" toType="profile"/><Mapping fromKey="10" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='10']" fromNamePath="Record/Elements/GL account code" fromType="profile" toFunction="25" toKey="2" toType="function"/><Mapping fromKey="12" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='12']" fromNamePath="Record/Elements/Budget code" fromType="profile" toFunction="25" toKey="1" toType="function"/><Mapping fromFunction="25" fromKey="3" fromType="function" toKey="86" toKeyPath="*[@key='1']/*[@key='2']/*[@key='86']" toNamePath="Record/Elements/Tax_code 税コード" toType="profile"/><Mapping fromFunction="10" fromKey="1" fromType="function" toKey="85" toKeyPath="*[@key='1']/*[@key='2']/*[@key='85']" toNamePath="Record/Elements/Domestic_currency_amount 国内通貨額" toType="profile"/><Mapping fromKey="20" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='20']" fromNamePath="Record/Elements/GL amount" fromType="profile" toFunction="10" toKey="1" toType="function"/><Mapping fromKey="25" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='25']" fromNamePath="Record/Elements/Analytical code text" fromType="profile" toKey="92" toKeyPath="*[@key='1']/*[@key='2']/*[@key='92']" toNamePath="Record/Elements/Deadline 期日" toType="profile"/><Mapping fromKey="8" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='8']" fromNamePath="Record/Elements/GL ID" fromType="profile" toFunction="26" toKey="1" toType="function"/><Mapping fromFunction="26" fromKey="2" fromType="function" toKey="64" toKeyPath="*[@key='1']/*[@key='2']/*[@key='64']" toNamePath="Record/Elements/Record_Number レコード№" toType="profile"/></Mappings><Functions optimizeExecutionOrder="true"><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="2" name="Scripting" position="2" sumEnabled="false" type="Scripting" x="10.0" y="10.0"><Inputs><Input key="1" name="transaction_number"/></Inputs><Outputs><Output key="3" name="Denpyo_Type"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>function find(list, f){
+    var value = null;
+    
+    for (var i = 0; i &lt; list.length; i++){
+        var v = list[i]
+        if (f(v)) {
+            value = v;
+            break; // if element found break out of loop scope
+        }
+    }
+    return value;
+}
+
+var finance_product_code_list = ['LO', 'OD', 'CL', 'BO', 'CP', 'LS','IS','CS','CA','FL'];
+
+var transaction_number = find(finance_product_code_list, function(pcode){
+	return transaction_number.match(pcode) !== null;
+});
+
+switch(transaction_number){
+
+    case 'LO':
+    case 'OD':
+    case 'CL':
+        Denpyo_Type = 'X0';
+                break;
+    case 'BO':
+                 
+                 
+        Denpyo_Type = 'X1';
+                break;
+    case 'CP':
+                 Denpyo_Type = 'X2';
+                break;
+    case  'LS':
+                 Denpyo_Type = 'X3';
+                break;
+    case 'IS':
+    case 'CS':
+    case 'CA':
+    case 'FL':
+                   Denpyo_Type = 'X4';
+                   break;
+    default: 
+    	Denpyo_Type = "not found";
+}
+
+</ScriptToExecute><Input dataType="character" index="1" name="transaction_number"/><Output index="3" name="Denpyo_Type"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Numeric" key="5" name="Math Set Precision" position="5" sumEnabled="false" type="MathPrecision" x="30.0" y="204.0"><Inputs><Input key="1" name="Value"/><Input default="5" key="2" name="Number of Precision"/></Inputs><Outputs><Output key="2" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="6" name="Scripting" position="6" sumEnabled="false" type="Scripting" x="30.0" y="326.0"><Inputs><Input key="1" name="Bunnseki_code"/><Input key="2" name="Karikashi_Type"/></Inputs><Outputs><Output key="3" name="Transfer_Key"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (Bunnseki_code == 'AR_3' &amp;&amp; Karikashi_Type == 'D'){
+    
+    Transfer_Key = '01';
+    
+} else if (Bunnseki_code =='AR_3' &amp;&amp; Karikashi_Type =='C'){
+    
+    Transfer_Key = '11';
+    
+} else if (Bunnseki_code == 'AP_2' &amp;&amp; Karikashi_Type == 'D'){
+    
+    Transfer_Key = '21';
+    
+} else if (Bunnseki_code =='AP_2' &amp;&amp; Karikashi_Type == 'C'){
+    
+    Transfer_Key = '31';
+    
+    
+} else if (Bunnseki_code =='GL_1' &amp;&amp; Karikashi_Type == 'D'){
+    
+    Transfer_Key = '40';
+    
+} else if (Bunnseki_code == 'GL_1' &amp;&amp; Karikashi_Type == 'C'){
+    
+    Transfer_Key = '50';
+}</ScriptToExecute><Input dataType="character" index="1" name="Bunnseki_code"/><Input dataType="character" index="2" name="Karikashi_Type"/><Output index="3" name="Transfer_Key"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="7" name="Scripting" position="7" sumEnabled="false" type="Scripting" x="30.0" y="448.0"><Inputs><Input key="1" name="Bunnseki_code"/><Input key="2" name="GL_account_code"/><Input key="3" name="User_zone_3"/></Inputs><Outputs><Output key="4" name="Kanjo_code"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (Bunnseki_code == 'GL_1'){
+    Kanjo_code = GL_account_code
+}else{
+    Kanjo_code = User_zone_3
+}
+    </ScriptToExecute><Input dataType="character" index="1" name="Bunnseki_code"/><Input dataType="character" index="2" name="GL_account_code"/><Input dataType="character" index="3" name="User_zone_3"/><Output index="4" name="Kanjo_code"/></Scripting></Configuration></FunctionStep><FunctionStep category="userdefined" id="3c8439c2-edc8-4732-bb26-08a97a5e8325" key="10" name="Absolute&amp;Floor" position="10" type="userdefined" x="30.0" y="107.0"><Inputs><Input key="1" name="GL_amount"/></Inputs><Outputs><Output key="1" name="Kokunaituuka"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="11" name="Scripting" position="11" sumEnabled="false" type="Scripting" x="10.0" y="595.0"><Inputs><Input key="1" name="GL_account_code"/><Input key="2" name="Bunnseki_code"/></Inputs><Outputs><Output key="3" name="Daikaetouseikanjou_code"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (Bunnseki_code == 'GL_1'){
+    Daikaetouseikanjou_code = '';
+} else{
+    (Daikaetouseikanjou_code = GL_account_code);
+}</ScriptToExecute><Input dataType="character" index="1" name="GL_account_code"/><Input dataType="character" index="2" name="Bunnseki_code"/><Output index="3" name="Daikaetouseikanjou_code"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="12" name="Scripting" position="12" sumEnabled="false" type="Scripting" x="10.0" y="717.0"><Inputs><Input key="1" name="Entry_Currency"/><Input key="4" name="Entry_amount"/></Inputs><Outputs><Output key="3" name="Denpyotuukagaku"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>Entry_amount = Math.abs(Entry_amount);
+
+if (Entry_Currency == 'JPY'){
+    (Math.floor(Entry_amount));
+    (Denpyotuukagaku = Entry_amount);
+}
+
+
+
+</ScriptToExecute><Input dataType="character" index="1" name="Entry_Currency"/><Input dataType="character" index="4" name="Entry_amount"/><Output index="3" name="Denpyotuukagaku"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="13" name="Scripting" position="13" sumEnabled="false" type="Scripting" x="10.0" y="839.0"><Inputs><Input key="1" name="Analytical_code"/><Input key="3" name="Value_date"/></Inputs><Outputs><Output key="4" name="Kijitu"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (Analytical_code == 'AP_2'){
+    Kijitu = Value_date;
+}</ScriptToExecute><Input dataType="character" index="1" name="Analytical_code"/><Input dataType="character" index="3" name="Value_date"/><Output index="4" name="Kijitu"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="15" name="Scripting" position="15" sumEnabled="false" type="Scripting" x="10.0" y="961.0"><Inputs><Input key="1" name="Bunnseki_code"/><Input key="2" name="User_zone_3"/></Inputs><Outputs><Output key="3" name="Partner"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (Bunnseki_code == "GL_1"){
+    (Partner = User_zone_3);
+}</ScriptToExecute><Input dataType="character" index="1" name="Bunnseki_code"/><Input dataType="character" index="2" name="User_zone_3"/><Output index="3" name="Partner"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="18" name="Scripting" position="18" sumEnabled="false" type="Scripting" x="10.0" y="1083.0"><Inputs><Input key="1" name="User_zone_2"/></Inputs><Outputs><Output key="2" name="Torihiki_ID"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>Torihiki_ID = (User_zone_2.slice(0,5));</ScriptToExecute><Input dataType="character" index="1" name="User_zone_2"/><Output index="2" name="Torihiki_ID"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="19" name="Scripting" position="19" sumEnabled="false" type="Scripting" x="10.0" y="1180.0"><Inputs><Input key="2" name="Bunnseki_code"/><Input key="3" name="Gennka_rieki_center"/></Inputs><Outputs><Output key="1" name="Sanshokey_2"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>
+if(Bunnseki_code == "AP_2" || Bunnseki_code == "AR_3"){
+    (Sanshokey_2 = Gennka_rieki_center);
+} else {
+     Sanshokey_2 ='';
+}</ScriptToExecute><Input dataType="character" index="2" name="Bunnseki_code"/><Input dataType="character" index="3" name="Gennka_rieki_center"/><Output index="1" name="Sanshokey_2"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" key="21" name="Left Character Trim" position="21" sumEnabled="false" type="LeftTrim" x="10.0" y="1302.0"><Inputs><Input key="1" name="Original String"/><Input default="4" key="2" name="Fix to Length"/></Inputs><Outputs><Output key="3" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="22" name="Scripting" position="22" sumEnabled="false" type="Scripting" x="10.0" y="1424.0"><Inputs><Input key="1" name="Bunnseki_code"/><Input key="3" name="Entry_currency"/><Input key="4" name="User_zone_4"/><Input key="5" name="User_zone_5"/></Inputs><Outputs><Output key="6" name="Ginkotesuuryohutann_code"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (User_zone_4 == 'G' &amp;&amp; Entry_currency == 'JPY' &amp;&amp; User_zone_5 == ' '){
+    x = '1';
+}else{
+    (User_zone_4 == 'G' &amp;&amp; Entry_currency != 'JPY' &amp;&amp; User_zone_5 != ' ');
+    (x = '2');
+}else{
+    (User_zone_4 == 'E' &amp;&amp; Entry_currency != 'JPY');
+    (x = '4');
+}
+
+if (Bunnseki_code == 'AP_2'){
+    Ginkotesuuryohutann_code = x;
+}</ScriptToExecute><Input dataType="character" index="1" name="Bunnseki_code"/><Input dataType="character" index="3" name="Entry_currency"/><Input dataType="character" index="4" name="User_zone_4"/><Input dataType="character" index="5" name="User_zone_5"/><Output index="6" name="Ginkotesuuryohutann_code"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="23" name="Scripting" position="23" sumEnabled="false" type="Scripting" x="10.0" y="1596.0"><Inputs><Input key="1" name="Bunnseki_code"/><Input key="2" name="GL_ID"/></Inputs><Outputs><Output key="3" name="sortkey"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>if (Bunnseki_code != 'GL_1'){
+    sortkey = GL_ID;
+}</ScriptToExecute><Input dataType="character" index="1" name="Bunnseki_code"/><Input dataType="character" index="2" name="GL_ID"/><Output index="3" name="sortkey"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="24" name="Scripting" position="24" sumEnabled="false" type="Scripting" x="10.0" y="1718.0"><Inputs><Input key="1" name="GL_account_code"/><Input key="2" name="User_zone_1"/></Inputs><Outputs><Output key="3" name="Gennkacenter"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>x = GL_account_code.substr(0,1);
+
+if (x =="4"||x =="5"||x =="6"||x =="7"){
+    Gennkacenter = User_zone_1;
+}
+ 
+</ScriptToExecute><Input dataType="character" index="1" name="GL_account_code"/><Input dataType="character" index="2" name="User_zone_1"/><Output index="3" name="Gennkacenter"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" key="25" name="Scripting" position="25" sumEnabled="false" type="Scripting" x="10.0" y="1840.0"><Inputs><Input key="1" name="Budge_code"/><Input key="2" name="GL_account_code"/></Inputs><Outputs><Output key="3" name="Zei_code"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>x = GL_account_code.substr(0,1);
+
+if (x =="4"||x =="5"||x =="6"||x =="7"){
+    Zei_code = Budge_code;
+}
+ </ScriptToExecute><Input dataType="character" index="1" name="Budge_code"/><Input dataType="character" index="2" name="GL_account_code"/><Output index="3" name="Zei_code"/></Scripting></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" key="26" name="Whitespace Trim" position="26" sumEnabled="false" type="WhitespaceTrim" x="10.0" y="1962.0"><Inputs><Input key="1" name="Original String"/></Inputs><Outputs><Output key="2" name="Result"/></Outputs><Configuration/></FunctionStep></Functions><Defaults><Default toKey="78" value="X"/></Defaults><DocumentCacheJoins/></Map></bns:object></bns:Component>

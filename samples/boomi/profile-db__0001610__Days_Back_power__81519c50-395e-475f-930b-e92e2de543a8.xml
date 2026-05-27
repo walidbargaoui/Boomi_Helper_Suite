@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./JERA_US/JERAUS" componentId="81519c50-395e-475f-930b-e92e2de543a8" version="1" name="Days_Back_power" type="profile.db" createdDate="2021-09-01T13:19:27Z" createdBy="hamdy.fadhloun@avaxia-group.com" modifiedDate="2021-09-01T13:19:27Z" modifiedBy="hamdy.fadhloun@avaxia-group.com" deleted="false" currentVersion="true" folderName="JERAUS" folderId="Rjo0MjUyMTA5" copiedFromComponentId="62ae3fd3-f8d2-4b00-8c44-34b5037768eb" copiedFromComponentVersion="2" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><DatabaseProfile xmlns="" strict="true" version="2"><ProfileProperties><DatabaseGeneralInfo executionType="dbread"/></ProfileProperties><DataElements><DBStatement isNode="true" key="2" name="Statement" statementType="select" storedProcedure="" tableName=""><DBFields isNode="true" key="3" name="Fields" type="result_set"><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="5" mandatory="false" name="Days_Back"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement></DBFields><DBParameters isNode="true" key="4" name="Parameters"/><sql>use devRisk;
+
+
+select  ABS (DATEDIFF(DAY, GETDATE(), max(curve_date)))-1 from price_forward_curve where id_price_curve in  (select id from vw_price_curve_detail where commodity = 'power')
+
+
+
+
+</sql></DBStatement></DataElements></DatabaseProfile></bns:object></bns:Component>

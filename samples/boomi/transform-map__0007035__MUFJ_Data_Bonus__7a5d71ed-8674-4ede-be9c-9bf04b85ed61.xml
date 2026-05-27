@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./New HR - Interfaces /COMPANY_SHAREPOINT" componentId="7a5d71ed-8674-4ede-be9c-9bf04b85ed61" version="1" name="MUFJ_Data_Bonus" type="transform.map" createdDate="2021-01-28T01:28:03Z" createdBy="walid.bargaoui@avaxia-group.com" modifiedDate="2021-01-28T01:28:03Z" modifiedBy="walid.bargaoui@avaxia-group.com" deleted="false" currentVersion="true" folderName="COMPANY_SHAREPOINT" folderId="RjozNzIyMzky" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><Map xmlns="" fromProfile="e630636f-98fc-4d54-b4f4-6c617fea2704" toProfile="29c49e90-30c1-4be4-89df-d902ad87b857"><Mappings><Mapping fromKey="4" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='4']" fromNamePath="Record/Elements/str_load.jig_cd" fromType="profile" toFunction="1" toKey="1" toType="function"/><Mapping fromKey="5" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='5']" fromNamePath="Record/Elements/str_load.syzcom01" fromType="profile" toFunction="1" toKey="2" toType="function"/><Mapping fromFunction="1" fromKey="2" fromType="function" toKey="5" toKeyPath="*[@key='1']/*[@key='2']/*[@key='5']" toNamePath="Record/Elements/Organization Code" toType="profile"/><Mapping fromKey="6" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='6']" fromNamePath="Record/Elements/idou.sha_bg" fromType="profile" toFunction="2" toKey="1" toType="function"/><Mapping fromFunction="2" fromKey="2" fromType="function" toKey="6" toKeyPath="*[@key='1']/*[@key='2']/*[@key='6']" toNamePath="Record/Elements/subscriber code" toType="profile"/><Mapping fromFunction="4" fromKey="2" fromType="function" toKey="8" toKeyPath="*[@key='1']/*[@key='2']/*[@key='8']" toNamePath="Record/Elements/subscriber name" toType="profile"/><Mapping fromKey="7" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='7']" fromNamePath="Record/Elements/syainjh.sya_nm_hk" fromType="profile" toFunction="4" toKey="1" toType="function"/><Mapping fromKey="8" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='8']" fromNamePath="Record/Elements/KINGAKU" fromType="profile" toFunction="3" toKey="1" toType="function"/><Mapping fromFunction="3" fromKey="2" fromType="function" toKey="22" toKeyPath="*[@key='1']/*[@key='2']/*[@key='22']" toNamePath="Record/Elements/Reserve for bonuses" toType="profile"/><Mapping fromKey="9" fromKeyPath="*[@key='1']/*[@key='2']/*[@key='9']" fromNamePath="Record/Elements/ZAIKEI_CD" fromType="profile" toKey="33" toKeyPath="*[@key='1']/*[@key='2']/*[@key='33']" toNamePath="Record/Elements/  Housing and storage area" toType="profile"/></Mappings><Functions optimizeExecutionOrder="true"><FunctionStep cacheEnabled="true" cacheOption="none" category="String" enabled="true" key="1" name="String Concat" position="1" sumEnabled="false" type="StringConcat" x="10.0" y="10.0"><Inputs><Input isReset="false" key="1" name="location_code"/><Input isReset="false" key="2" name="construction_order"/></Inputs><Outputs><Output isReset="false" key="2" name="Result"/></Outputs><Configuration><StringConcat delimiter=""/></Configuration></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" enabled="true" key="2" name="String Prepend" position="2" sumEnabled="false" type="StringPrepend" x="10.0" y="134.0"><Inputs><Input isReset="false" key="1" name="Original String"/><Input default="10" isReset="false" key="2" name="Fix to Length"/><Input default="0" isReset="false" key="3" name="Char to Prepend"/></Inputs><Outputs><Output isReset="false" key="2" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="String" enabled="true" key="3" name="String Prepend" position="3" sumEnabled="false" type="StringPrepend" x="10.0" y="283.0"><Inputs><Input isReset="false" key="1" name="Original String"/><Input default="9" isReset="false" key="2" name="Fix to Length"/><Input default="0" isReset="false" key="3" name="Char to Prepend"/></Inputs><Outputs><Output isReset="false" key="2" name="Result"/></Outputs><Configuration/></FunctionStep><FunctionStep cacheEnabled="true" cacheOption="none" category="Scripting" enabled="true" key="4" name="Scripting" position="4" sumEnabled="false" type="Scripting" x="10.0" y="432.0"><Inputs><Input isReset="false" key="1" name="fullWidth"/></Inputs><Outputs><Output isReset="false" key="2" name="halfWidth"/></Outputs><Configuration><Scripting language="javascript" useComponent="false"><ScriptToExecute>
+function getZenkakuToHankakuMap() {
+  var zenHanMap = {
+    'ァ': 'ｧ',
+    'ア': 'ｱ',
+    'ィ': 'ｨ',
+    'イ': 'ｲ',
+    'ゥ': 'ｩ',
+    'ウ': 'ｳ',
+    'ェ': 'ｪ',
+    'エ': 'ｴ',
+    'ォ': 'ｫ',
+    'オ': 'ｵ',
+    'カ': 'ｶ',
+    'ガ': 'ｶﾞ',
+    'キ': 'ｷ',
+    'ギ': 'ｷﾞ',
+    'ク': 'ｸ',
+    'グ': 'ｸﾞ',
+    'ケ': 'ｹ',
+    'ゲ': 'ｹﾞ',
+    'コ': 'ｺ',
+    'ゴ': 'ｺﾞ',
+    'サ': 'ｻ',
+    'ザ': 'ｻﾞ',
+    'シ': 'ｼ',
+    'ジ': 'ｼﾞ',
+    'ス': 'ｽ',
+    'ズ': 'ｽﾞ',
+    'セ': 'ｾ',
+    'ゼ': 'ｾﾞ',
+    'ソ': 'ｿ',
+    'ゾ': 'ｿﾞ',
+    'タ': 'ﾀ',
+    'ダ': 'ﾀﾞ',
+    'チ': 'ﾁ',
+    'ヂ': 'ﾁﾞ',
+    'ッ': 'ｯ',
+    'ツ': 'ﾂ',
+    'ヅ': 'ﾂﾞ',
+    'テ': 'ﾃ',
+    'デ': 'ﾃﾞ',
+    'ト': 'ﾄ',
+    'ド': 'ﾄﾞ',
+    'ナ': 'ﾅ',
+    'ニ': 'ﾆ',
+    'ヌ': 'ﾇ',
+    'ネ': 'ﾈ',
+    'ノ': 'ﾉ',
+    'ハ': 'ﾊ',
+    'バ': 'ﾊﾞ',
+    'パ': 'ﾊﾟ',
+    'ヒ': 'ﾋ',
+    'ビ': 'ﾋﾞ',
+    'ピ': 'ﾋﾟ',
+    'フ': 'ﾌ',
+    'ブ': 'ﾌﾞ',
+    'プ': 'ﾌﾟ',
+    'ヘ': 'ﾍ',
+    'ベ': 'ﾍﾞ',
+    'ペ': 'ﾍﾟ',
+    'ホ': 'ﾎ',
+    'ボ': 'ﾎﾞ',
+    'ポ': 'ﾎﾟ',
+    'マ': 'ﾏ',
+    'ミ': 'ﾐ',
+    'ム': 'ﾑ',
+    'メ': 'ﾒ',
+    'モ': 'ﾓ',
+    'ャ': 'ｬ',
+    'ヤ': 'ﾔ',
+    'ュ': 'ｭ',
+    'ユ': 'ﾕ',
+    'ョ': 'ｮ',
+    'ヨ': 'ﾖ',
+    'ラ': 'ﾗ',
+    'リ': 'ﾘ',
+    'ル': 'ﾙ',
+    'レ': 'ﾚ',
+    'ロ': 'ﾛ',
+    'ヮ': '',
+    'ワ': 'ﾜ',
+    '　': ' ',
+    // 'ヱ': '',
+    'ヲ': 'ｦ',
+    'ン': 'ﾝ',
+    'ヴ': 'ｳﾞ',
+    // 'ヵ': '',
+    // 'ヶ': '',
+    // 'ヷ': '',
+    // 'ヸ': '',
+    // 'ヹ': '',
+    // 'ヺ': '',
+    '・': '･',
+    'ー': 'ｰ',
+    // 'ヽ': '',
+    // 'ヾ': '',
+    // 'ヿ': '',
+  };
+  return zenHanMap;
+}
+
+function mapToHankaku(character) {
+  var zenHanMap = getZenkakuToHankakuMap();
+  if (typeof zenHanMap[character] === 'undefined') {
+    return character;
+  } else {
+    return zenHanMap[character];
+  }
+}
+
+function getCharacters(string) {
+   return string.split("");
+}
+
+function convertToHalfWidth(string) {
+  var characters = getCharacters(string);
+  var halfWidthString = '';
+  for(i=0;i&lt;characters.length;i++)
+    halfWidthString = halfWidthString + mapToHankaku(characters[i]);
+
+  return halfWidthString;
+}
+
+
+halfWidth = convertToHalfWidth(fullWidth);</ScriptToExecute><Input dataType="character" index="1" name="fullWidth"/><Output index="2" name="halfWidth"/></Scripting></Configuration></FunctionStep></Functions><Defaults><Default toKey="3" value="2"/><Default toKey="4" value="99999"/><Default toKey="21" value="000000000"/><Default toKey="9" value="0005"/><Default toKey="11" value="001"/></Defaults><DocumentCacheJoins/></Map></bns:object></bns:Component>

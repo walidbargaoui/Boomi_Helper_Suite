@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./TEST" componentId="ab3a5b14-60ab-417d-a5e1-6801020beebb" version="1" name="limit_master_db" type="profile.db" createdDate="2021-01-02T06:47:27Z" createdBy="walid.bargaoui@avaxia-group.com" modifiedDate="2021-01-02T06:47:27Z" modifiedBy="walid.bargaoui@avaxia-group.com" deleted="false" currentVersion="true" folderName="TEST" folderId="RjoyOTk4NzM0" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><DatabaseProfile xmlns="" strict="true" version="2"><ProfileProperties><DatabaseGeneralInfo executionType="dbwrite"/></ProfileProperties><DataElements><DBStatement isNode="true" key="5" name="Statement" statementType="standardinsertupdatedelete" storedProcedure="" tableName=""><DBFields isNode="true" key="6" name="Fields"><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="7" mandatory="false" name="tableName"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="8" mandatory="false" name="itemName"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="9" mandatory="false" name="min"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="10" mandatory="false" name="max"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="11" mandatory="false" name="u_min"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement><DatabaseElement enforceUnique="false" isMappable="true" isNode="true" key="12" mandatory="false" name="u_max"><DataFormat><ProfileCharacterFormat/></DataFormat></DatabaseElement></DBFields><sql>insert into PARTNER_PORTAL_LIMIT_SHIP
+(
+tableName,
+itemName,
+min,
+max
+)
+values
+(
+?,
+?,
+?,
+?
+)
+on duplicate key update
+min = ?,
+max =?</sql></DBStatement></DataElements></DatabaseProfile></bns:object></bns:Component>

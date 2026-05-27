@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><bns:Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bns="http://api.platform.boomi.com/" folderFullPath="JERA Co., Inc./Ingestion 3a Project" componentId="25835c74-5961-4d05-9115-789df1676ce7" version="1" name="get_etrm_query_profil" type="profile.db" createdDate="2021-07-07T06:17:49Z" createdBy="marouen.hamdoun@avaxia-group.com" modifiedDate="2021-07-07T06:17:49Z" modifiedBy="marouen.hamdoun@avaxia-group.com" deleted="false" currentVersion="true" folderName="Ingestion 3a Project" folderId="RjozNzE3NzI1" branchName="main" branchId="QjozMzg0ODI"><bns:encryptedValues/><bns:description></bns:description><bns:object><DatabaseProfile xmlns="" strict="true" version="2"><ProfileProperties><DatabaseGeneralInfo executionType="dbread"/></ProfileProperties><DataElements><DBStatement isNode="true" key="2" name="Statement" statementType="select" storedProcedure="" tableName=""><DBFields isNode="true" key="3" name="Fields" type="result_set"/><DBParameters isNode="true" key="4" name="Parameters"/><sql>WITH pq_mask AS(
+　　SELECT
+　　　　pq1.position, pq1.energy, pq1.energyunit, pq1.posstatus, pq1.mass, pq1.massunit
+　　FROM
+　　　　physicalquantity AS pq1
+　　　　LEFT JOIN physicalquantity AS pq2 ON (
+　　　　　　pq1.position = pq2.position              
+　　　　　　AND pq1.creationdate &lt; pq2.creationdate 
+             AND pq1.posstatus = 1
+             AND pq2.posstatus = 1
+　　　　)
+　　WHERE
+　　　　pq2.creationdate IS NULL
+)
+, v AS (
+SELECT valuation,valuationmode,valuationtime
+FROM valuation
+WHERE  valuation.valuationtime = DATEADD(minute,1,(DATEADD(day,-1,'2021-01-22'))) 
+)
+,vd AS(
+select valuationdetail,
+valuation,
+position,
+valuetime,
+begtime,
+quantitystatus,
+description,
+quantity,
+pricequantity,
+price,
+value,
+marketprice,
+marketvalue,
+positionstatus,
+exposure,
+pricestatus,
+priceindex,
+currency,
+priceunit,
+trade,
+product,
+futuremonth,
+contract,
+company,
+counterparty,
+tradebook,
+marketarea,
+location,
+movement,
+exposuremonth,
+exposureindex,
+swaptype,
+jr_jeracargoref
+FROM valuationdetail
+WHERE
+　　format(valuationdetail.begtime,'yyyy-MM-dd')
+　　　　BETWEEN DATEADD(month ,-7, '2021-01-22')
+　　　　AND CAST(
+　　　　　　CAST(
+　　　　　　　　YEAR(
+　　　　　　　　　　DATEADD(month,12, '2021-01-22')) AS varchar
+　　　　　　　　) + '/03/31' AS DATE
+　　　　　　)
+　　AND valuationdetail.quantitystatus &lt;&gt;'PLAN'
+　　AND valuationdetail.description NOT LIKE 'From%'
+　　AND valuationdetail.company ='JERA'
+　　AND valuationdetail.movement= 'false'
+)
+SELECT
+　　*
+FROM
+　　vd
+　　INNER JOIN v ON vd.valuation = v.valuation
+　　INNER JOIN position ON vd.position = position.position
+　　LEFT JOIN physicalposition ON vd.position = physicalposition.position
+　　LEFT JOIN pq_mask ON vd.position = pq_mask.position
+WHERE
+v.valuationmode = 'VaR_3'
+    and position.positiontype &lt;&gt;'INVENTORY'</sql></DBStatement></DataElements></DatabaseProfile></bns:object></bns:Component>

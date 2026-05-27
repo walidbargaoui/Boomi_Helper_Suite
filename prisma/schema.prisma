@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id                 String               @id @default(cuid())
+  processId          String               @unique
+  name               String
+  description        String
+  sourceSystem       String
+  destinationSystem  String
+  status             String               @default("Draft")
+  version            Int                  @default(0)
+  folder             String               @default("Uncategorized")
+  owner              String
+  schedule           String?
+  lastExportedAt     DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  endpoints          Endpoint[]
+  profiles           Profile[]
+  mappingSets        MappingSet[]
+  processFlows       ProcessFlow[]
+  fmdSections        FmdSection[]
+  boomiConnections   BoomiConnection[]
+  boomiDrafts        BoomiComponentDraft[]
+  boomiPublishEvents BoomiPublishEvent[]
+}
+
+model Endpoint {
+  id             String   @id @default(cuid())
+  projectId      String
+  name           String
+  role           String
+  connectorType  String
+  profileType    String
+  format         String
+  purpose        String
+  connectionInfo String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id        String         @id @default(cuid())
+  projectId String
+  name      String
+  role      String
+  type      String
+  format    String
+  rootPath  String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fields    ProfileField[]
+}
+
+model ProfileField {
+  id              String   @id @default(cuid())
+  profileId       String
+  parentPath      String?
+  name            String
+  label           String?
+  description     String?
+  dataType        String
+  length          String?
+  required        Boolean  @default(false)
+  keyField        Boolean  @default(false)
+  format          String?
+  sample          String?
+  ordinal         Int
+  profile         Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  sourceRules     MappingRule[] @relation("SourceField")
+  destinationRules MappingRule[] @relation("DestinationField")
+}
+
+model MappingSet {
+  id                  String        @id @default(cuid())
+  projectId           String
+  name                String
+  sourceProfileId     String
+  destinationProfileId String
+  direction           String
+  status              String        @default("Draft")
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  project             Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  rules               MappingRule[]
+  transformNodes      TransformNode[]
+}
+
+model MappingRule {
+  id                 String        @id @default(cuid())
+  mappingSetId       String
+  sourceFieldId      String?
+  destinationFieldId String
+  mappingType        String
+  expression         String?
+  defaultValue       String?
+  comment            String?
+  qualityStatus      String        @default("unchecked")
+  reviewed           Boolean       @default(false)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  mappingSet         MappingSet    @relation(fields: [mappingSetId], references: [id], onDelete: Cascade)
+  sourceField        ProfileField? @relation("SourceField", fields: [sourceFieldId], references: [id], onDelete: SetNull)
+  destinationField   ProfileField  @relation("DestinationField", fields: [destinationFieldId], references: [id], onDelete: Cascade)
+}
+
+model TransformNode {
+  id           String     @id @default(cuid())
+  mappingSetId String
+  label        String
+  nodeType     String
+  configJson   String
+  positionX    Float
+  positionY    Float
+  mappingSet   MappingSet @relation(fields: [mappingSetId], references: [id], onDelete: Cascade)
+}
+
+model ProcessFlow {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String
+  nodesJson String
+  edgesJson String
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model FmdSection {
+  id          String   @id @default(cuid())
+  projectId   String
+  title       String
+  sectionType String
+  contentJson String
+  sortOrder   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model BoomiConnection {
+  id              String   @id @default(cuid())
+  projectId       String
+  accountId       String
+  environmentName String
+  baseUrl         String
+  authMode        String
+  apiUsername     String
+  apiPassword     String
+  mode            String   @default("mock")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model BoomiComponentDraft {
+  id                String   @id @default(cuid())
+  projectId         String
+  componentId       String
+  componentType     String
+  componentName     String
+  templateXml       String?
+  proposedXml       String
+  diff              String
+  validationStatus  String
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  project           Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model BoomiPublishEvent {
+  id            String   @id @default(cuid())
+  projectId     String
+  draftId       String
+  connectionId  String?
+  componentId   String
+  componentName String
+  componentType String
+  version       Int?
+  action        String
+  requestXml    String
+  responseXml   String?
+  status        String
+  errorDetail   String?
+  publishedAt   DateTime @default(now())
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, publishedAt])
+  @@index([draftId])
+}
