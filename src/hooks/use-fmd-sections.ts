@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import type { FmdSection } from "@/lib/domain";
+import { extractError } from "@/lib/api-utils";
 
 interface FmdApiResponse {
   sections: FmdSection[];
@@ -16,7 +17,7 @@ interface FmdApiResponse {
 
 const fetcher = async (url: string): Promise<FmdApiResponse> => {
   const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to fetch FMD sections");
+  if (!res.ok) throw new Error(await extractError(res));
   return res.json();
 };
 

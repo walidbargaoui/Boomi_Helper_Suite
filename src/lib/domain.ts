@@ -136,6 +136,31 @@ export type BoomiConnection = {
   createdAt: string;
 };
 
+export type LlmProviderType = "ollama" | "openai-compatible";
+
+export type LlmProviderAuthMode = "none" | "optional" | "required";
+
+export type LlmProvider = {
+  id: string;
+  name: string;
+  type: LlmProviderType;
+  baseUrl: string;
+  model: string;
+  authMode: LlmProviderAuthMode;
+  apiKey: string;
+  hasApiKey: boolean;
+  enabled: boolean;
+  isDefault: boolean;
+  temperature: number;
+  topP: number;
+  maxTokens: number;
+  timeoutMs: number;
+  supportsJsonSchema: boolean;
+  supportsModelList: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BoomiPublishEvent = {
   id: string;
   draftId: string;
@@ -150,6 +175,142 @@ export type BoomiPublishEvent = {
   status: "success" | "failed";
   errorDetail?: string;
   publishedAt: string;
+};
+
+export type BuildPackageStatus =
+  | "draft"
+  | "ready"
+  | "downloaded"
+  | "result_recorded"
+  | "failed";
+
+export type CompanionRunEventStatus =
+  | "handoff_created"
+  | "preflight_running"
+  | "approval_required"
+  | "agent_started"
+  | "agent_running"
+  | "agent_completed"
+  | "agent_failed"
+  | "blocked"
+  | "manual_result_recorded";
+
+export type CompanionAgentRunStatus =
+  | "preflight_running"
+  | "approval_required"
+  | "agent_running"
+  | "agent_completed"
+  | "agent_failed"
+  | "blocked";
+
+export type CompanionAgentPlanAction = "create" | "update" | "reuse" | "blocked";
+
+export type CompanionAgentPlanRisk = "low" | "medium" | "high";
+
+export type CompanionAgentPlanComponent = {
+  localAppEntityId: string;
+  name: string;
+  componentType: string;
+  source:
+    | "profile"
+    | "endpoint"
+    | "operation"
+    | "mappingSet"
+    | "processFlow"
+    | "importedBoomiContext";
+  action: CompanionAgentPlanAction;
+  matchedBoomiComponentId?: string;
+  matchedBoomiComponentName?: string;
+  reason: string;
+  risk: CompanionAgentPlanRisk;
+};
+
+export type CompanionAgentRunPlan = {
+  schemaVersion: "1.0";
+  runId: string;
+  packageId: string;
+  projectId: string;
+  generatedAt: string;
+  status: CompanionAgentRunStatus;
+  selectedConnection: {
+    id: string;
+    accountId: string;
+    environmentName: string;
+    mode: "mock" | "sandbox";
+  };
+  targetFolder: {
+    name?: string;
+    folderId?: string;
+    status: "found" | "created" | "missing" | "not_specified" | "error";
+    detail?: string;
+  };
+  proposedComponents: CompanionAgentPlanComponent[];
+  unresolvedQuestions: string[];
+  warnings: string[];
+  agentCommandConfigured: boolean;
+};
+
+export type BoomiBuildPackage = {
+  id: string;
+  projectId: string;
+  status: BuildPackageStatus;
+  specJson: string;
+  manifestJson: string;
+  readinessJson: string;
+  resultJson?: string;
+  runEvents: BoomiCompanionRunEvent[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BoomiCompanionRunEvent = {
+  id: string;
+  packageId: string;
+  status: CompanionRunEventStatus;
+  resultJson: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CompanionResultComponent = {
+  localAppEntityId?: string;
+  componentId: string;
+  componentName: string;
+  componentType: string;
+  action: "created" | "updated" | "reused";
+  version?: string;
+  filePath?: string;
+};
+
+export type CompanionResultDeployment = {
+  environmentId?: string;
+  status: string;
+  deployedAt?: string;
+};
+
+export type CompanionResultTest = {
+  name: string;
+  status: string;
+  summary?: string;
+};
+
+export type CompanionResult = {
+  schemaVersion: string;
+  packageId: string;
+  runTimestamp: string;
+  agentTool: string;
+  boomiAccountId?: string;
+  targetEnvironmentId?: string;
+  components: {
+    created: CompanionResultComponent[];
+    updated: CompanionResultComponent[];
+    reused: CompanionResultComponent[];
+  };
+  deployments: CompanionResultDeployment[];
+  tests: CompanionResultTest[];
+  warnings: string[];
+  errors: string[];
+  openFollowUps: string[];
 };
 
 export type Project = {
@@ -183,4 +344,216 @@ export type MappingIssue = {
   detail: string;
   fieldId?: string;
   ruleId?: string;
+};
+
+export type BuildProjectSummary = {
+  processId: string;
+  name: string;
+  description: string;
+  sourceSystem: string;
+  destinationSystem: string;
+  status: string;
+  folder?: string;
+  owner: string;
+  schedule?: string;
+  localProjectId: string;
+};
+
+export type BuildTargetIntent = {
+  goal: string;
+  integrationPattern: string;
+  notes?: string;
+};
+
+export type BuildEndpointFieldRef = {
+  localFieldId: string;
+  name: string;
+  label?: string;
+  description?: string;
+  dataType: string;
+  length?: string;
+  required: boolean;
+  keyField: boolean;
+  format?: string;
+  sample?: string;
+  ordinal: number;
+  parentPath?: string;
+};
+
+export type BuildProfileRef = {
+  localProfileId: string;
+  name: string;
+  role: "source" | "destination";
+  type: string;
+  format: string;
+  rootPath?: string;
+  fields: BuildEndpointFieldRef[];
+};
+
+export type BuildEndpoint = {
+  localEndpointId: string;
+  name: string;
+  role: string;
+  connectorType: string;
+  profileType: string;
+  format: string;
+  purpose: string;
+  connectionInfo: string;
+};
+
+export type BuildMappingRule = {
+  localRuleId: string;
+  sourceFieldId?: string;
+  destinationFieldId: string;
+  sourceFieldName?: string;
+  destinationFieldName?: string;
+  mappingType: string;
+  expression?: string;
+  defaultValue?: string;
+  comment?: string;
+  qualityStatus?: string;
+  reviewed: boolean;
+};
+
+export type BuildTransformNode = {
+  localNodeId: string;
+  label: string;
+  nodeType: string;
+  config: Record<string, string>;
+  position: { x: number; y: number };
+};
+
+export type BuildMappingSet = {
+  localMappingSetId: string;
+  name: string;
+  sourceProfileRef: string;
+  destinationProfileRef: string;
+  direction: string;
+  status: string;
+  rules: BuildMappingRule[];
+  transformNodes: BuildTransformNode[];
+};
+
+export type BuildProcessFlowNode = {
+  localNodeId: string;
+  type: string;
+  label: string;
+  description: string;
+  position: { x: number; y: number };
+};
+
+export type BuildProcessFlowEdge = {
+  localEdgeId: string;
+  source: string;
+  target: string;
+  label?: string;
+};
+
+export type BuildProcessFlow = {
+  localFlowId: string;
+  name: string;
+  nodes: BuildProcessFlowNode[];
+  edges: BuildProcessFlowEdge[];
+  notes?: string;
+};
+
+export type BuildFmdSectionSummary = {
+  localSectionId: string;
+  sectionType: string;
+  title: string;
+  contentSummary: string;
+  buildEvidence: string[];
+};
+
+export type BuildImportedBoomiComponent = {
+  localDraftId: string;
+  name: string;
+  componentType: string;
+  boomiComponentId?: string;
+  version?: string;
+  hasTemplateXml: boolean;
+};
+
+export type BuildImportedBoomiContext = {
+  components: BuildImportedBoomiComponent[];
+  dependencyNotes: string[];
+};
+
+export type ReadinessCheck = {
+  category: string;
+  status: "ok" | "warning" | "error";
+  message: string;
+  details?: string[];
+};
+
+export type BuildReadinessReport = {
+  checks: ReadinessCheck[];
+  overallStatus: "ready" | "incomplete" | "blocked";
+};
+
+export type BoomiBuildSpec = {
+  schemaVersion: "1.0";
+  generatedAt: string;
+  sourceApp: "Boomi Helper Suite";
+  project: BuildProjectSummary;
+  target: BuildTargetIntent;
+  endpoints: BuildEndpoint[];
+  profiles: BuildProfileRef[];
+  mappingSets: BuildMappingSet[];
+  processFlows: BuildProcessFlow[];
+  fmdSections: BuildFmdSectionSummary[];
+  importedBoomiContext: BuildImportedBoomiContext;
+  readiness: BuildReadinessReport;
+  acceptanceCriteria: string[];
+  openQuestions: string[];
+};
+
+// ── Build Pipeline Types ──────────────────────────────────────────────
+
+export type BuildPipelineStatus =
+  | "pending"
+  | "preflight"
+  | "building"
+  | "complete"
+  | "failed";
+
+export type BuildPipelinePhase =
+  | "preflight"
+  | "profile"
+  | "connection"
+  | "operation"
+  | "map"
+  | "process";
+
+export type BuildComponentAction = "create" | "update" | "reuse";
+
+export type BuildPlanComponent = {
+  localId: string;
+  name: string;
+  componentType: string;
+  action: BuildComponentAction;
+  phase: BuildPipelinePhase;
+  existingComponentId?: string;
+  dependsOn: string[];
+};
+
+export type PushedComponentResult = {
+  localId: string;
+  componentId: string;
+  componentName: string;
+  componentType: string;
+  action: BuildComponentAction;
+};
+
+export type BoomiBuildPipelineRun = {
+  id: string;
+  packageId: string;
+  projectId: string;
+  connectionId: string;
+  status: BuildPipelineStatus;
+  phase?: string;
+  planJson: string;
+  resultsJson: string;
+  createdAt: string;
+  updatedAt: string;
 };

@@ -1,3 +1,13 @@
+/**
+ * @legacy Boomi Companion Transition — direct publish has been retired.
+ * The Boomi API client and publish safety checks are preserved for
+ * backward compatibility. The primary workflow now uses Companion
+ * package generation instead. See docs/boomi-companion-transition-plan.md.
+ *
+ * When BOOMI_HELPER_ENABLE_LEGACY_XML_PUBLISH is not set to "true",
+ * the /api/boomi/publish route returns 410 Gone.
+ */
+
 import { XMLParser } from "fast-xml-parser";
 import { diffLines } from "diff";
 import { z } from "zod";
@@ -86,6 +96,19 @@ const debugLog = (...args: unknown[]) => {
     logger.debug(msg);
   }
 };
+
+/**
+ * Strip any existing BOOMI_TOKEN. prefix from a username, then
+ * re-add it. Companion scripts always use BOOMI_TOKEN.{username}
+ * for Basic auth, and the .env username is stored without the prefix.
+ * This helper makes our direct API calls match Companion behaviour.
+ */
+export function companionAuth(username: string, password: string): { user: string; auth: string } {
+  const bare = username.replace(/^BOOMI_TOKEN\./i, "").trim();
+  const user = `BOOMI_TOKEN.${bare}`;
+  const auth = Buffer.from(`${user}:${password}`).toString("base64");
+  return { user, auth };
+}
 
 export const BOOMI_ERRORS = {
   CONNECTION_FAILED: "Connection failed",
@@ -188,7 +211,7 @@ export async function testBoomiConnection(input: BoomiConnectionInput): Promise<
   }
 
   try {
-    const auth = Buffer.from(`${input.apiUsername}:${input.apiPassword}`).toString("base64");
+    const { auth } = companionAuth(input.apiUsername, input.apiPassword);
     const baseUrl = normalizeBoomiBaseUrl(input.baseUrl);
     const url = `${baseUrl}/api/rest/v1/${input.accountId}/ComponentMetadata/query`;
     const queryBody = {
@@ -311,7 +334,7 @@ export async function lookupBoomiComponents(
   }
 
   try {
-    const auth = Buffer.from(`${input.apiUsername}:${input.apiPassword}`).toString("base64");
+    const { auth } = companionAuth(input.apiUsername, input.apiPassword);
     const baseUrl = normalizeBoomiBaseUrl(input.baseUrl);
     const url = `${baseUrl}/api/rest/v1/${input.accountId}/ComponentMetadata/query`;
 
@@ -441,7 +464,7 @@ export async function importBoomiTemplate(
   }
 
   try {
-    const auth = Buffer.from(`${input.apiUsername}:${input.apiPassword}`).toString("base64");
+    const { auth } = companionAuth(input.apiUsername, input.apiPassword);
     const baseUrl = normalizeBoomiBaseUrl(input.baseUrl);
     const versionSuffix = templateInput.version ? `~${templateInput.version}` : "";
     const url = `${baseUrl}/api/rest/v1/${input.accountId}/Component/${templateInput.componentId}${versionSuffix}`;
@@ -528,7 +551,7 @@ export async function publishBoomiComponent(
     };
   }
 
-  const auth = Buffer.from(`${input.apiUsername}:${input.apiPassword}`).toString("base64");
+  const { auth } = companionAuth(input.apiUsername, input.apiPassword);
   const baseUrl = normalizeBoomiBaseUrl(input.baseUrl);
   const action = publishActionForDraft(draft);
   const targetComponentId = publishTargetComponentId(draft);
@@ -622,7 +645,7 @@ export async function rollbackBoomiComponent(
     };
   }
 
-  const auth = Buffer.from(`${input.apiUsername}:${input.apiPassword}`).toString("base64");
+  const { auth } = companionAuth(input.apiUsername, input.apiPassword);
   const baseUrl = normalizeBoomiBaseUrl(input.baseUrl);
   const url = `${baseUrl}/api/rest/v1/${input.accountId}/Component/${encodeURIComponent(historyEvent.componentId)}`;
   const response = await fetch(url, {

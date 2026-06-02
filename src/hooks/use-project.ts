@@ -2,10 +2,11 @@
 
 import useSWR from "swr";
 import type { Project } from "@/lib/domain";
+import { extractError } from "@/lib/api-utils";
 
 const fetcher = async (url: string): Promise<Project> => {
   const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to fetch project");
+  if (!res.ok) throw new Error(await extractError(res));
   const json = await res.json();
   return json.project as Project;
 };

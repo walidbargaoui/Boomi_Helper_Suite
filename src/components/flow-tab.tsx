@@ -13,6 +13,7 @@ import ReactFlow, {
   type Connection,
   type Node,
   type NodeChange,
+  type Edge,
   type EdgeChange,
 } from "reactflow";
 import "reactflow/dist/style.css";
@@ -58,41 +59,41 @@ function Labeled({ label, children }: { label: string; children: React.ReactNode
 // Module-scoped Boomi shape definitions. Hoisted out of FlowDesigner so the
 // reference is stable across renders / project switches — ReactFlow warns when
 // `nodeTypes` identity changes between renders.
-const BOOMI_SHAPE_DEFS: Record<string, { label: string; color: string; bg: string; icon: LucideIcon; category: string }> = {
-  "start":               { label: "Start",            color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start" },
-  "start-connector":     { label: "Start",            color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start" },
-  "start-trading":       { label: "Trading Partner",  color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start" },
-  "start-passthrough":   { label: "Passthrough",      color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start" },
-  "start-nodata":        { label: "No Data",          color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start" },
+const BOOMI_SHAPE_DEFS: Record<string, { label: string; color: string; bg: string; icon: LucideIcon; category: string; supported: boolean }> = {
+  "start":               { label: "Start (legacy)",   color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start",     supported: true },
+  "start-connector":     { label: "Connector",        color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start",     supported: true },
+  "start-trading":       { label: "Trading Partner",  color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start",     supported: true },
+  "start-passthrough":   { label: "Passthrough",      color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start",     supported: true },
+  "start-nodata":        { label: "No Data",          color: "#3fb58b", bg: "#e8f7f1", icon: PlayCircle,       category: "Start",     supported: true },
 
-  "connector":           { label: "Connector",        color: "#3a82f7", bg: "#ebf3fe", icon: Database,         category: "Connector" },
+  "connector":           { label: "Connector",        color: "#3a82f7", bg: "#ebf3fe", icon: Database,         category: "Connector", supported: true },
 
-  "map":                 { label: "Map",              color: "#8b5cf6", bg: "#f3effe", icon: GitCompareArrows, category: "Execute" },
-  "setproperties":       { label: "Set Properties",   color: "#06b6d4", bg: "#ecfeff", icon: Cpu,              category: "Execute" },
-  "message":             { label: "Message",          color: "#14b8a6", bg: "#e6fffa", icon: ClipboardCheck,   category: "Execute" },
-  "notify":              { label: "Notify",           color: "#ef4444", bg: "#fef2f2", icon: AlertTriangle,    category: "Execute" },
-  "programcmd":          { label: "Program Command",  color: "#6366f1", bg: "#eef0ff", icon: Cpu,              category: "Execute" },
-  "subprocess":          { label: "Process Call",     color: "#0ea5e9", bg: "#e0f2fe", icon: Workflow,         category: "Execute" },
-  "processroute":        { label: "Process Route",    color: "#0284c7", bg: "#dbeafe", icon: GitBranch,        category: "Execute" },
-  "dataprocess":         { label: "Data Process",     color: "#7c3aed", bg: "#ede9fe", icon: Layers3,          category: "Execute" },
-  "agent":               { label: "Agent",            color: "#d946ef", bg: "#fae8ff", icon: Cpu,              category: "Execute" },
+  "map":                 { label: "Map",              color: "#8b5cf6", bg: "#f3effe", icon: GitCompareArrows, category: "Execute",   supported: true },
+  "setproperties":       { label: "Set Properties",   color: "#06b6d4", bg: "#ecfeff", icon: Cpu,              category: "Execute",   supported: true },
+  "message":             { label: "Message",          color: "#14b8a6", bg: "#e6fffa", icon: ClipboardCheck,   category: "Execute",   supported: true },
+  "notify":              { label: "Notify",           color: "#ef4444", bg: "#fef2f2", icon: AlertTriangle,    category: "Execute",   supported: true },
+  "programcmd":          { label: "Program Command",  color: "#6366f1", bg: "#eef0ff", icon: Cpu,              category: "Execute",   supported: true },
+  "subprocess":          { label: "Process Call",     color: "#0ea5e9", bg: "#e0f2fe", icon: Workflow,         category: "Execute",   supported: true },
+  "processroute":        { label: "Process Route",    color: "#0284c7", bg: "#dbeafe", icon: GitBranch,        category: "Execute",   supported: true },
+  "dataprocess":         { label: "Data Process",     color: "#7c3aed", bg: "#ede9fe", icon: Layers3,          category: "Execute",   supported: true },
+  "agent":               { label: "Agent",            color: "#d946ef", bg: "#fae8ff", icon: Cpu,              category: "Execute",   supported: true },
 
-  "branch":              { label: "Branch",           color: "#f59e0b", bg: "#fef9eb", icon: GitBranch,        category: "Logic" },
-  "route":               { label: "Route",            color: "#f59e0b", bg: "#fef9eb", icon: GitBranch,        category: "Logic" },
-  "cleanse":             { label: "Cleanse",          color: "#f59e0b", bg: "#fef9eb", icon: ShieldCheck,      category: "Logic" },
-  "decision":            { label: "Decision",         color: "#f59e0b", bg: "#fef9eb", icon: GitBranch,        category: "Logic" },
-  "exception":           { label: "Exception",        color: "#ef4444", bg: "#fee2e2", icon: AlertTriangle,    category: "Logic" },
-  "stop":                { label: "Stop",             color: "#b77816", bg: "#fdf3ea", icon: CheckCircle2,     category: "Logic" },
-  "end":                 { label: "Stop",             color: "#b77816", bg: "#fdf3ea", icon: CheckCircle2,     category: "Logic" },
-  "return":              { label: "Return Documents", color: "#84cc16", bg: "#f7fee7", icon: Upload,            category: "Logic" },
-  "flowcontrol":         { label: "Flow Control",     color: "#f43f5e", bg: "#ffe4e6", icon: Workflow,         category: "Logic" },
+  "branch":              { label: "Branch",           color: "#f59e0b", bg: "#fef9eb", icon: GitBranch,        category: "Logic",     supported: true },
+  "route":               { label: "Route",            color: "#f59e0b", bg: "#fef9eb", icon: GitBranch,        category: "Logic",     supported: true },
+  "cleanse":             { label: "Cleanse",          color: "#f59e0b", bg: "#fef9eb", icon: ShieldCheck,      category: "Logic",     supported: false },
+  "decision":            { label: "Decision",         color: "#f59e0b", bg: "#fef9eb", icon: GitBranch,        category: "Logic",     supported: true },
+  "exception":           { label: "Exception",        color: "#ef4444", bg: "#fee2e2", icon: AlertTriangle,    category: "Logic",     supported: true },
+  "stop":                { label: "Stop",             color: "#b77816", bg: "#fdf3ea", icon: CheckCircle2,     category: "Logic",     supported: true },
+  "end":                 { label: "Stop",             color: "#b77816", bg: "#fdf3ea", icon: CheckCircle2,     category: "Logic",     supported: true },
+  "return":              { label: "Return Documents", color: "#84cc16", bg: "#f7fee7", icon: Upload,            category: "Logic",     supported: true },
+  "flowcontrol":         { label: "Flow Control",     color: "#f43f5e", bg: "#ffe4e6", icon: Workflow,         category: "Logic",     supported: true },
 
-  "trycatch":            { label: "Try/Catch",        color: "#ec4899", bg: "#fdf2f8", icon: ShieldCheck,      category: "Advanced" },
-  "businessrules":       { label: "Business Rules",   color: "#a855f7", bg: "#f3e8ff", icon: Table2,           category: "Advanced" },
-  "findchanges":         { label: "Find Changes",     color: "#a855f7", bg: "#f3e8ff", icon: Search,           category: "Advanced" },
-  "addtocache":          { label: "Add to Cache",     color: "#a855f7", bg: "#f3e8ff", icon: Database,         category: "Advanced" },
-  "retrievefromcache":   { label: "Retrieve from Cache", color: "#a855f7", bg: "#f3e8ff", icon: Database, category: "Advanced" },
-  "removefromcache":     { label: "Remove from Cache",   color: "#a855f7", bg: "#f3e8ff", icon: Database, category: "Advanced" },
+  "trycatch":            { label: "Try/Catch",        color: "#ec4899", bg: "#fdf2f8", icon: ShieldCheck,      category: "Advanced",  supported: true },
+  "businessrules":       { label: "Business Rules",   color: "#a855f7", bg: "#f3e8ff", icon: Table2,           category: "Advanced",  supported: false },
+  "findchanges":         { label: "Find Changes",     color: "#a855f7", bg: "#f3e8ff", icon: Search,           category: "Advanced",  supported: false },
+  "addtocache":          { label: "Add to Cache",     color: "#a855f7", bg: "#f3e8ff", icon: Database,         category: "Advanced",  supported: true },
+  "retrievefromcache":   { label: "Retrieve from Cache", color: "#a855f7", bg: "#f3e8ff", icon: Database, category: "Advanced", supported: true },
+  "removefromcache":     { label: "Remove from Cache",   color: "#a855f7", bg: "#f3e8ff", icon: Database, category: "Advanced", supported: true },
 };
 
 function BoomiFlowNode({ data, selected }: { data: { type: string; label: string; description?: string }; selected?: boolean }) {
@@ -177,7 +178,7 @@ export function FlowEmptyState({ projectId, project, setProject }: { projectId: 
   );
 }
 
-export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlow; projectId: string; setProject: (p: Project | ((prev: Project) => Project)) => void }) {
+export function FlowDesigner({ flow, project, projectId, setProject }: { flow: ProcessFlow | undefined; project: Project; projectId: string; setProject: (p: Project | ((prev: Project) => Project)) => void }) {
   const toast = useToast();
   // Reference the module-scoped definitions; renaming for the rest of the component.
   const boomiShapeDefs = BOOMI_SHAPE_DEFS;
@@ -185,7 +186,7 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
   const boomiEdgeTypes = REACTFLOW_EDGE_TYPES;
 
   const [nodeState, setNodeState, onNodesChange] = useNodesState(
-    flow.nodes.map((n) => ({
+    (flow?.nodes ?? []).map((n) => ({
       id: n.id,
       type: "boomi",
       position: n.position,
@@ -193,7 +194,7 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
     })),
   );
   const [edgeState, setEdgeState, onEdgesChange] = useEdgesState(
-    flow.edges.map((e) => ({
+    (flow?.edges ?? []).map((e) => ({
       id: e.id,
       source: e.source,
       target: e.target,
@@ -206,14 +207,16 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
       labelBgBorderRadius: 4,
     })),
   );
-  const [flowName, setFlowName] = useState(flow.name);
+  const [flowName, setFlowName] = useState(flow?.name ?? "");
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [flowNotes, setFlowNotes] = useState(flow.notes ?? "");
+  const [flowNotes, setFlowNotes] = useState(flow?.notes ?? "");
   const [dirty, setDirty] = useState(false);
 
-  const [idCounter, setIdCounter] = useState(flow.nodes.length + 20);
+  const [idCounter, setIdCounter] = useState((flow?.nodes?.length ?? 0) + 20);
+  const activeFlowId = flow?.id ?? "";
+
   const selectedNode = nodeState.find((n) => n.id === selectedNodeId);
   const selectedEdge = edgeState.find((e) => e.id === selectedEdgeId);
 
@@ -242,8 +245,50 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
     setIdCounter((c) => c + 1);
     const label = boomiShapeDefs[type]?.label ?? type;
     const pos = position ?? { x: 130 + (n % 4) * 200, y: 100 + Math.floor(n / 4) * 130 };
-    const newNode: Node = { id: `node-${n}`, type: "boomi", position: pos, data: { type, label, description: "" } };
+    const newNodeId = `node-${n}`;
+    const newNode: Node = { id: newNodeId, type: "boomi", position: pos, data: { type, label, description: "" } };
     setNodeState((nds) => [...nds, newNode]);
+
+    // Auto-create mandatory downstream shapes and edges for multi-path shapes
+    if (type === "decision") {
+      const trueId = `node-${n + 1}`; const falseId = `node-${n + 2}`;
+      const trueStop: Node = { id: trueId, type: "boomi", position: { x: pos.x + 250, y: pos.y - 60 }, data: { type: "stop", label: "True", description: "" } };
+      const falseStop: Node = { id: falseId, type: "boomi", position: { x: pos.x + 250, y: pos.y + 80 }, data: { type: "stop", label: "False", description: "" } };
+      const trueEdge: Edge = { id: `e${n}_true`, source: newNodeId, target: trueId, label: "True", style: { stroke: "#298b68", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "True path" } };
+      const falseEdge: Edge = { id: `e${n}_false`, source: newNodeId, target: falseId, label: "False", style: { stroke: "#9c2a2a", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "False path" } };
+      setNodeState((nds) => [...nds, trueStop, falseStop]);
+      setEdgeState((eds) => [...eds, trueEdge, falseEdge]);
+      setIdCounter((c) => c + 3);
+    } else if (type === "branch") {
+      const b1Id = `node-${n + 1}`; const b2Id = `node-${n + 2}`;
+      const b1Stop: Node = { id: b1Id, type: "boomi", position: { x: pos.x + 250, y: pos.y - 60 }, data: { type: "stop", label: "Branch 1", description: "" } };
+      const b2Stop: Node = { id: b2Id, type: "boomi", position: { x: pos.x + 250, y: pos.y + 80 }, data: { type: "stop", label: "Branch 2", description: "" } };
+      const b1Edge: Edge = { id: `e${n}_b1`, source: newNodeId, target: b1Id, label: "1", style: { stroke: "#298b68", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "Branch 1" } };
+      const b2Edge: Edge = { id: `e${n}_b2`, source: newNodeId, target: b2Id, label: "2", style: { stroke: "#298b68", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "Branch 2" } };
+      setNodeState((nds) => [...nds, b1Stop, b2Stop]);
+      setEdgeState((eds) => [...eds, b1Edge, b2Edge]);
+      setIdCounter((c) => c + 3);
+    } else if (type === "trycatch") {
+      const tryId = `node-${n + 1}`; const catchId = `node-${n + 2}`;
+      const tryStop: Node = { id: tryId, type: "boomi", position: { x: pos.x + 250, y: pos.y - 60 }, data: { type: "stop", label: "Try", description: "" } };
+      const catchStop: Node = { id: catchId, type: "boomi", position: { x: pos.x + 250, y: pos.y + 80 }, data: { type: "stop", label: "Catch", description: "" } };
+      const tryEdge: Edge = { id: `e${n}_try`, source: newNodeId, target: tryId, label: "Try", style: { stroke: "#298b68", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "Try path" } };
+      const catchEdge: Edge = { id: `e${n}_catch`, source: newNodeId, target: catchId, label: "Catch", style: { stroke: "#ef4444", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "Catch error path" } };
+      setNodeState((nds) => [...nds, tryStop, catchStop]);
+      setEdgeState((eds) => [...eds, tryEdge, catchEdge]);
+      setIdCounter((c) => c + 3);
+    } else if (type === "route") {
+      const defaultId = `node-${n + 1}`; const matchId = `node-${n + 2}`;
+      const defaultStop: Node = { id: defaultId, type: "boomi", position: { x: pos.x + 250, y: pos.y - 60 }, data: { type: "stop", label: "Default", description: "" } };
+      const matchStop: Node = { id: matchId, type: "boomi", position: { x: pos.x + 250, y: pos.y + 80 }, data: { type: "stop", label: "Match", description: "" } };
+      const defaultEdge: Edge = { id: `e${n}_default`, source: newNodeId, target: defaultId, label: "Default", style: { stroke: "#66706a", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "Default (no match) path" } };
+      const matchEdge: Edge = { id: `e${n}_match`, source: newNodeId, target: matchId, label: "Match", style: { stroke: "#298b68", strokeWidth: 2 }, labelStyle: { fill: "#66706a", fontSize: 10, fontWeight: 600 }, labelBgStyle: { fill: "#fbfbfa", fillOpacity: 0.9 }, labelBgPadding: [6, 3] as [number, number], labelBgBorderRadius: 4, data: { comment: "First match path" } };
+      setNodeState((nds) => [...nds, defaultStop, matchStop]);
+      setEdgeState((eds) => [...eds, defaultEdge, matchEdge]);
+      setIdCounter((c) => c + 3);
+    } else {
+      setIdCounter((c) => c + 1);
+    }
     setDirty(true);
   }
 
@@ -367,13 +412,14 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
   }
 
   async function saveFlow() {
+    if (!activeFlowId) return;
     setSaving(true);
     try {
       const nodes = nodeState.map((n) => ({ id: n.id, type: n.data.type as ProcessFlow["nodes"][number]["type"], label: n.data.label, description: n.data.description || "", position: n.position }));
       const edges = edgeState.map((e) => ({ id: e.id, source: e.source, target: e.target, label: ((e.label as string)?.trim() || undefined) ?? undefined }));
-      const r = await fetch(`/api/projects/${projectId}/flows/${flow.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: flowName, nodes, edges, notes: flowNotes || null }) });
+      const r = await fetch(`/api/projects/${projectId}/flows/${activeFlowId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: flowName, nodes, edges, notes: flowNotes || null }) });
       if (!r.ok) throw new Error(await extractError(r));
-      setProject((prev) => ({ ...prev, processFlows: prev.processFlows.map((f) => f.id === flow.id ? { ...f, name: flowName, nodes, edges, notes: flowNotes } : f) }));
+      setProject((prev) => ({ ...prev, processFlows: prev.processFlows.map((f) => f.id === activeFlowId ? { ...f, name: flowName, nodes, edges, notes: flowNotes } : f) }));
       setDirty(false);
     } catch (err) { toast.addToast({ message: err instanceof Error ? err.message : "Failed to save flow", type: "error" }); } finally { setSaving(false); }
   }
@@ -405,29 +451,33 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
       position: nd.position,
     }));
     const e = edgeState.map((ed) => ({ id: ed.id, source: ed.source, target: ed.target, label: ed.label as string | undefined }));
-    return buildProcessXml(undefined, { id: flow.id, name: flowName, nodes: n, edges: e });
-  }, [nodeState, edgeState, flowName, flow.id]);
+    return buildProcessXml(undefined, { id: activeFlowId, name: flowName, nodes: n, edges: e });
+  }, [nodeState, edgeState, flowName, activeFlowId]);
 
   const shapeCategories = [
     {
       label: "Start",
-      shapes: ["start-connector"],
+      shapes: ["start-connector", "start-passthrough", "start-nodata", "start-trading"],
     },
     {
       label: "Execute",
-      shapes: ["map", "setproperties", "message", "notify", "programcmd", "subprocess", "processroute", "dataprocess", "agent"],
+      shapes: ["connector", "map", "setproperties", "message", "notify", "programcmd", "subprocess", "processroute", "dataprocess", "agent"],
     },
     {
       label: "Logic",
-      shapes: ["branch", "route", "cleanse", "decision", "exception", "stop", "return", "flowcontrol"],
+      shapes: ["branch", "decision", "route", "exception", "stop", "return", "flowcontrol"],
     },
     {
       label: "Advanced",
-      shapes: ["trycatch", "businessrules", "findchanges", "addtocache", "retrievefromcache", "removefromcache"],
+      shapes: ["trycatch", "addtocache", "retrievefromcache", "removefromcache"],
     },
   ];
 
-  return (
+  return !flow ? (
+    <WorkspacePanel>
+      <FlowEmptyState projectId={projectId} project={project} setProject={setProject as (p: Project | ((prev: Project) => Project)) => void} />
+    </WorkspacePanel>
+  ) : (
     <WorkspacePanel>
       <div className="grid min-h-[calc(100vh-112px)] grid-cols-1 gap-5 xl:grid-cols-[220px_1fr_300px]">
         <div className="panel overflow-auto p-0">
@@ -532,7 +582,7 @@ export function FlowDesigner({ flow, projectId, setProject }: { flow: ProcessFlo
                     ) : null}
                   <optgroup label="Shapes">
                     {Object.entries(boomiShapeDefs)
-                      .filter(([k]) => k !== "end" && !k.startsWith("start"))
+                      .filter(([k, v]) => v.supported && k !== "end" && !k.startsWith("start"))
                       .map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                   </optgroup>
                 </select>

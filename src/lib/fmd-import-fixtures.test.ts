@@ -111,7 +111,7 @@ describe("applyAiResolution merge snapshot", () => {
         {
           mappingSetName,
           note: "Resolver: review currency conversion edge case at R12.",
-          confidence: 0.74,
+          confidence: 0.86,
           evidenceRefs: ["Field Mapping!R12"],
         },
       ],
@@ -119,6 +119,7 @@ describe("applyAiResolution merge snapshot", () => {
       unresolvedEvidenceRefs: ["Field Mapping!R99"],
     };
 
+    let chatCalls = 0;
     vi.stubGlobal(
       "fetch",
       vi.fn(async (url: string) => {
@@ -128,8 +129,12 @@ describe("applyAiResolution merge snapshot", () => {
             headers: { "Content-Type": "application/json" },
           });
         }
+        chatCalls += 1;
+        const content = chatCalls === 1
+          ? correctionPatch
+          : { profileRenames: [], profileTypeFixes: [], keyFieldSuggestions: [], mappingSetNotes: [], mappingTypeCorrections: [], warnings: [], unresolvedEvidenceRefs: [] };
         return new Response(
-          JSON.stringify({ message: { content: JSON.stringify(correctionPatch) } }),
+          JSON.stringify({ message: { content: JSON.stringify(content) } }),
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }),
@@ -142,6 +147,9 @@ describe("applyAiResolution merge snapshot", () => {
       ok: merged.resolver.ok,
       projectOwner: merged.draft.project.owner,
       projectConfidence: merged.draft.project.confidence,
+      resolverConfidence: merged.resolver.confidence,
+      acceptedSuggestions: merged.resolver.acceptedSuggestions?.length,
+      needsReview: merged.resolver.needsReview?.length,
       destinationProfileName: merged.draft.profiles.find((profile) => profile.role === "destination")?.name,
       mappingSetWarnings: merged.draft.mappingSets[0]?.warnings,
       lastWarning: merged.draft.warnings[merged.draft.warnings.length - 1],

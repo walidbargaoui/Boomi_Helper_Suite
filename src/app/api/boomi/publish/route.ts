@@ -10,6 +10,7 @@ import {
   type BoomiConnectionInput,
 } from "@/lib/boomi-sandbox";
 import { getWorkspaceProject, recordBoomiPublishEvent, sanitizeProjectForClient } from "@/lib/db";
+import { isLegacyPublishEnabled } from "@/lib/boomi-companion-mutations";
 
 const publishRequestSchema = z.object({
   projectId: z.string().min(1),
@@ -18,6 +19,17 @@ const publishRequestSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  if (!isLegacyPublishEnabled()) {
+    return NextResponse.json(
+      {
+        error: "Direct publish is no longer supported.",
+        detail:
+          "XML generation and direct publish have been retired. Use the Boomi Companion workflow instead — generate a build package from the Boomi Companion tab and run it with a Companion-enabled agent.",
+      },
+      { status: 410 },
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = publishRequestSchema.safeParse(body);
   if (!parsed.success) {

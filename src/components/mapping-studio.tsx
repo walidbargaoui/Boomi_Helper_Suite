@@ -211,7 +211,40 @@ export function MappingStudio({
   const [focusedRuleIndex, setFocusedRuleIndex] = useState(-1);
   const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
   const tableParentRef = useRef<HTMLDivElement | null>(null);
+  const [showNewMapDialog, setShowNewMapDialog] = useState(false);
+  const [newMapDraft, setNewMapDraft] = useState({ name: "", sourceProfileId: "", destProfileId: "" });
   const toast = useToast();
+
+  async function handleCreateMappingSet(name: string, srcId: string, dstId: string) {
+    setSaveError(null);
+    try {
+      const response = await fetch(`/api/projects/${project.id}/mapping-sets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, sourceProfileId: srcId, destinationProfileId: dstId, direction: "source-to-dest" }),
+      });
+      if (!response.ok) throw new Error(await extractError(response));
+      const data = await response.json();
+      const next = [...project.mappingSets, data.mappingSet];
+      setProject({ ...project, mappingSets: next });
+      setSelectedMappingSetIndex(next.length - 1);
+      setShowNewMapDialog(false);
+      toast.addToast({ message: "Mapping set created", type: "success" });
+    } catch (err) { setSaveError(err instanceof Error ? err.message : "Failed"); }
+  }
+
+  async function handleDeleteMappingSet(mappingSetId: string) {
+    if (project.mappingSets.length <= 1) { toast.addToast({ message: "Cannot delete the last mapping set", type: "error" }); return; }
+    const ok = await toast.confirm("Delete this mapping set and all its rules?"); if (!ok) return;
+    try {
+      const res = await fetch(`/api/mapping-sets/${mappingSetId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error(await extractError(res));
+      const next = project.mappingSets.filter((s) => s.id !== mappingSetId);
+      setProject({ ...project, mappingSets: next });
+      if (selectedMappingSetIndex >= next.length) setSelectedMappingSetIndex(Math.max(0, next.length - 1));
+      toast.addToast({ message: "Deleted", type: "success" });
+    } catch (err) { toast.addToast({ message: err instanceof Error ? err.message : "Failed", type: "error" }); }
+  }
 
   const mappingSet = project.mappingSets[selectedMappingSetIndex] ?? project.mappingSets[0];
   const rules = useMemo(() => mappingSet?.rules ?? [], [mappingSet]);
@@ -590,49 +623,22 @@ export function MappingStudio({
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[280px_1fr]">
-        <div className="space-y-5">
-          <ProfilePanel
-            icon={Layers3}
-            title={sourceProfile.name || "Source Profile"}
-            subtitle="Source"
-            profile={sourceProfile}
-            search={sourceSearch}
-            setSearch={setSourceSearch}
-            filter={sourceFilter}
-            setFilter={setSourceFilter}
-            visibleFields={visibleSource}
-            formatBusy={formatSaving === "source"}
-            onFormatChange={(format) => handleFormatChange(sourceProfile, format)}
-            onTypeChange={(type) => handleTypeChange(sourceProfile, type)}
-            onAddField={() => setFieldEditor({ mode: "create", profileId: sourceProfile.id, draft: emptyFieldDraft() })}
-            onEditField={(field) =>
-              setFieldEditor({ mode: "edit", profileId: sourceProfile.id, fieldId: field.id, draft: fieldToDraft(field) })
-            }
-            onDeleteField={(field) => handleFieldDelete(sourceProfile.id, field.id)}
-            onImport={() => setImportState({ mode: "open", profileId: sourceProfile.id })}
-          />
-          <ProfilePanel
-            icon={Database}
-            title={destinationProfile.name || "Destination Profile"}
-            subtitle="Destination"
-            profile={destinationProfile}
-            search={destSearch}
-            setSearch={setDestSearch}
-            filter={destFilter}
-            setFilter={setDestFilter}
-            visibleFields={visibleDest}
-            formatBusy={formatSaving === "destination"}
-            onFormatChange={(format) => handleFormatChange(destinationProfile, format)}
-            onTypeChange={(type) => handleTypeChange(destinationProfile, type)}
-            onAddField={() => setFieldEditor({ mode: "create", profileId: destinationProfile.id, draft: emptyFieldDraft() })}
-            onEditField={(field) =>
-              setFieldEditor({ mode: "edit", profileId: destinationProfile.id, fieldId: field.id, draft: fieldToDraft(field) })
-            }
-            onDeleteField={(field) => handleFieldDelete(destinationProfile.id, field.id)}
-            onImport={() => setImportState({ mode: "open", profileId: destinationProfile.id })}
-            errorFieldIds={unmappedRequiredDestIds}
-          />
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[240px_1fr]">
+        <div className="space-y-3">
+          <div className="panel">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold uppercase text-[#66706a]">Mapping Sets</p>
+              <button type="button" onClick={() => { setNewMapDraft({ name: `Map ${project.mappingSets.length + 1}`, sourceProfileId: project.profiles[0]?.id ?? "", destProfileId: project.profiles[1]?.id ?? "" }); setShowNewMapDialog(true); }} className="inline-flex h-7 items-center gap-1 rounded-md bg-[#1b5e4a] px-2 text-[10px] font-medium text-white hover:bg-[#164d3d]"><Plus size={12} /> New</button>
+            </div>
+            <div className="space-y-1">
+              {project.mappingSets.map((ms, idx) => (
+                <div key={ms.id} className={clsx("flex items-center justify-between rounded-md px-2.5 py-2 cursor-pointer transition-colors", selectedMappingSetIndex === idx ? "bg-[#e3f3ed] text-[#1b5e4a]" : "hover:bg-[#fbfbfa] text-[#111714]")} onClick={() => setSelectedMappingSetIndex(idx)}>
+                  <div className="min-w-0 flex-1"><p className="text-xs font-medium truncate">{ms.name}</p><p className="text-[10px] text-[#66706a]">{ms.rules?.length ?? 0} rules</p></div>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); handleDeleteMappingSet(ms.id); }} className="text-[#9c2a2a] hover:text-[#c42a2a] ml-1 shrink-0" title="Delete"><Trash2 size={12} /></button>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="min-w-0 space-y-5">
@@ -839,7 +845,7 @@ export function MappingStudio({
               <PanelHeader
                 icon={GitBranch}
                 title="Transform Nodes"
-                action={`${mappingSet.transformNodes.length}`}
+                action={`${mappingSet.transformNodes?.length ?? 0}`}
               />
               <div className="mt-4 space-y-3">
                 {mappingSet.transformNodes.map((node) => (
@@ -897,6 +903,39 @@ export function MappingStudio({
           onClose={() => setDrawer({ mode: "closed" })}
           onDelete={drawer.mode === "edit" ? () => handleDeleteRule(drawer.ruleId) : undefined}
         />
+      ) : null}
+
+      {/* New Map Dialog */}
+      {showNewMapDialog ? (
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/20" onClick={() => setShowNewMapDialog(false)} />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm rounded-lg bg-white shadow-xl">
+            <div className="p-6">
+              <h3 className="text-sm font-semibold">New Mapping Set</h3>
+              <div className="mt-4 space-y-3">
+                <label className="block"><span className="text-xs font-semibold uppercase text-[#66706a]">Name</span>
+                  <input className="mt-1 h-9 w-full rounded-md border border-[#cfd6cf] bg-white px-3 text-sm outline-none focus:border-[#298b68]" value={newMapDraft.name} onChange={(e) => setNewMapDraft({ ...newMapDraft, name: e.target.value })} placeholder="Map name" />
+                </label>
+                <label className="block"><span className="text-xs font-semibold uppercase text-[#66706a]">Source Profile</span>
+                  <select className="mt-1 h-9 w-full rounded-md border border-[#cfd6cf] bg-white px-3 text-sm outline-none focus:border-[#298b68]" value={newMapDraft.sourceProfileId} onChange={(e) => setNewMapDraft({ ...newMapDraft, sourceProfileId: e.target.value })}>
+                    <option value="">Select...</option>
+                    {project.profiles.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.type})</option>)}
+                  </select>
+                </label>
+                <label className="block"><span className="text-xs font-semibold uppercase text-[#66706a]">Destination Profile</span>
+                  <select className="mt-1 h-9 w-full rounded-md border border-[#cfd6cf] bg-white px-3 text-sm outline-none focus:border-[#298b68]" value={newMapDraft.destProfileId} onChange={(e) => setNewMapDraft({ ...newMapDraft, destProfileId: e.target.value })}>
+                    <option value="">Select...</option>
+                    {project.profiles.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.type})</option>)}
+                  </select>
+                </label>
+              </div>
+              <div className="mt-6 flex justify-end gap-2">
+                <button className="inline-flex h-9 items-center rounded-md border border-[#cfd6cf] bg-white px-4 text-sm font-medium text-[#111714] hover:bg-[#eef1ee]" onClick={() => setShowNewMapDialog(false)} type="button">Cancel</button>
+                <button className="inline-flex h-9 items-center rounded-md bg-[#1b5e4a] px-4 text-sm font-medium text-white hover:bg-[#164d3d] disabled:opacity-50" onClick={() => handleCreateMappingSet(newMapDraft.name, newMapDraft.sourceProfileId, newMapDraft.destProfileId)} disabled={!newMapDraft.name || !newMapDraft.sourceProfileId || !newMapDraft.destProfileId} type="button">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );

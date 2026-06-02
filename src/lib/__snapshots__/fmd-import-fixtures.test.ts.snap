@@ -2,15 +2,18 @@
 
 exports[`applyAiResolution merge snapshot > merges a canned Qwen correction patch into the deterministic draft 1`] = `
 {
+  "acceptedSuggestions": 5,
   "destinationProfileName": "Polished Destination Profile",
   "lastWarning": "Snapshot: a stable Qwen warning.",
   "mappingSetWarnings": [
     "Resolver: review currency conversion edge case at R12.",
   ],
+  "needsReview": 0,
   "ok": true,
   "projectConfidence": 0.92,
   "projectOwner": "Qwen reviewer",
   "provider": "ollama",
+  "resolverConfidence": 0.9,
   "unresolved": [
     "Field Mapping!R1",
     "Field Mapping!R99",

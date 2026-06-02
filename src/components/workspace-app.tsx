@@ -6,10 +6,7 @@ import "reactflow/dist/style.css";
 import { useProject } from "@/hooks/use-project";
 import {
   AlertTriangle,
-  Braces,
   CheckCircle2,
-  ChevronDown,
-  ChevronRight,
   ClipboardCheck,
   Database,
   Download,
@@ -17,8 +14,8 @@ import {
   GitCompareArrows,
   Layers3,
   Network,
+  Package,
   Pencil,
-  PlayCircle,
   Plus,
   RefreshCw,
   ShieldCheck,
@@ -43,7 +40,10 @@ import { MappingStudio } from "@/components/mapping-studio";
 import { IssueRow, PanelHeader, StatusPill, WorkspacePanel, InfoRow } from "@/components/atoms";
 import { extractError } from "@/lib/api-utils";
 import { useToast } from "@/components/toast";
-import { BoomiApiLab } from "@/components/boomi-api-tab";
+import { runUndoableAction } from "@/lib/undoable-action";
+import { BoomiCompanionTab } from "@/components/boomi-companion-tab";
+import { ProfilesTab } from "@/components/profiles-tab";
+import { WorkspaceSidebar } from "@/components/workspace-sidebar";
 import { FmdBuilder } from "@/components/fmd/fmd-workbench";
 import { ImportExcelButton } from "@/components/import-excel-button";
 
@@ -76,7 +76,7 @@ type WorkspaceAppProps = {
   initialProjects: ProjectSummary[];
 };
 
-type WorkspaceTab = "dashboard" | "mapping" | "fmd" | "flow" | "boomi";
+type WorkspaceTab = "dashboard" | "profiles" | "mapping" | "fmd" | "flow" | "boomi";
 
 const tabs: Array<{
   id: WorkspaceTab;
@@ -84,10 +84,11 @@ const tabs: Array<{
   icon: typeof Table2;
 }> = [
   { id: "dashboard", label: "Workspace", icon: Table2 },
+  { id: "profiles", label: "Profiles", icon: Database },
   { id: "mapping", label: "Mapping", icon: GitCompareArrows },
   { id: "fmd", label: "FMD", icon: FileSpreadsheet },
   { id: "flow", label: "Flow", icon: Workflow },
-  { id: "boomi", label: "Boomi API", icon: Braces },
+  { id: "boomi", label: "Boomi Companion", icon: Package },
 ];
 
 export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppProps) {
@@ -106,11 +107,8 @@ export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppPr
   );
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("dashboard");
   const [showProjectDialog, setShowProjectDialog] = useState(false);
-  const [switchingProject, setSwitchingProject] = useState(false);
   const [workspaceLockReason, setWorkspaceLockReason] = useState<string | null>(null);
   const workspaceLocked = Boolean(workspaceLockReason);
-  const [projectSearch, setProjectSearch] = useState("");
-  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
   const [selectedMappingSetIndex, setSelectedMappingSetIndex] = useState(0);
   const toast = useToast();
 
@@ -133,25 +131,6 @@ export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppPr
     }
   }, []);
 
-  const filteredProjects = useMemo(() => {
-    const q = projectSearch.trim().toLowerCase();
-    if (!q) return projects;
-    return projects.filter((p) =>
-      p.processId.toLowerCase().includes(q) || p.name.toLowerCase().includes(q),
-    );
-  }, [projects, projectSearch]);
-
-  const groupedProjects = useMemo(() => {
-    const groups = new Map<string, ProjectSummary[]>();
-    for (const p of filteredProjects) {
-      const folder = (p.folder?.trim() || "Uncategorized");
-      const list = groups.get(folder) ?? [];
-      list.push(p);
-      groups.set(folder, list);
-    }
-    return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
-  }, [filteredProjects]);
-
   const mappingSet = project ? (project.mappingSets[selectedMappingSetIndex] ?? project.mappingSets[0]) : undefined;
   const sourceProfile = mappingSet && project
     ? project.profiles.find((profile) => profile.id === mappingSet.sourceProfileId)
@@ -168,23 +147,23 @@ export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppPr
     setProjects((prev) => prev.map((p) => (p.id === project?.id ? { ...p, ...next } as ProjectSummary : p)));
   }
 
-  function reflectProject(next: Project) {
-    setProject(next);
-    updateProjectSidebar(next);
+  function reflectProject(next: Project | ((prev: Project) => Project)) {
+    setProject((prev) => {
+      const resolved = typeof next === "function" ? next(prev) : next;
+      updateProjectSidebar(resolved);
+      return resolved;
+    });
   }
 
   function switchProject(projectId: string) {
     if (workspaceLocked) return;
     if (project?.id === projectId) return;
-    setSwitchingProject(true);
     router.push(`/?project=${projectId}`);
-    router.refresh();
   }
 
   async function handleProjectCreated(created: ProjectSummary) {
     setProjects((prev) => [created, ...prev.filter((summary) => summary.id !== created.id)]);
     router.push(`/?project=${created.id}`);
-    router.refresh();
   }
 
   async function handleDeleteProject() {
@@ -192,172 +171,33 @@ export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppPr
     const ok = await toast.confirm(`Delete project "${project.name}"? This removes all data for ${project.processId}.`);
     if (!ok) return;
     const removedId = project.id;
-    const removedProjects = projects;
-    const timeoutId = setTimeout(async () => {
+    runUndoableAction(toast, `Deleting "${project.name}"…`, async () => {
       const response = await fetch(`/api/projects/${removedId}`, { method: "DELETE" });
       if (!response.ok) {
         toast.addToast({ message: "Failed to delete project", type: "error" });
         return;
       }
-      const remaining = removedProjects.filter((summary) => summary.id !== removedId);
-      setProjects(remaining);
-      const next = remaining[0]?.id ?? "";
-      router.push(next ? `/?project=${next}` : "/");
-      router.refresh();
-    }, 5000);
-    toast.addToast({
-      message: `Deleting "${project.name}"…`,
-      type: "info",
-      duration: 5000,
-      action: {
-        label: "Undo",
-        onAction: () => { clearTimeout(timeoutId); },
-      },
+      let nextProjectId = "";
+      setProjects((prev) => {
+        const remaining = prev.filter((summary) => summary.id !== removedId);
+        nextProjectId = remaining[0]?.id ?? "";
+        return remaining;
+      });
+      router.push(nextProjectId ? `/?project=${nextProjectId}` : "/");
     });
   }
 
   return (
     <div className="relative min-h-screen bg-[#f5f6f4] lg:grid lg:grid-cols-[260px_1fr]">
-      {switchingProject ? (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#f5f6f4]/80">
-          <div className="flex items-center gap-3 rounded-lg bg-white px-5 py-3 shadow-lg">
-            <RefreshCw size={18} className="animate-spin text-[#298b68]" />
-            <span className="text-sm font-medium text-[#111714]">Loading project…</span>
-          </div>
-        </div>
-      ) : null}
-      <aside className="border-b border-[#d9ded8] bg-[#111714] text-white lg:border-b-0 lg:border-r">
-        <div className="border-b border-white/10 px-5 py-5">
-          <button
-            onClick={() => { router.push("/"); router.refresh(); }}
-            className="flex cursor-pointer items-center gap-3 text-left hover:opacity-80 transition-opacity"
-            title="Go to dashboard"
-            type="button"
-          >
-            <div className="grid h-9 w-9 place-items-center rounded-md bg-[#3fb58b] text-[#07110d]">
-              <Workflow size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold">Boomi Helper Suite</p>
-              <p className="text-xs text-white/55">Local architect workspace</p>
-            </div>
-          </button>
-        </div>
-        <div className="px-5 pt-4">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/45">Projects</p>
-            <button
-              type="button"
-              onClick={() => setShowProjectDialog(true)}
-              disabled={workspaceLocked}
-              title="Create project"
-              aria-label="Create project"
-              className="grid h-7 w-7 cursor-pointer place-items-center rounded-md border border-white/15 bg-white/[0.06] text-white hover:border-white/30 disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              <Plus size={13} />
-            </button>
-          </div>
-          {projects.length > 0 ? (
-            <div className="mt-2">
-              <input
-                value={projectSearch}
-                onChange={(e) => setProjectSearch(e.target.value)}
-                placeholder="Search projects…"
-                aria-label="Search projects"
-                className="h-7 w-full rounded-md border border-white/15 bg-white/[0.06] px-2 text-xs text-white placeholder-white/30 outline-none focus:border-white/30"
-              />
-            </div>
-          ) : null}
-          <div className="mt-2 max-h-[340px] space-y-0.5 overflow-y-auto pr-1">
-            {groupedProjects.map(([folder, folderProjects]) => {
-              const isCollapsed = collapsedFolders.has(folder);
-              return (
-                <div key={folder}>
-                  <button
-                    className="flex w-full cursor-pointer items-center gap-1 px-1 py-1 text-left text-[10px] font-semibold uppercase tracking-wide text-white/35 hover:text-white/55"
-                    onClick={() => {
-                      const next = new Set(collapsedFolders);
-                      if (next.has(folder)) next.delete(folder); else next.add(folder);
-                      setCollapsedFolders(next);
-                    }}
-                    type="button"
-                  >
-                    {isCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
-                    {folder}
-                    <span className="ml-auto text-white/25">{folderProjects.length}</span>
-                  </button>
-                  {!isCollapsed ? folderProjects.map((summary) => {
-                    const isActive = project && summary.id === project.id;
-                    return (
-                      <button
-                        key={summary.id}
-                        type="button"
-                        onClick={() => switchProject(summary.id)}
-                        disabled={workspaceLocked}
-                        className={clsx(
-                          "flex w-full cursor-pointer items-center gap-2 rounded-md py-0.5 text-left text-xs transition disabled:cursor-not-allowed disabled:opacity-55",
-                          isActive
-                            ? "text-white font-medium"
-                            : "text-white/55 hover:text-white/80",
-                        )}
-                      >
-                        <span className="shrink-0 w-16 truncate font-mono text-[10px] text-white/35">{summary.processId}</span>
-                        <span className="truncate">{summary.name}</span>
-                      </button>
-                    );
-                  }) : null}
-                </div>
-              );
-            })}
-            {filteredProjects.length === 0 ? (
-              <p className="rounded-md border border-dashed border-white/15 p-3 text-xs text-white/55">
-                {projects.length === 0 ? "No projects yet. Create one to get started." : "No matching projects."}
-              </p>
-            ) : null}
-          </div>
-      </div>
-        {project ? (
-          <>
-            <div className="px-3 py-4">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    disabled={workspaceLocked && tab.id !== activeTab}
-                    className={clsx(
-                      "mb-1 flex h-10 w-full cursor-pointer items-center gap-3 rounded-md px-3 text-sm transition disabled:cursor-not-allowed disabled:opacity-45",
-                      activeTab === tab.id
-                        ? "bg-white text-[#111714]"
-                        : "text-white/72 hover:bg-white/10 hover:text-white",
-                    )}
-                    onClick={() => setActiveTab(tab.id)}
-                    type="button"
-                  >
-                    <Icon size={17} />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mt-3 px-5 pb-5">
-              <button
-                type="button"
-                onClick={handleDeleteProject}
-                disabled={workspaceLocked}
-                className="inline-flex h-8 w-full cursor-pointer items-center justify-center gap-1 rounded-md border border-white/10 px-2 text-xs text-white/55 hover:border-[#a14444] hover:text-[#f59e9e] disabled:cursor-not-allowed disabled:opacity-45"
-              >
-                <Trash2 size={12} />
-                Delete current project
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="px-3 py-4 text-center">
-            <p className="text-xs text-white/40">Select a project to start working</p>
-          </div>
-        )}
-      </aside>
+      <WorkspaceSidebar
+        projects={projects}
+        activeProject={project}
+        onSwitchProject={switchProject}
+        onShowProjectDialog={(folderPath) => {
+          if (folderPath) sessionStorage.setItem("newProjectFolder", folderPath);
+          setShowProjectDialog(true);
+        }}
+      />
 
       <main className="min-w-0">
         {project ? (
@@ -383,14 +223,41 @@ export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppPr
                 <IconButton href={`/api/fmd/export?projectId=${encodeURIComponent(project.id)}`} title="Export FMD" disabled={workspaceLocked}>
                   <Download size={16} />
                 </IconButton>
-                <IconButton title="Run dry-run" onClick={() => setActiveTab("boomi")} disabled={workspaceLocked}>
-                  <PlayCircle size={16} />
-                </IconButton>
+                <button onClick={handleDeleteProject} disabled={workspaceLocked} className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d9ded8] bg-white px-3 text-sm font-medium text-[#9c2a2a] hover:bg-[#fdf3f3] disabled:opacity-50" type="button">
+                  <Trash2 size={14} /> Delete
+                </button>
               </div>
             </header>
 
+            {/* Tab navigation */}
+            <nav className="flex items-center gap-1 border-b border-[#d9ded8] bg-white px-6">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    disabled={workspaceLocked && tab.id !== activeTab}
+                    className={clsx(
+                      "flex cursor-pointer items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-45",
+                      activeTab === tab.id
+                        ? "border-[#3fb58b] text-[#1b5e4a]"
+                        : "border-transparent text-[#66706a] hover:text-[#111714] hover:border-[#cfd6cf]",
+                    )}
+                    onClick={() => setActiveTab(tab.id)}
+                    type="button"
+                  >
+                    <Icon size={15} />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </nav>
+
             {activeTab === "dashboard" && (
               <Dashboard project={project} issues={issues} sourceProfile={sourceProfile} selectedMappingSetIndex={selectedMappingSetIndex} setProject={reflectProject} updateProjectSidebar={updateProjectSidebar} />
+            )}
+            {activeTab === "profiles" && (
+              <ProfilesTab project={project} setProject={reflectProject} />
             )}
             {activeTab === "mapping" && (
               mappingSet && sourceProfile && destinationProfile ? (
@@ -412,14 +279,17 @@ export function WorkspaceApp({ initialProject, initialProjects }: WorkspaceAppPr
                 project={project}
                 setProject={setProject}
                 setWorkspaceLockReason={setWorkspaceLockReason}
+                onNavigateTab={(tab) => {
+                  startTransition(() => setActiveTab(tab as WorkspaceTab));
+                }}
               />
             )}
             {activeTab === "flow" && project.processFlows[0] ? (
-              <FlowDesigner flow={project.processFlows[0]} projectId={project.id} setProject={setProject as (p: Project | ((prev: Project) => Project)) => void} />
+              <FlowDesigner key={`${project.id}:${project.processFlows[0].id}`} flow={project.processFlows[0]} project={project} projectId={project.id} setProject={setProject as (p: Project | ((prev: Project) => Project)) => void} />
             ) : activeTab === "flow" ? (
               <FlowEmptyState projectId={project.id} project={project} setProject={setProject as (p: Project) => void} />
             ) : null}
-            {activeTab === "boomi" && <BoomiApiLab project={project} setProject={setProject as (p: Project) => void} />}
+            {activeTab === "boomi" && <BoomiCompanionTab project={project} setProject={setProject as (p: Project) => void} />}
           </>
         ) : (
           <GlobalDashboard projects={projects} onCreateProject={() => setShowProjectDialog(true)} />
@@ -567,7 +437,7 @@ function Dashboard({
   issues: MappingIssue[];
   sourceProfile?: Profile;
   selectedMappingSetIndex: number;
-  setProject: (project: Project) => void;
+  setProject: (project: Project | ((prev: Project) => Project)) => void;
   updateProjectSidebar: (next: Partial<Project>) => void;
 }) {
   const toast = useToast();
@@ -656,22 +526,16 @@ function Dashboard({
                         <button
                           type="button"
                           onClick={async () => {
-                            const timeoutId = setTimeout(async () => {
+                            runUndoableAction(toast, `Deleting endpoint "${endpoint.name}"…`, async () => {
                               const response = await fetch(`/api/endpoints/${endpoint.id}`, { method: "DELETE" });
                               if (!response.ok) {
                                 toast.addToast({ message: "Failed to delete endpoint", type: "error" });
                                 return;
                               }
-                              setProject({
-                                ...project,
-                                endpoints: project.endpoints.filter((item) => item.id !== endpoint.id),
-                              });
-                            }, 5000);
-                            toast.addToast({
-                              message: `Deleting endpoint "${endpoint.name}"…`,
-                              type: "info",
-                              duration: 5000,
-                              action: { label: "Undo", onAction: () => clearTimeout(timeoutId) },
+                              setProject((prev) => ({
+                                ...prev,
+                                endpoints: prev.endpoints.filter((item) => item.id !== endpoint.id),
+                              }));
                             });
                           }}
                           className="grid h-7 w-7 place-items-center rounded-md text-[#9c2a2a] hover:bg-[#fdecec]"
@@ -740,25 +604,19 @@ function Dashboard({
                         <button
                           type="button"
                           onClick={async () => {
-                            const timeoutId = setTimeout(async () => {
+                            runUndoableAction(toast, `Deleting profile "${profile.name}"…`, async () => {
                               const response = await fetch(`/api/profiles/${profile.id}`, { method: "DELETE" });
                               if (!response.ok) {
                                 toast.addToast({ message: "Failed to delete profile", type: "error" });
                                 return;
                               }
-                              setProject({
-                                ...project,
-                                profiles: project.profiles.filter((item) => item.id !== profile.id),
-                                mappingSets: project.mappingSets.filter(
+                              setProject((prev) => ({
+                                ...prev,
+                                profiles: prev.profiles.filter((item) => item.id !== profile.id),
+                                mappingSets: prev.mappingSets.filter(
                                   (set) => set.sourceProfileId !== profile.id && set.destinationProfileId !== profile.id,
                                 ),
-                              });
-                            }, 5000);
-                            toast.addToast({
-                              message: `Deleting profile "${profile.name}"…`,
-                              type: "info",
-                              duration: 5000,
-                              action: { label: "Undo", onAction: () => clearTimeout(timeoutId) },
+                              }));
                             });
                           }}
                           className="grid h-7 w-7 place-items-center rounded-md text-[#9c2a2a] hover:bg-[#fdecec]"
@@ -1268,7 +1126,7 @@ function ProjectCreateDialog({
     destinationSystem: "",
     owner: "",
     schedule: "",
-    folder: "",
+    folder: (() => { const f = sessionStorage.getItem("newProjectFolder"); if (f) sessionStorage.removeItem("newProjectFolder"); return f ?? ""; })(),
     status: "Draft" as Project["status"],
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});

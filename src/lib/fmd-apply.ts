@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { randomUUID } from "node:crypto";
 import type { PrismaClient } from "@prisma/client";
 import type { Project } from "@/lib/domain";
-import { fmdImportDraftSchema } from "@/lib/fmd-import";
+import { fmdImportDraftSchema } from "@/lib/fmd-import-schema";
 import { normalizeSectionType } from "@/lib/fmd-section-schemas";
 
 export const applyModeSchema = z.enum(["merge", "mapping", "sections", "create"]);
@@ -15,16 +16,21 @@ export const applySelectionSchema = z.object({
   fieldIndexesByProfile: z.record(z.string(), indexArraySchema).optional(),
   mappingSetIndexes: indexArraySchema.optional(),
   ruleIndexesByMappingSet: z.record(z.string(), indexArraySchema).optional(),
+  processFlowIndexes: indexArraySchema.optional(),
   sectionIndexes: indexArraySchema.optional(),
 });
 
 export type FmdApplySelection = z.infer<typeof applySelectionSchema>;
+
+export const itemTargetSchema = z.enum(["auto", "create", "merge", "ignore"]);
+export type ItemTarget = z.infer<typeof itemTargetSchema>;
 
 export const applyRequestSchema = z.object({
   mode: applyModeSchema,
   projectId: z.string().min(1).optional(),
   draft: fmdImportDraftSchema,
   selection: applySelectionSchema.optional(),
+  itemTargets: z.record(z.string(), itemTargetSchema).optional(),
 });
 
 export type FmdApplyRequest = z.infer<typeof applyRequestSchema>;
@@ -37,6 +43,7 @@ export type FmdConflict = {
     | "field-required"
     | "endpoint-duplicate"
     | "duplicate-destination"
+    | "process-flow-duplicate"
     | "section-duplicate"
     | "missing-project";
   message: string;
@@ -52,6 +59,7 @@ export type FmdApplyResult = {
   reusedMappingSets: number;
   createdRules: number;
   skippedRules: number;
+  createdProcessFlows: number;
   createdSections: number;
   warnings: string[];
 };
@@ -61,6 +69,7 @@ type CategoryFlags = {
   endpoints: boolean;
   profiles: boolean;
   mappingSets: boolean;
+  processFlows: boolean;
   sections: boolean;
 };
 
@@ -68,13 +77,13 @@ export function categoriesForMode(mode: FmdApplyMode): CategoryFlags {
   switch (mode) {
     case "merge":
     case "create":
-      return { metadata: true, endpoints: true, profiles: true, mappingSets: true, sections: true };
+      return { metadata: true, endpoints: true, profiles: true, mappingSets: true, processFlows: true, sections: true };
     case "mapping":
-      return { metadata: false, endpoints: false, profiles: true, mappingSets: true, sections: false };
+      return { metadata: false, endpoints: false, profiles: true, mappingSets: true, processFlows: false, sections: false };
     case "sections":
-      return { metadata: false, endpoints: false, profiles: false, mappingSets: false, sections: true };
+      return { metadata: false, endpoints: false, profiles: false, mappingSets: false, processFlows: false, sections: true };
     default:
-      return { metadata: false, endpoints: false, profiles: false, mappingSets: false, sections: false };
+      return { metadata: false, endpoints: false, profiles: false, mappingSets: false, processFlows: false, sections: false };
   }
 }
 
@@ -184,6 +193,20 @@ export function detectFmdConflicts(
     });
   }
 
+  if (categories.processFlows) {
+    const flowNames = new Set((project.processFlows ?? []).map((flow) => flow.name.toLowerCase().trim()));
+    (draft.processFlows ?? []).forEach((flow, index) => {
+      if (!includeIndex(selection.processFlowIndexes, index)) return;
+      if (flowNames.has(flow.name.toLowerCase().trim())) {
+        conflicts.push({
+          severity: "warning",
+          type: "process-flow-duplicate",
+          message: `Process flow "${flow.name}" already exists; it will be skipped.`,
+        });
+      }
+    });
+  }
+
   if (categories.mappingSets) {
     draft.mappingSets.forEach((draftSet, msIndex) => {
       if (!includeIndex(selection.mappingSetIndexes, msIndex)) return;
@@ -238,6 +261,7 @@ async function applyFmdDraftInTransaction(
     reusedMappingSets: 0,
     createdRules: 0,
     skippedRules: 0,
+    createdProcessFlows: 0,
     createdSections: 0,
     warnings: [],
   };
@@ -481,6 +505,33 @@ async function applyFmdDraftInTransaction(
         entry.ruleDestinationIds.add(destinationFieldId);
         result.createdRules += 1;
       }
+    }
+  }
+
+  if (categories.processFlows) {
+    const existingFlows = await tx.processFlow.findMany({ where: { projectId } });
+    const existingFlowNames = new Set(existingFlows.map((flow) => flow.name.toLowerCase().trim()));
+    const processFlows = draft.processFlows ?? [];
+    for (let index = 0; index < processFlows.length; index += 1) {
+      if (!includeIndex(selection.processFlowIndexes, index)) continue;
+      const flow = processFlows[index];
+      const flowName = flow.name.toLowerCase().trim();
+      if (existingFlowNames.has(flowName)) {
+        result.warnings.push(`Process flow "${flow.name}" already exists; skipped.`);
+        continue;
+      }
+      existingFlowNames.add(flowName);
+      await tx.processFlow.create({
+        data: {
+          id: randomUUID(),
+          projectId,
+          name: flow.name,
+          nodesJson: JSON.stringify(flow.nodes),
+          edgesJson: JSON.stringify(flow.edges),
+          notes: flow.notes ?? null,
+        },
+      });
+      result.createdProcessFlows += 1;
     }
   }
 

@@ -6,6 +6,7 @@ export interface SectionEditorProps {
   project: Project;
   onSave: (content: Record<string, unknown>, extra?: { title?: string; sectionType?: string }) => Promise<void>;
   saving: boolean;
+  onProjectFieldUpdate?: (field: string, value: string) => Promise<void>;
 }
 
 type EditorComponent = React.ComponentType<SectionEditorProps>;

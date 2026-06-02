@@ -541,6 +541,7 @@ describe("Boomi-shape XML generators", () => {
         { id: "f1", name: "id", dataType: "String", required: true, keyField: true, ordinal: 1 },
         { id: "f2", name: "address", dataType: "object", required: false, keyField: false, ordinal: 2 },
         { id: "f3", name: "city", parentPath: "address", dataType: "String", required: false, keyField: false, ordinal: 3 },
+        { id: "f4", name: "mobile_phone", parentPath: "Root/Object", dataType: "String", required: false, keyField: false, ordinal: 4 },
       ],
     });
     const { xml, componentType } = buildProfilePreviewXml(profile);
@@ -552,6 +553,8 @@ describe("Boomi-shape XML generators", () => {
     expect(xml).toContain('<JSONObjectEntry');
     expect(xml).toContain('name="address"');
     expect(xml).toContain('name="city"');
+    expect(xml).toContain('name="mobile_phone"');
+    expect(xml).not.toMatch(/<JSONObjectEntry[^>]+name="Root"/);
     expect(xml).toContain('<Qualifiers><QualifierList/></Qualifiers>');
     expect(xml).toContain('<tagLists/>');
     expect(validateComponentXml(xml).ok).toBe(true);

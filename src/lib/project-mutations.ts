@@ -73,6 +73,7 @@ export async function createMappingSet(prisma: PrismaClient, projectId: string, 
       destinationProfileId: input.destinationProfileId,
       direction: input.direction ?? "source-to-destination",
     },
+    include: { rules: true, transformNodes: true },
   });
 }
 

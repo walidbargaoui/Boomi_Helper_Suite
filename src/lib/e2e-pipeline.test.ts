@@ -95,6 +95,13 @@ describe("e2e pipeline", () => {
   const processId = `e2e-pipeline-${Date.now()}`;
 
   afterAll(async () => {
+    if (connectionId) {
+      try {
+        await prisma.boomiConnection.delete({ where: { id: connectionId } });
+      } catch {
+        // ignore cleanup errors
+      }
+    }
     if (projectId) {
       try {
         await prisma.project.delete({ where: { id: projectId } });
@@ -258,10 +265,9 @@ describe("e2e pipeline", () => {
     const applyBody = (await applyResponse.json()) as { result: { createdSections: number } };
     expect(applyBody.result.createdSections).toBe(1);
 
-    // 5a. Add Boomi sandbox connection
+    // 5a. Add global Boomi sandbox connection
     const connectionResponse = await createConnection(
       jsonRequest("POST", {
-        projectId,
         accountId: "test-acct",
         environmentName: "Sandbox",
         baseUrl: "https://api.boomi.com",
@@ -355,6 +361,8 @@ describe("e2e pipeline", () => {
 
     const dstProfileDraft = dryRunBody.drafts.find((d) => d.componentId === `draft-profile-${destProfileId}`);
     expect(dstProfileDraft).toBeDefined();
+
+    process.env.BOOMI_HELPER_ENABLE_LEGACY_XML_PUBLISH = "true";
 
     // Verify publish safety gates block publish when requirements are not met
     const blockedPublishResponse = await publish(

@@ -22,6 +22,33 @@ const builtInFixtures = [
   "/Users/walidbargaoui/Documents/Downloads for Chrome/FMD_sheet_FOX_算定結果ステータス・業務日付更新.xlsx",
 ];
 
+type GoldenExpectation = {
+  project?: Partial<Pick<FmdImportDraft["project"], "processId" | "name" | "sourceSystem" | "destinationSystem" | "owner" | "schedule" | "integrationPattern">>;
+  endpointNames?: string[];
+  profileNames?: string[];
+  mappingSetNames?: string[];
+};
+
+const goldenExpectations: Record<string, GoldenExpectation> = {
+  "Boomi設計書_SRSN001_セーレン商事_受注_in.xlsx": {
+    project: {
+      processId: "SRSN001",
+      name: "セーレン商事_受注_in",
+    },
+    profileNames: ["u_temp_edi_seiren_recieve", "セーレン受注データファイル"],
+  },
+  "FMD_To_SFs_Phone_v1.7.xlsx": {
+    project: {
+      sourceSystem: "Account Management System",
+      destinationSystem: "SuccessFactors",
+      schedule: "日次 22:05",
+    },
+    endpointNames: ["DEV", "QAS", "本番"],
+    profileNames: ["Account Management System", "SuccessFactors"],
+    mappingSetNames: ["Field Mapping"],
+  },
+};
+
 type RunMetrics = {
   filename: string;
   provider: string;
@@ -36,6 +63,13 @@ type RunMetrics = {
   warningCount: number;
   unresolvedRefCount: number;
   projectConfidence: number;
+  resolverConfidence: number;
+  acceptedSuggestionCount: number;
+  needsReviewCount: number;
+  metadataScore?: number;
+  endpointScore?: number;
+  profileNameScore?: number;
+  mappingSetNameScore?: number;
   ruleConfidenceMean: number;
   ruleConfidenceMin: number;
 };
@@ -45,6 +79,7 @@ function summarize(filename: string, response: FmdResolveResponse, fallbackDurat
   const ruleConfs = draft.mappingSets.flatMap((set) => set.rules.map((r) => r.confidence ?? 0));
   const fieldCount = draft.profiles.reduce((sum, p) => sum + p.fields.length, 0);
   const ruleCount = ruleConfs.length;
+  const golden = goldenExpectations[basename(filename)];
   return {
     filename: basename(filename),
     provider: response.resolver.provider,
@@ -59,9 +94,33 @@ function summarize(filename: string, response: FmdResolveResponse, fallbackDurat
     warningCount: draft.warnings.length,
     unresolvedRefCount: draft.unresolvedEvidenceRefs.length,
     projectConfidence: draft.project.confidence ?? 0,
+    resolverConfidence: response.resolver.confidence ?? 0,
+    acceptedSuggestionCount: response.resolver.acceptedSuggestions?.length ?? 0,
+    needsReviewCount: response.resolver.needsReview?.length ?? 0,
+    metadataScore: golden?.project ? scoreObjectFields(draft.project, golden.project) : undefined,
+    endpointScore: golden?.endpointNames ? scoreNameCoverage(draft.endpoints.map((endpoint) => endpoint.name), golden.endpointNames) : undefined,
+    profileNameScore: golden?.profileNames ? scoreNameCoverage(draft.profiles.map((profile) => profile.name), golden.profileNames) : undefined,
+    mappingSetNameScore: golden?.mappingSetNames ? scoreNameCoverage(draft.mappingSets.map((mappingSet) => mappingSet.name), golden.mappingSetNames) : undefined,
     ruleConfidenceMean: ruleCount ? ruleConfs.reduce((s, c) => s + c, 0) / ruleCount : 0,
     ruleConfidenceMin: ruleCount ? Math.min(...ruleConfs) : 0,
   };
+}
+
+function scoreObjectFields(actual: Record<string, unknown>, expected: Record<string, unknown>) {
+  const entries = Object.entries(expected).filter(([, value]) => value !== undefined && value !== "");
+  if (entries.length === 0) return undefined;
+  const matches = entries.filter(([key, value]) => normalize(actual[key]) === normalize(value)).length;
+  return matches / entries.length;
+}
+
+function scoreNameCoverage(actual: string[], expected: string[]) {
+  if (expected.length === 0) return undefined;
+  const actualSet = new Set(actual.map(normalize));
+  return expected.filter((name) => actualSet.has(normalize(name))).length / expected.length;
+}
+
+function normalize(value: unknown) {
+  return String(value ?? "").trim().toLowerCase();
 }
 
 async function runOne(filePath: string) {
@@ -77,6 +136,7 @@ async function runOne(filePath: string) {
   const detMs = Date.now() - detT0;
   const detMetrics = summarize(filePath, det, detMs);
   console.log(`  deterministic  · ${detMs}ms · ${detMetrics.profileCount}p ${detMetrics.fieldCount}f ${detMetrics.mappingSetCount}ms ${detMetrics.ruleCount}r conf=${detMetrics.projectConfidence.toFixed(2)} avgRule=${detMetrics.ruleConfidenceMean.toFixed(2)}`);
+  logGoldenScores("deterministic", detMetrics);
 
   const llmT0 = Date.now();
   const llm = await resolveFmdWorkbook(buffer, filePath, {}).catch((err) => {
@@ -86,7 +146,8 @@ async function runOne(filePath: string) {
   const llmMs = Date.now() - llmT0;
   const llmMetrics = llm ? summarize(filePath, llm, llmMs) : null;
   if (llmMetrics) {
-    console.log(`  ${llmMetrics.provider.padEnd(13)}· ${llmMs}ms · ${llmMetrics.profileCount}p ${llmMetrics.fieldCount}f ${llmMetrics.mappingSetCount}ms ${llmMetrics.ruleCount}r conf=${llmMetrics.projectConfidence.toFixed(2)} avgRule=${llmMetrics.ruleConfidenceMean.toFixed(2)}`);
+    console.log(`  ${llmMetrics.provider.padEnd(13)}· ${llmMs}ms · ${llmMetrics.profileCount}p ${llmMetrics.fieldCount}f ${llmMetrics.mappingSetCount}ms ${llmMetrics.ruleCount}r conf=${llmMetrics.projectConfidence.toFixed(2)} resolver=${llmMetrics.resolverConfidence.toFixed(2)} accepted=${llmMetrics.acceptedSuggestionCount} review=${llmMetrics.needsReviewCount} avgRule=${llmMetrics.ruleConfidenceMean.toFixed(2)}`);
+    logGoldenScores(llmMetrics.provider, llmMetrics);
     if (llmMetrics.warningCount > detMetrics.warningCount) {
       console.log(`  ↪ LLM surfaced ${llmMetrics.warningCount - detMetrics.warningCount} extra warning(s)`);
     }
@@ -96,6 +157,17 @@ async function runOne(filePath: string) {
   }
 
   return { deterministic: detMetrics, llm: llmMetrics };
+}
+
+function logGoldenScores(label: string, metrics: RunMetrics) {
+  const scores = [
+    ["metadata", metrics.metadataScore],
+    ["endpoints", metrics.endpointScore],
+    ["profiles", metrics.profileNameScore],
+    ["mappings", metrics.mappingSetNameScore],
+  ].filter((item): item is [string, number] => typeof item[1] === "number");
+  if (scores.length === 0) return;
+  console.log(`  ↪ ${label} golden: ${scores.map(([name, score]) => `${name}=${(score * 100).toFixed(0)}%`).join(" ")}`);
 }
 
 /**

@@ -1,9 +1,66 @@
+import { createHash } from "node:crypto";
 import ExcelJS from "exceljs";
 import { z } from "zod";
-import crypto from "crypto";
 import type { Endpoint, FmdSection, MappingRule, Profile, Project } from "@/lib/domain";
 import type { NormalizedFmdWorkbook } from "@/lib/fmd";
-import { lookupCache, storeCache } from "./fmd-resolver-cache";
+import {
+  confidenceSchema,
+  evidenceRefsSchema,
+  fmdDraftEndpointSchema,
+  fmdDraftFieldSchema,
+  fmdDraftMappingSetSchema,
+  fmdDraftProfileSchema,
+  fmdDraftProcessFlowSchema,
+  fmdDraftSectionSchema,
+  fmdImportDraftSchema,
+  type FmdDraftField,
+  type FmdDraftMappingRule,
+  type FmdDraftMappingSet,
+  type FmdDraftProfile,
+  type FmdDraftProcessFlow,
+  type FmdImportDraft,
+} from "./fmd-import-schema";
+
+import {
+  buildEvidenceInventoryPassPrompt,
+  buildEndpointPassPrompt,
+  buildProjectPassPrompt,
+  buildProfilePassPrompt,
+  buildMappingPassPrompt,
+  buildFlowPassPrompt,
+  buildVerifierPassPrompt,
+  buildSystemPrompt,
+  buildEvidenceInventoryPassSchema,
+  buildEndpointPassSchema,
+  buildProjectPassSchema,
+  buildProfilePassSchema,
+  buildMappingPassSchema,
+  buildFlowPassSchema,
+  buildVerifierPassSchema,
+} from "./fmd-resolver-context";
+import { clearResolverCache, lookupCache, storeCache } from "./fmd-resolver-cache";
+import type { LlmProviderOverride, LlmProviderRuntimeConfig } from "./llm-providers";
+import type { LlmProviderType } from "@/lib/domain";
+
+export {
+  fmdDraftEndpointSchema,
+  fmdDraftFieldSchema,
+  fmdDraftMappingRuleSchema,
+  fmdDraftMappingSetSchema,
+  fmdDraftProfileSchema,
+  fmdDraftProcessFlowSchema,
+  fmdDraftSectionSchema,
+  fmdImportDraftSchema,
+  fmdParserStrategySchema,
+} from "./fmd-import-schema";
+export type {
+  FmdDraftField,
+  FmdDraftMappingRule,
+  FmdDraftMappingSet,
+  FmdDraftProfile,
+  FmdDraftProcessFlow,
+  FmdImportDraft,
+} from "./fmd-import-schema";
 
 type RowValue = string | number | boolean | null | undefined;
 
@@ -34,126 +91,62 @@ export type FmdWorkbookEvidence = {
   redactionCount: number;
 };
 
-const confidenceSchema = z.coerce.number().min(0).max(1).default(0.5);
-const evidenceRefsSchema = z.array(z.string().min(1).max(100)).default([]);
-
-export const fmdDraftFieldSchema = z.object({
-  name: z.string().min(1).max(220),
-  parentPath: z.string().max(500).optional(),
-  label: z.string().max(220).optional(),
-  description: z.string().max(1200).optional(),
-  dataType: z.string().min(1).max(120).default("String"),
-  length: z.string().max(120).optional(),
-  required: z.boolean().default(false),
-  keyField: z.boolean().default(false),
-  format: z.string().max(160).optional(),
-  sample: z.string().max(600).optional(),
-  ordinal: z.number().int().min(0).default(0),
-  confidence: confidenceSchema,
-  evidenceRefs: evidenceRefsSchema,
-});
-
-export const fmdDraftProfileSchema = z.object({
-  name: z.string().min(1).max(240),
+const profileTypeFixSchema = z.object({
   role: z.enum(["source", "destination"]),
-  type: z.enum(["Flat File", "JSON", "XML", "Database", "API"]).default("Flat File"),
-  format: z.string().min(1).max(160).default("Unknown"),
-  rootPath: z.string().max(500).optional(),
-  fields: z.array(fmdDraftFieldSchema).default([]),
+  profileName: z.string().min(1).max(240),
+  newType: z.enum(["Flat File", "JSON", "XML", "Database", "API"]),
+  newFormat: z.string().min(1).max(160),
+  reason: z.string().max(700).optional(),
   confidence: confidenceSchema,
   evidenceRefs: evidenceRefsSchema,
 });
 
-export const fmdDraftMappingRuleSchema = z.object({
-  sourceProfileName: z.string().max(240).optional(),
-  destinationProfileName: z.string().max(240).optional(),
-  sourceFieldName: z.string().max(220).optional(),
-  sourceParentPath: z.string().max(500).optional(),
+const keyFieldSuggestionSchema = z.object({
+  role: z.enum(["source", "destination"]),
+  profileName: z.string().min(1).max(240),
+  fieldName: z.string().min(1).max(220),
+  reason: z.string().max(700).optional(),
+  confidence: confidenceSchema,
+  evidenceRefs: evidenceRefsSchema,
+});
+
+const mappingTypeCorrectionSchema = z.object({
+  mappingSetName: z.string().min(1).max(240),
   destinationFieldName: z.string().min(1).max(220),
-  destinationParentPath: z.string().max(500).optional(),
-  mappingType: z.enum(["direct", "constant", "lookup", "function", "join"]).default("direct"),
-  expression: z.string().max(2000).optional(),
-  defaultValue: z.string().max(1000).optional(),
-  comment: z.string().max(2000).optional(),
+  newMappingType: z.enum(["direct", "constant", "lookup", "function", "join"]),
+  reason: z.string().max(700).optional(),
   confidence: confidenceSchema,
   evidenceRefs: evidenceRefsSchema,
 });
 
-export const fmdParserStrategySchema = z.enum(["grouped", "generated"]);
-export type FmdParserStrategy = z.infer<typeof fmdParserStrategySchema>;
-
-export const fmdDraftMappingSetSchema = z.object({
-  name: z.string().min(1).max(240),
-  sourceProfileName: z.string().min(1).max(240),
-  destinationProfileName: z.string().min(1).max(240),
-  direction: z.string().max(240).default("source-to-destination"),
-  status: z.enum(["Draft", "Validated", "Ready for Boomi"]).default("Draft"),
-  rules: z.array(fmdDraftMappingRuleSchema).default([]),
+const resolverSuggestionInputSchema = z.object({
+  category: z.enum(["project", "endpoint", "profile", "mapping", "flow", "section", "warning"]).default("warning"),
+  target: z.string().min(1).max(300).default("workbook"),
+  field: z.string().max(160).optional(),
+  proposedValue: z.string().max(3000).optional(),
+  currentValue: z.string().max(3000).optional(),
+  reason: z.string().max(1000).optional(),
   confidence: confidenceSchema,
   evidenceRefs: evidenceRefsSchema,
-  warnings: z.array(z.string().max(500)).default([]),
-  strategy: fmdParserStrategySchema.optional(),
+  conflictNotes: z.array(z.string().max(700)).default([]),
 });
 
-export const fmdDraftEndpointSchema = z.object({
-  name: z.string().min(1).max(220),
-  role: z.enum(["source", "destination", "notification", "reference"]).default("reference"),
-  connectorType: z.string().max(220).default("Unknown"),
-  profileType: z.string().max(160).default("Unknown"),
-  format: z.string().max(160).default("Unknown"),
-  purpose: z.string().max(1200).default(""),
-  connectionInfo: z.string().max(2200).default(""),
-  confidence: confidenceSchema,
-  evidenceRefs: evidenceRefsSchema,
+const endpointCandidateSchema = fmdDraftEndpointSchema.extend({
+  reason: z.string().max(1000).optional(),
+  conflictNotes: z.array(z.string().max(700)).default([]),
 });
 
-export const fmdDraftSectionSchema = z.object({
-  title: z.string().min(1).max(240),
-  sectionType: z.enum([
-    "documentLog",
-    "explanation",
-    "overview",
-    "fieldMapping",
-    "environment",
-    "jobHandling",
-    "sample",
-    "reference",
-  ]),
-  sortOrder: z.number().int().min(0).default(0),
-  content: z.record(z.string(), z.unknown()).default({}),
-  confidence: confidenceSchema,
-  evidenceRefs: evidenceRefsSchema,
+const processFlowCandidateSchema = fmdDraftProcessFlowSchema.extend({
+  reason: z.string().max(1000).optional(),
+  conflictNotes: z.array(z.string().max(700)).default([]),
 });
-
-export const fmdImportDraftSchema = z.object({
-  project: z.object({
-    processId: z.string().min(1).max(120),
-    name: z.string().min(1).max(240),
-    description: z.string().max(3000).default(""),
-    sourceSystem: z.string().max(180).default("Unknown source"),
-    destinationSystem: z.string().max(180).default("Unknown destination"),
-    owner: z.string().max(160).default("Unassigned"),
-    schedule: z.string().max(240).optional(),
-    status: z.enum(["Draft", "Mapping Review", "Ready for Sandbox", "Published"]).default("Draft"),
-    confidence: confidenceSchema,
-    evidenceRefs: evidenceRefsSchema,
-  }),
-  endpoints: z.array(fmdDraftEndpointSchema).default([]),
-  profiles: z.array(fmdDraftProfileSchema).default([]),
-  mappingSets: z.array(fmdDraftMappingSetSchema).default([]),
-  fmdSections: z.array(fmdDraftSectionSchema).default([]),
-  warnings: z.array(z.string().max(700)).default([]),
-  unresolvedEvidenceRefs: evidenceRefsSchema,
-});
-
-export type FmdImportDraft = z.infer<typeof fmdImportDraftSchema>;
-export type FmdDraftProfile = z.infer<typeof fmdDraftProfileSchema>;
-export type FmdDraftField = z.infer<typeof fmdDraftFieldSchema>;
-export type FmdDraftMappingSet = z.infer<typeof fmdDraftMappingSetSchema>;
-export type FmdDraftMappingRule = z.infer<typeof fmdDraftMappingRuleSchema>;
 
 const fmdAiResolutionSchema = z.object({
   project: fmdImportDraftSchema.shape.project.partial().optional(),
+  integrationPattern: z.string().max(200).optional(),
+  suggestions: z.array(resolverSuggestionInputSchema).default([]),
+  endpoints: z.array(endpointCandidateSchema).default([]),
+  processFlows: z.array(processFlowCandidateSchema).default([]),
   profileRenames: z
     .array(
       z.object({
@@ -165,6 +158,8 @@ const fmdAiResolutionSchema = z.object({
       }),
     )
     .default([]),
+  profileTypeFixes: z.array(profileTypeFixSchema).default([]),
+  keyFieldSuggestions: z.array(keyFieldSuggestionSchema).default([]),
   mappingSetNotes: z
     .array(
       z.object({
@@ -175,19 +170,49 @@ const fmdAiResolutionSchema = z.object({
       }),
     )
     .default([]),
+  mappingTypeCorrections: z.array(mappingTypeCorrectionSchema).default([]),
   warnings: z.array(z.string().max(700)).default([]),
   unresolvedEvidenceRefs: evidenceRefsSchema,
 });
 
 type FmdAiResolution = z.infer<typeof fmdAiResolutionSchema>;
+type FmdResolverSuggestionInput = z.infer<typeof resolverSuggestionInputSchema>;
+type FmdEndpointCandidate = z.infer<typeof endpointCandidateSchema>;
+type FmdProcessFlowCandidate = z.infer<typeof processFlowCandidateSchema>;
+
+type ResolverPassName = "inventory" | "project" | "endpoints" | "profiles" | "mappings" | "flow" | "verifier";
+
+export type FmdResolverSuggestion = FmdResolverSuggestionInput & {
+  id: string;
+  pass: ResolverPassName;
+  status: "accepted" | "needs_review" | "rejected";
+};
+
+export type FmdResolverPass = {
+  pass: string;
+  ok: boolean;
+  durationMs: number;
+  error?: string;
+  acceptedSuggestions?: number;
+  needsReview?: number;
+};
 
 export type FmdResolverStatus = {
-  provider: "deterministic" | "ollama";
+  provider: "deterministic" | LlmProviderType;
+  providerId?: string;
+  providerName?: string;
+  providerSource?: "db" | "env" | "explicit";
   model: string;
   baseUrl?: string;
   ok: boolean;
   message: string;
   durationMs: number;
+  passes?: FmdResolverPass[];
+  suggestions?: FmdResolverSuggestion[];
+  acceptedSuggestions?: FmdResolverSuggestion[];
+  needsReview?: FmdResolverSuggestion[];
+  confidence?: number;
+  cache?: "hit" | "miss";
 };
 
 export type FmdResolveResponse = {
@@ -197,6 +222,13 @@ export type FmdResolveResponse = {
   debug?: {
     promptText?: string;
     rawLlmResponse?: string;
+    passes?: Array<{
+      pass: string;
+      promptText?: string;
+      rawLlmResponse?: string;
+      durationMs?: number;
+      error?: string;
+    }>;
   };
 };
 
@@ -206,11 +238,8 @@ type ExtractOptions = {
   maxCellLength?: number;
 };
 
-type OllamaResolveOptions = {
+type LlmResolveOptions = LlmProviderOverride & {
   useLlm?: boolean;
-  model?: string;
-  baseUrl?: string;
-  timeoutMs?: number;
 };
 
 type ColumnGroup = {
@@ -227,74 +256,10 @@ type ParsedMappingSheet = {
 
 const defaultOllamaModel = "qwen3:8b";
 const defaultOllamaBaseUrl = "http://localhost:11434";
+const resolverCacheVersion = "fmd-llm-resolver-v3";
+const autoApplyConfidence = 0.82;
 
-export { clearResolverCache } from "./fmd-resolver-cache";
-
-function getWorkbookHash(buffer: Buffer | ArrayBuffer, options: OllamaResolveOptions = {}): string {
-  const buf = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
-  const relevantOptions = JSON.stringify({
-    model: options.model ?? process.env.BOOMI_HELPER_OLLAMA_MODEL ?? defaultOllamaModel,
-    baseUrl: options.baseUrl ?? process.env.BOOMI_HELPER_OLLAMA_URL ?? defaultOllamaBaseUrl,
-  });
-  return crypto.createHash("sha256").update(buf).update(relevantOptions).digest("hex");
-}
-
-const ollamaResolutionFormat = {
-  type: "object",
-  properties: {
-    project: {
-      type: "object",
-      properties: {
-        processId: { type: "string" },
-        name: { type: "string" },
-        description: { type: "string" },
-        sourceSystem: { type: "string" },
-        destinationSystem: { type: "string" },
-        owner: { type: "string" },
-        schedule: { type: "string" },
-        status: { type: "string", enum: ["Draft", "Mapping Review", "Ready for Sandbox", "Published"] },
-        confidence: { type: "number" },
-        evidenceRefs: { type: "array", items: { type: "string" } },
-      },
-      additionalProperties: false,
-    },
-    profileRenames: {
-      type: "array",
-      maxItems: 2,
-      items: {
-        type: "object",
-        properties: {
-          role: { type: "string", enum: ["source", "destination"] },
-          currentName: { type: "string" },
-          proposedName: { type: "string" },
-          confidence: { type: "number" },
-          evidenceRefs: { type: "array", items: { type: "string" } },
-        },
-        required: ["role", "currentName", "proposedName", "confidence", "evidenceRefs"],
-        additionalProperties: false,
-      },
-    },
-    mappingSetNotes: {
-      type: "array",
-      maxItems: 2,
-      items: {
-        type: "object",
-        properties: {
-          mappingSetName: { type: "string" },
-          note: { type: "string" },
-          confidence: { type: "number" },
-          evidenceRefs: { type: "array", items: { type: "string" } },
-        },
-        required: ["mappingSetName", "note", "confidence", "evidenceRefs"],
-        additionalProperties: false,
-      },
-    },
-    warnings: { type: "array", maxItems: 2, items: { type: "string" } },
-    unresolvedEvidenceRefs: { type: "array", maxItems: 4, items: { type: "string" } },
-  },
-  required: ["profileRenames", "mappingSetNotes", "warnings", "unresolvedEvidenceRefs"],
-  additionalProperties: false,
-} as const;
+export { clearResolverCache };
 
 const roleMatchers: Array<[FmdSheetRole, RegExp]> = [
   ["documentLog", /document log|修正履歴/i],
@@ -310,11 +275,8 @@ const roleMatchers: Array<[FmdSheetRole, RegExp]> = [
 export async function resolveFmdWorkbook(
   buffer: Buffer | ArrayBuffer,
   filename: string,
-  options: OllamaResolveOptions = {},
+  options: LlmResolveOptions = {},
 ): Promise<FmdResolveResponse> {
-  const workbookHash = getWorkbookHash(buffer, options);
-  const cached = options.useLlm !== false ? lookupCache(workbookHash) as FmdResolveResponse | null : null;
-  if (cached) return cached;
 
   const evidence = await extractFmdEvidence(buffer, filename);
   const deterministicDraft = createDeterministicFmdDraft(evidence);
@@ -332,18 +294,23 @@ export async function resolveFmdWorkbook(
         ok: true,
         message: "Local LLM disabled; deterministic resolver used.",
         durationMs: 0,
+        passes: [],
+        suggestions: [],
+        acceptedSuggestions: [],
+        needsReview: [],
+        confidence: deterministicDraft.project.confidence,
       },
     };
   } else {
-    result = await resolveWithOllama(evidence, deterministicDraft, options)
-      .then((ollamaResult) => ({ summary, draft: ollamaResult.draft, resolver: ollamaResult.resolver, debug: ollamaResult.debug }))
+    result = await resolveWithConfiguredLlm(evidence, deterministicDraft, options)
+      .then((llmResult) => ({ summary, draft: llmResult.draft, resolver: llmResult.resolver, debug: llmResult.debug }))
       .catch((error): FmdResolveResponse => ({
         summary,
         draft: {
           ...deterministicDraft,
           warnings: [
             ...deterministicDraft.warnings,
-            `Qwen3-8B resolver unavailable; deterministic fallback used. ${
+            `Multi-pass LLM resolver failed; deterministic fallback used. ${
               error instanceof Error ? error.message : "Unknown error"
             }`,
           ],
@@ -353,13 +320,17 @@ export async function resolveFmdWorkbook(
           model: options.model ?? process.env.BOOMI_HELPER_OLLAMA_MODEL ?? defaultOllamaModel,
           baseUrl: options.baseUrl ?? process.env.BOOMI_HELPER_OLLAMA_URL ?? defaultOllamaBaseUrl,
           ok: false,
-          message: error instanceof Error ? error.message : "Qwen3-8B resolver failed.",
+          message: error instanceof Error ? error.message : "Multi-pass resolver failed.",
           durationMs: 0,
+          passes: [{ pass: "all", ok: false, durationMs: 0, error: error instanceof Error ? error.message : "Unknown error" }],
+          suggestions: [],
+          acceptedSuggestions: [],
+          needsReview: [],
+          confidence: deterministicDraft.project.confidence,
         },
       }));
   }
 
-  if (result.resolver.provider === "ollama") storeCache(workbookHash, result);
   return result;
 }
 
@@ -530,284 +501,425 @@ function refineProfileFromFields(profile: FmdDraftProfile, warnings: string[]): 
   return { ...profile, type: profile.type === "Database" ? "Database" : "Flat File", format: profile.type === "Database" ? "Table" : "TSV" };
 }
 
-async function pingOllama(baseUrl: string): Promise<void> {
-  let response: Response;
-  try {
-    response = await fetch(`${baseUrl}/api/tags`, {
-      method: "GET",
-      signal: AbortSignal.timeout(2000),
-    });
-  } catch (error) {
-    throw new Error(
-      `Ollama unreachable at ${baseUrl}. ${error instanceof Error ? error.message : "Unknown error"}`,
-    );
-  }
-  if (!response.ok) {
-    throw new Error(`Ollama health check returned HTTP ${response.status} at ${baseUrl}.`);
-  }
-}
-
-async function resolveWithOllama(
+async function resolveWithConfiguredLlm(
   evidence: FmdWorkbookEvidence,
   deterministicDraft: FmdImportDraft,
-  options: OllamaResolveOptions,
+  options: LlmResolveOptions,
 ): Promise<{ draft: FmdImportDraft; resolver: FmdResolverStatus; debug?: FmdResolveResponse["debug"] }> {
   const started = Date.now();
-  const model = options.model ?? process.env.BOOMI_HELPER_OLLAMA_MODEL ?? defaultOllamaModel;
-  const baseUrl = (options.baseUrl ?? process.env.BOOMI_HELPER_OLLAMA_URL ?? defaultOllamaBaseUrl).replace(/\/$/, "");
-
-  await pingOllama(baseUrl);
-
-  const promptWarnings: string[] = [];
-  const relevantSheets = evidence.sheets.filter((sheet) =>
-    ["fieldMapping", "overview", "environment", "jobHandling", "explanation", "documentLog"].includes(sheet.role),
-  );
-  if (relevantSheets.length > 8) {
-    promptWarnings.push(
-      `Qwen prompt context contained only the first 8 of ${relevantSheets.length} mapping/design sheets; deterministic parser still saw all sheets.`,
-    );
-  }
-
-  const prompt = buildOllamaPrompt(evidence, deterministicDraft);
-  const body = {
-    model,
-    stream: false,
-    format: ollamaResolutionFormat,
-    think: false,
-    options: {
-      temperature: 0,
-      top_p: 0.2,
-      num_ctx: 4096,
-      num_predict: 3000,
-    },
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are the local FMD resolver for Boomi Helper Suite. Return only valid JSON matching the requested schema. Preserve Japanese and technical field names exactly. Never invent data without evidence.",
-      },
-      { role: "user", content: prompt },
-    ],
+  const { createLlmChatProvider, getConfiguredLlmProvider } = await import("./llm-providers");
+  const configuredProvider = await getConfiguredLlmProvider(options);
+  const providerConfig: LlmProviderRuntimeConfig = {
+    ...configuredProvider,
+    timeoutMs: options.timeoutMs ?? configuredProvider.timeoutMs,
   };
-
-  const response = await fetch(`${baseUrl}/api/chat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(options.timeoutMs ?? 120_000),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Ollama returned HTTP ${response.status}. Is ${model} pulled and running?`);
+  const cacheKey = resolverCacheKey(evidence, deterministicDraft, resolverCacheProviderKey(providerConfig));
+  const cached = lookupCache(cacheKey);
+  if (isCachedLlmResult(cached)) {
+    return {
+      draft: cached.draft,
+      resolver: {
+        ...cached.resolver,
+        message: `${cached.resolver.message} Cache hit.`,
+        durationMs: 0,
+        cache: "hit",
+        passes: [{ pass: "cache", ok: true, durationMs: 0 }, ...(cached.resolver.passes ?? [])],
+      },
+    };
   }
 
-  const payload = (await response.json()) as { message?: { content?: string }; response?: string };
-  const content = payload.message?.content ?? payload.response ?? "";
-  if (!content.trim()) {
-    throw new Error("Ollama returned an empty resolver response.");
-  }
+  const provider = createLlmChatProvider(providerConfig);
+  await provider.listModels();
 
-  const parsedJson = parseJsonObject(content);
-  // The Ollama JSON schema constrains the LLM to a correction-patch shape
-  // (profileRenames, mappingSetNotes, warnings, unresolvedEvidenceRefs).
-  // Try the patch path first — `fmdImportDraftSchema` would otherwise validate
-  // an empty patch as a "full draft with 0 of everything" because its array
-  // fields default to [], wiping the deterministic results.
-  const parsedResolution = fmdAiResolutionSchema.safeParse(parsedJson);
-  let baseDraft: FmdImportDraft;
-  if (parsedResolution.success) {
-    baseDraft = applyAiResolution(deterministicDraft, parsedResolution.data, evidence);
-  } else {
-    const parsedDraft = fmdImportDraftSchema.safeParse(parsedJson);
-    if (!parsedDraft.success) {
-      throw new Error(
-        `Ollama returned JSON that matched neither resolver patch nor full draft schema: ${parsedResolution.error.message}`,
-      );
-    }
-    if (
-      parsedDraft.data.profiles.length === 0 &&
-      parsedDraft.data.mappingSets.length === 0 &&
-      parsedDraft.data.endpoints.length === 0 &&
-      deterministicDraft.profiles.length + deterministicDraft.mappingSets.length + deterministicDraft.endpoints.length > 0
-    ) {
-      // Defensive guard: the LLM returned a "full draft" shape but it's empty,
-      // while the deterministic parser had real data. Keep the deterministic draft
-      // and merge any warnings the LLM emitted.
-      baseDraft = fmdImportDraftSchema.parse({
-        ...deterministicDraft,
-        warnings: [
-          ...deterministicDraft.warnings,
-          ...parsedDraft.data.warnings.filter((warning) => !deterministicDraft.warnings.includes(warning)),
-        ],
+  const passResults: FmdResolverPass[] = [];
+  const debugPasses: NonNullable<FmdResolveResponse["debug"]>["passes"] = [];
+  const suggestions: FmdResolverSuggestion[] = [];
+  const acceptedSuggestions: FmdResolverSuggestion[] = [];
+  const needsReview: FmdResolverSuggestion[] = [];
+  let bestDraft = deterministicDraft;
+
+  const passes: Array<{
+    name: ResolverPassName;
+    buildPrompt: (e: FmdWorkbookEvidence, d: FmdImportDraft) => string;
+    schema: object;
+  }> = [
+    { name: "inventory", buildPrompt: buildEvidenceInventoryPassPrompt, schema: buildEvidenceInventoryPassSchema() },
+    { name: "project", buildPrompt: buildProjectPassPrompt, schema: buildProjectPassSchema() },
+    { name: "endpoints", buildPrompt: buildEndpointPassPrompt, schema: buildEndpointPassSchema() },
+    { name: "profiles", buildPrompt: buildProfilePassPrompt, schema: buildProfilePassSchema() },
+    { name: "mappings", buildPrompt: buildMappingPassPrompt, schema: buildMappingPassSchema() },
+    { name: "flow", buildPrompt: buildFlowPassPrompt, schema: buildFlowPassSchema() },
+    { name: "verifier", buildPrompt: buildVerifierPassPrompt, schema: buildVerifierPassSchema() },
+  ];
+
+  for (const pass of passes) {
+    const passStarted = Date.now();
+    try {
+      const prompt = pass.buildPrompt(evidence, bestDraft);
+      const beforeAccepted = acceptedSuggestions.length;
+      const beforeReview = needsReview.length;
+      const content = await provider.chat({
+        pass: pass.name,
+        systemPrompt: buildSystemPrompt(pass.name),
+        prompt,
+        schema: pass.schema,
       });
-    } else {
-      baseDraft = fmdImportDraftSchema.parse({
-        ...parsedDraft.data,
-        warnings: [
-          ...deterministicDraft.warnings,
-          ...parsedDraft.data.warnings.filter((warning) => !deterministicDraft.warnings.includes(warning)),
-        ],
+
+      const parsedJson = parseJsonObject(content);
+      const parsedResolution = fmdAiResolutionSchema.safeParse(parsedJson);
+      if (parsedResolution.success) {
+        const applied = applyAiResolution(bestDraft, parsedResolution.data, evidence, pass.name);
+        bestDraft = applied.draft;
+        suggestions.push(...applied.suggestions);
+        acceptedSuggestions.push(...applied.acceptedSuggestions);
+        needsReview.push(...applied.needsReview);
+      } else {
+        const parsedDraft = fmdImportDraftSchema.safeParse(parsedJson);
+        if (parsedDraft.success) {
+          if (
+            parsedDraft.data.profiles.length === 0 &&
+            parsedDraft.data.mappingSets.length === 0 &&
+            parsedDraft.data.endpoints.length === 0 &&
+            bestDraft.profiles.length + bestDraft.mappingSets.length + bestDraft.endpoints.length > 0
+          ) {
+            const merged = {
+              ...bestDraft,
+              warnings: [...bestDraft.warnings, ...parsedDraft.data.warnings.filter((w: string) => !bestDraft.warnings.includes(w))],
+            };
+            bestDraft = fmdImportDraftSchema.parse(merged);
+          } else {
+            const merged = {
+              ...parsedDraft.data,
+              warnings: [...bestDraft.warnings, ...parsedDraft.data.warnings.filter((w: string) => !bestDraft.warnings.includes(w))],
+            };
+            bestDraft = fmdImportDraftSchema.parse(merged);
+          }
+        }
+      }
+
+      passResults.push({
+        pass: pass.name,
+        ok: true,
+        durationMs: Date.now() - passStarted,
+        acceptedSuggestions: acceptedSuggestions.length - beforeAccepted,
+        needsReview: needsReview.length - beforeReview,
+      });
+      debugPasses.push({ pass: pass.name, promptText: prompt, rawLlmResponse: content, durationMs: Date.now() - passStarted });
+    } catch (error) {
+      passResults.push({
+        pass: pass.name,
+        ok: false,
+        durationMs: Date.now() - passStarted,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      debugPasses.push({
+        pass: pass.name,
+        promptText: pass.buildPrompt(evidence, bestDraft),
+        durationMs: Date.now() - passStarted,
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   }
-  const draft = promptWarnings.length
-    ? fmdImportDraftSchema.parse({
-        ...baseDraft,
-        warnings: [...baseDraft.warnings, ...promptWarnings.filter((warning) => !baseDraft.warnings.includes(warning))],
-      })
-    : baseDraft;
 
-  return {
-    draft,
+  const allOk = passResults.every((p) => p.ok);
+  const totalDuration = Date.now() - started;
+  if (needsReview.length > 0) {
+    bestDraft = fmdImportDraftSchema.parse({
+      ...bestDraft,
+      warnings: [
+        ...bestDraft.warnings,
+        `Resolver kept ${needsReview.length} lower-confidence or conflicting suggestion(s) for review.`,
+      ],
+    });
+  }
+  const resolverConfidence = computeResolverConfidence(bestDraft, acceptedSuggestions, passResults);
+
+  const result: { draft: FmdImportDraft; resolver: FmdResolverStatus; debug: NonNullable<FmdResolveResponse["debug"]> } = {
+    draft: bestDraft,
     resolver: {
-      provider: "ollama",
-      model,
-      baseUrl,
-      ok: true,
-      message: "Resolved with local Qwen3-8B through Ollama.",
-      durationMs: Date.now() - started,
+      provider: providerConfig.type,
+      providerId: providerConfig.id,
+      providerName: providerConfig.name,
+      providerSource: providerConfig.source,
+      model: providerConfig.model,
+      baseUrl: providerConfig.baseUrl,
+      ok: allOk,
+      message: allOk
+        ? `Multi-pass resolution complete (${passResults.length} passes).`
+        : `Multi-pass resolution completed with ${passResults.filter((p) => !p.ok).length} pass error(s).`,
+      durationMs: totalDuration,
+      passes: passResults,
+      suggestions,
+      acceptedSuggestions,
+      needsReview,
+      confidence: resolverConfidence,
+      cache: "miss" as const,
     },
-    debug: {
-      promptText: prompt,
-      rawLlmResponse: content,
-    },
+    debug: { passes: debugPasses },
   };
-}
 
-function buildOllamaPrompt(evidence: FmdWorkbookEvidence, deterministicDraft: FmdImportDraft) {
-  const compactSheets = evidence.sheets
-    .filter((sheet) => ["fieldMapping", "overview", "environment", "jobHandling", "explanation", "documentLog"].includes(sheet.role))
-    .slice(0, 8)
-    .map((sheet) => ({
-      name: sheet.name,
-      role: sheet.role,
-      rows: sheet.rows.slice(0, sheet.role === "fieldMapping" ? 10 : 6).map((row) => ({
-        ref: row.evidenceRef,
-        cells: row.cells.slice(0, 12),
-      })),
-    }));
-
-  return JSON.stringify(
-    {
-      task:
-        "Review workbook evidence and deterministic parser summary. Return only a compact correction patch. Do not restate profiles, fields, mapping rules, endpoints, or sections. Empty arrays are valid and preferred when the deterministic parser is already reasonable. Warnings are only for ambiguity or unresolved data; do not describe mappings that were parsed correctly. Return at most 2 profileRenames, 2 mappingSetNotes, 2 warnings, and 4 unresolvedEvidenceRefs. Keep only data supported by evidenceRefs. Use confidence 0.0-1.0. Preserve Japanese and technical names exactly.",
-      schemaNotes: {
-        requiredTopLevel: ["project", "profileRenames", "mappingSetNotes", "warnings", "unresolvedEvidenceRefs"],
-        projectFields:
-          "Optional object. Include only corrected project fields you are confident about: processId, name, description, sourceSystem, destinationSystem, owner, schedule, status, confidence, evidenceRefs.",
-        profileRenames:
-          "Optional array. Rename generic or wrong profile names using currentName, proposedName, role, confidence, evidenceRefs.",
-        mappingSetNotes:
-          "Optional array. Add notes when mapping direction, constants, scattered logic, or ambiguity is visible.",
-        evidenceRefs: "Use sheet row refs like Field Mapping!R14.",
-      },
-      evidenceWarnings: evidence.warnings,
-      redactionCount: evidence.redactionCount,
-      workbook: {
-        filename: evidence.filename,
-        sheets: compactSheets,
-      },
-      deterministicSummary: {
-        project: deterministicDraft.project,
-        profiles: deterministicDraft.profiles.slice(0, 8).map((profile) => ({
-          name: profile.name,
-          role: profile.role,
-          type: profile.type,
-          format: profile.format,
-          fieldCount: profile.fields.length,
-          sampleFields: profile.fields.slice(0, 4).map((field) => ({
-            parentPath: field.parentPath,
-            name: field.name,
-            dataType: field.dataType,
-            required: field.required,
-          })),
-        })),
-        mappingSets: deterministicDraft.mappingSets.slice(0, 5).map((mappingSet) => ({
-          name: mappingSet.name,
-          sourceProfileName: mappingSet.sourceProfileName,
-          destinationProfileName: mappingSet.destinationProfileName,
-          ruleCount: mappingSet.rules.length,
-          sampleRules: mappingSet.rules.slice(0, 4).map((rule) => ({
-            sourceFieldName: rule.sourceFieldName,
-            destinationFieldName: rule.destinationFieldName,
-            mappingType: rule.mappingType,
-            expression: rule.expression?.slice(0, 180),
-            evidenceRefs: rule.evidenceRefs,
-          })),
-        })),
-        endpoints: deterministicDraft.endpoints.slice(0, 4).map((endpoint) => ({
-          name: endpoint.name,
-          role: endpoint.role,
-          connectorType: endpoint.connectorType,
-          format: endpoint.format,
-          evidenceRefs: endpoint.evidenceRefs,
-        })),
-      },
-    },
-    null,
-    2,
-  );
+  storeCache(cacheKey, { draft: result.draft, resolver: result.resolver });
+  return result;
 }
 
 function applyAiResolution(
   draft: FmdImportDraft,
   resolution: FmdAiResolution,
   evidence?: FmdWorkbookEvidence,
-): FmdImportDraft {
+  pass: ResolverPassName = "verifier",
+): {
+  draft: FmdImportDraft;
+  suggestions: FmdResolverSuggestion[];
+  acceptedSuggestions: FmdResolverSuggestion[];
+  needsReview: FmdResolverSuggestion[];
+} {
+  const suggestions: FmdResolverSuggestion[] = [];
+  const acceptedSuggestions: FmdResolverSuggestion[] = [];
+  const needsReview: FmdResolverSuggestion[] = [];
+  let nextDraft = draft;
+
+  const recordSuggestion = (
+    input: FmdResolverSuggestionInput,
+    defaultStatus?: FmdResolverSuggestion["status"],
+  ): FmdResolverSuggestion => {
+    const status = defaultStatus ?? classifySuggestion(input);
+    const suggestion: FmdResolverSuggestion = {
+      ...input,
+      id: `${pass}-${suggestions.length + 1}`,
+      pass,
+      status,
+    };
+    suggestions.push(suggestion);
+    if (status === "accepted") acceptedSuggestions.push(suggestion);
+    if (status === "needs_review") needsReview.push(suggestion);
+    return suggestion;
+  };
+
+  for (const suggestion of resolution.suggestions) {
+    recordSuggestion(suggestion);
+  }
+
+  const projectPatch: Partial<FmdImportDraft["project"]> = {};
+  const projectEvidenceRefs = new Set(nextDraft.project.evidenceRefs);
+  let projectConfidence = nextDraft.project.confidence;
+  const projectCandidate = {
+    ...(resolution.project ?? {}),
+    ...(resolution.integrationPattern ? { integrationPattern: resolution.integrationPattern } : {}),
+  } as Partial<FmdImportDraft["project"]>;
+
+  for (const [field, rawValue] of Object.entries(projectCandidate)) {
+    if (field === "confidence" || field === "evidenceRefs") continue;
+    if (rawValue === undefined || rawValue === "") continue;
+    const proposedValue = String(rawValue);
+    const currentValue = String(nextDraft.project[field as keyof FmdImportDraft["project"]] ?? "");
+    if (normalizeForMatch(currentValue) === normalizeForMatch(proposedValue)) continue;
+    const conflictNotes = projectConflictNotes(field, currentValue, proposedValue, projectCandidate.confidence ?? 0);
+    const suggestion = recordSuggestion({
+      category: "project",
+      target: `project.${field}`,
+      field,
+      currentValue,
+      proposedValue,
+      confidence: projectCandidate.confidence ?? 0.5,
+      evidenceRefs: projectCandidate.evidenceRefs ?? [],
+      reason: `LLM proposed ${field} from workbook evidence.`,
+      conflictNotes,
+    });
+    if (suggestion.status === "accepted") {
+      projectPatch[field as keyof FmdImportDraft["project"]] = rawValue as never;
+      for (const ref of suggestion.evidenceRefs) projectEvidenceRefs.add(ref);
+      projectConfidence = Math.max(projectConfidence, suggestion.confidence);
+    }
+  }
+
+  if (Object.keys(projectPatch).length > 0) {
+    nextDraft = fmdImportDraftSchema.parse({
+      ...nextDraft,
+      project: {
+        ...nextDraft.project,
+        ...projectPatch,
+        confidence: projectConfidence,
+        evidenceRefs: [...projectEvidenceRefs],
+      },
+    });
+  }
+
+  const endpointResult = applyEndpointCandidates(nextDraft, resolution.endpoints, recordSuggestion);
+  nextDraft = endpointResult.draft;
+
+  const processFlowResult = applyProcessFlowCandidates(nextDraft, resolution.processFlows, recordSuggestion);
+  nextDraft = processFlowResult.draft;
+
+  const acceptedRenames = resolution.profileRenames.filter((rename) => {
+    const conflictNotes: string[] = [];
+    if (!nextDraft.profiles.some((profile) => profile.role === rename.role && namesEqual(profile.name, rename.currentName))) {
+      conflictNotes.push("Current profile was not found in the deterministic draft.");
+    }
+    if (nextDraft.profiles.some((profile) => profile.role === rename.role && namesEqual(profile.name, rename.proposedName))) {
+      conflictNotes.push("Another profile already has the proposed name.");
+    }
+    const suggestion = recordSuggestion({
+      category: "profile",
+      target: `${rename.role} profile ${rename.currentName}`,
+      field: "name",
+      currentValue: rename.currentName,
+      proposedValue: rename.proposedName,
+      confidence: rename.confidence,
+      evidenceRefs: rename.evidenceRefs,
+      reason: "LLM proposed a less generic profile name.",
+      conflictNotes,
+    });
+    return suggestion.status === "accepted";
+  });
+
   const renameByKey = new Map(
-    resolution.profileRenames.map((rename) => [
+    acceptedRenames.map((rename) => [
       `${rename.role}::${rename.currentName}`.toLowerCase(),
       rename.proposedName,
     ]),
   );
   const renameProfile = (role: Profile["role"], name: string) =>
     renameByKey.get(`${role}::${name}`.toLowerCase()) ?? name;
-  const mappingNotes = new Map(resolution.mappingSetNotes.map((note) => [note.mappingSetName, note.note]));
+
+  const acceptedMappingNotes = resolution.mappingSetNotes.filter((note) => {
+    const conflictNotes: string[] = [];
+    if (!nextDraft.mappingSets.some((mappingSet) => namesEqual(mappingSet.name, note.mappingSetName))) {
+      conflictNotes.push("Mapping set was not found in the deterministic draft.");
+    }
+    const suggestion = recordSuggestion({
+      category: "mapping",
+      target: `mapping set ${note.mappingSetName}`,
+      field: "note",
+      proposedValue: note.note,
+      confidence: note.confidence,
+      evidenceRefs: note.evidenceRefs,
+      reason: note.note,
+      conflictNotes,
+    });
+    return suggestion.status === "accepted";
+  });
+  const mappingNotes = new Map(acceptedMappingNotes.map((note) => [note.mappingSetName, note.note]));
+
+  const acceptedTypeFixes = resolution.profileTypeFixes.filter((fix) => {
+    const profileExists = nextDraft.profiles.some(
+      (profile) => profile.role === fix.role && namesEqual(renameProfile(profile.role, profile.name), fix.profileName),
+    );
+    const suggestion = recordSuggestion({
+      category: "profile",
+      target: `${fix.role} profile ${fix.profileName}`,
+      field: "type/format",
+      proposedValue: `${fix.newType} / ${fix.newFormat}`,
+      confidence: fix.confidence,
+      evidenceRefs: fix.evidenceRefs,
+      reason: fix.reason ?? "LLM proposed a profile type/format correction.",
+      conflictNotes: profileExists ? [] : ["Profile was not found in the deterministic draft."],
+    });
+    return suggestion.status === "accepted";
+  });
+  const typeFixByKey = new Map(
+    acceptedTypeFixes.map((fix) => [
+      `${fix.role}::${fix.profileName}`.toLowerCase(),
+      { type: fix.newType, format: fix.newFormat, reason: fix.reason },
+    ]),
+  );
+
+  const acceptedKeyFields = resolution.keyFieldSuggestions.filter((item) => {
+    const profile = nextDraft.profiles.find(
+      (candidate) => candidate.role === item.role && namesEqual(renameProfile(candidate.role, candidate.name), item.profileName),
+    );
+    const fieldExists = profile?.fields.some((field) => namesEqual(field.name, item.fieldName)) ?? false;
+    const suggestion = recordSuggestion({
+      category: "profile",
+      target: `${item.role} profile ${item.profileName}.${item.fieldName}`,
+      field: "keyField",
+      proposedValue: "true",
+      confidence: item.confidence,
+      evidenceRefs: item.evidenceRefs,
+      reason: item.reason ?? "LLM marked this as a likely key field.",
+      conflictNotes: fieldExists ? [] : ["Field was not found in the deterministic draft."],
+    });
+    return suggestion.status === "accepted";
+  });
+  const keyFieldSuggestions = new Map(
+    acceptedKeyFields.map((s) => [
+      `${s.role}::${s.profileName.toLowerCase()}::${s.fieldName.toLowerCase()}`,
+      s,
+    ]),
+  );
+
+  const acceptedMappingTypeCorrections = resolution.mappingTypeCorrections.filter((correction) => {
+    const mappingSet = nextDraft.mappingSets.find((set) => namesEqual(set.name, correction.mappingSetName));
+    const rule = mappingSet?.rules.find((item) => namesEqual(item.destinationFieldName, correction.destinationFieldName));
+    const suggestion = recordSuggestion({
+      category: "mapping",
+      target: `${correction.mappingSetName}.${correction.destinationFieldName}`,
+      field: "mappingType",
+      currentValue: rule?.mappingType,
+      proposedValue: correction.newMappingType,
+      confidence: correction.confidence,
+      evidenceRefs: correction.evidenceRefs,
+      reason: correction.reason ?? "LLM proposed a mapping type correction.",
+      conflictNotes: rule ? [] : ["Mapping rule was not found in the deterministic draft."],
+    });
+    return suggestion.status === "accepted";
+  });
+  const mappingTypeCorrections = new Map(
+    acceptedMappingTypeCorrections.map((c) => [
+      `${c.mappingSetName.toLowerCase()}::${c.destinationFieldName.toLowerCase()}`,
+      c,
+    ]),
+  );
   const reconciliationWarnings: string[] = [];
 
-  return fmdImportDraftSchema.parse({
-    ...draft,
-    project: {
-      ...draft.project,
-      ...filterDefinedResolutionProject(resolution.project),
-      confidence: Math.max(draft.project.confidence, resolution.project?.confidence ?? 0),
-      evidenceRefs: [
-        ...new Set([
-          ...draft.project.evidenceRefs,
-          ...(resolution.project?.evidenceRefs ?? []),
-        ]),
-      ],
-    },
-    profiles: draft.profiles.map((profile) => {
+  nextDraft = fmdImportDraftSchema.parse({
+    ...nextDraft,
+    profiles: nextDraft.profiles.map((profile) => {
       const newName = renameProfile(profile.role, profile.name);
       const renamed = newName !== profile.name;
       let nextType = profile.type;
       let nextFormat = profile.format;
-      // POST-LLM TYPE RECONCILIATION (M8 "Fix First" #4): when the LLM renames
-      // a profile (e.g. "Account Management System" → "ServiceNow"), the original
-      // deterministic inference was based on the OLD name's evidence rows. Re-run
-      // inferProfileTypeFromEvidence under the NEW name so a system whose endpoints
-      // are clearly an API doesn't stay flagged as Flat File / TSV.
-      if (renamed && evidence) {
+
+      const fixKey = `${profile.role}::${profile.name}`.toLowerCase();
+      const renameFixKey = renamed ? `${profile.role}::${newName}`.toLowerCase() : "";
+      const typeFix = typeFixByKey.get(fixKey) ?? typeFixByKey.get(renameFixKey);
+      if (typeFix && (typeFix.type !== profile.type || typeFix.format !== profile.format)) {
+        nextType = typeFix.type;
+        nextFormat = typeFix.format;
+        reconciliationWarnings.push(
+          `Profile "${profile.name}" type/format corrected to ${typeFix.type} / ${typeFix.format} by LLM${typeFix.reason ? `: ${typeFix.reason}` : ""}.`,
+        );
+      } else if (renamed && evidence) {
         const reinferred = inferProfileTypeFromEvidence(newName, newName, evidence);
-        const fieldsTriedAlready = profile.fields.length > 0;
-        const reinferredSpecific = reinferred.format !== "Unknown" && reinferred.format !== "";
-        // Only override when re-inference produces a more specific answer. Keep the
-        // existing answer when the new name has no evidence (or the LLM rename
-        // doesn't change anything substantive).
-        if (reinferredSpecific && (reinferred.type !== profile.type || reinferred.format !== profile.format)) {
-          nextType = reinferred.type;
-          nextFormat = reinferred.format;
-          reconciliationWarnings.push(
-            `Profile "${profile.name}" → "${newName}" type/format reconciled to ${reinferred.type} / ${reinferred.format} after LLM rename${fieldsTriedAlready ? " (overriding deterministic guess)" : ""}.`,
-          );
+        if (reinferred.type !== profile.type || reinferred.format !== profile.format) {
+          const reinferredSpecific = reinferred.format !== "Unknown" && reinferred.format !== "";
+          if (reinferredSpecific) {
+            nextType = reinferred.type;
+            nextFormat = reinferred.format;
+            reconciliationWarnings.push(
+              `Profile "${profile.name}" -> "${newName}" type/format reconciled to ${reinferred.type} / ${reinferred.format} after LLM rename.`,
+            );
+          }
         }
       }
+
+      const updatedFields = profile.fields.map((field) => {
+        const keySuggestion = keyFieldSuggestions.get(
+          `${profile.role}::${profile.name.toLowerCase()}::${field.name.toLowerCase()}`,
+        ) ?? keyFieldSuggestions.get(
+          `${profile.role}::${newName.toLowerCase()}::${field.name.toLowerCase()}`,
+        );
+        if (keySuggestion && !field.keyField) {
+          return { ...field, keyField: true, confidence: Math.max(field.confidence, keySuggestion.confidence) };
+        }
+        return field;
+      });
+
       return {
         ...profile,
         name: newName,
         type: nextType,
         format: nextFormat,
+        fields: updatedFields,
         confidence: Math.max(
           profile.confidence,
           resolution.profileRenames.find(
@@ -818,13 +930,27 @@ function applyAiResolution(
         ),
       };
     }),
-    mappingSets: draft.mappingSets.map((mappingSet) => {
+    mappingSets: nextDraft.mappingSets.map((mappingSet) => {
       const note = mappingNotes.get(mappingSet.name);
+      const updatedRules = mappingSet.rules.map((rule) => {
+        const correctionKey = `${mappingSet.name.toLowerCase()}::${rule.destinationFieldName.toLowerCase()}`;
+        const correction = mappingTypeCorrections.get(correctionKey);
+        if (correction && correction.newMappingType !== rule.mappingType) {
+          return {
+            ...rule,
+            mappingType: correction.newMappingType,
+            confidence: Math.max(rule.confidence, correction.confidence),
+            comment: rule.comment ?? correction.reason,
+          };
+        }
+        return rule;
+      });
+
       return {
         ...mappingSet,
         sourceProfileName: renameProfile("source", mappingSet.sourceProfileName),
         destinationProfileName: renameProfile("destination", mappingSet.destinationProfileName),
-        rules: mappingSet.rules.map((rule) => ({
+        rules: updatedRules.map((rule) => ({
           ...rule,
           sourceProfileName: rule.sourceProfileName
             ? renameProfile("source", rule.sourceProfileName)
@@ -833,7 +959,7 @@ function applyAiResolution(
             ? renameProfile("destination", rule.destinationProfileName)
             : rule.destinationProfileName,
         })),
-        warnings: note ? [...mappingSet.warnings, note] : mappingSet.warnings,
+        warnings: note ? (mappingSet.warnings.includes(note) ? mappingSet.warnings : [...mappingSet.warnings, note]) : mappingSet.warnings,
         confidence: Math.max(
           mappingSet.confidence,
           resolution.mappingSetNotes.find((item) => item.mappingSetName === mappingSet.name)?.confidence ?? 0,
@@ -841,25 +967,248 @@ function applyAiResolution(
       };
     }),
     warnings: [
-      ...draft.warnings,
-      ...resolution.warnings.filter((warning) => !draft.warnings.includes(warning)),
+      ...nextDraft.warnings,
+      ...resolution.warnings.filter((warning) => !nextDraft.warnings.includes(warning)),
       ...reconciliationWarnings,
     ],
     unresolvedEvidenceRefs: [
-      ...new Set([...draft.unresolvedEvidenceRefs, ...resolution.unresolvedEvidenceRefs]),
+      ...new Set([...nextDraft.unresolvedEvidenceRefs, ...resolution.unresolvedEvidenceRefs]),
     ],
   });
+
+  return { draft: nextDraft, suggestions, acceptedSuggestions, needsReview };
 }
 
-function filterDefinedResolutionProject(project?: FmdAiResolution["project"]) {
-  if (!project) return {};
-  const output: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(project)) {
-    if (value !== undefined && value !== "" && key !== "confidence" && key !== "evidenceRefs") {
-      output[key] = value;
+function classifySuggestion(input: FmdResolverSuggestionInput): FmdResolverSuggestion["status"] {
+  if (input.conflictNotes.length > 0) return "needs_review";
+  if (input.confidence < autoApplyConfidence) return "needs_review";
+  if (input.evidenceRefs.length === 0) return "needs_review";
+  return "accepted";
+}
+
+function applyEndpointCandidates(
+  draft: FmdImportDraft,
+  candidates: FmdEndpointCandidate[],
+  recordSuggestion: (input: FmdResolverSuggestionInput, defaultStatus?: FmdResolverSuggestion["status"]) => FmdResolverSuggestion,
+): { draft: FmdImportDraft } {
+  if (candidates.length === 0) return { draft };
+  const endpoints = [...draft.endpoints];
+  for (const candidate of candidates) {
+    const existingIndex = endpoints.findIndex(
+      (endpoint) => namesEqual(endpoint.name, candidate.name) && endpoint.role === candidate.role,
+    );
+    const existing = existingIndex >= 0 ? endpoints[existingIndex] : undefined;
+    const mergedPreview = existing ? mergeEndpoint(existing, candidate) : candidate;
+    const changed = !existing || JSON.stringify(existing) !== JSON.stringify(mergedPreview);
+    const suggestion = recordSuggestion({
+      category: "endpoint",
+      target: `${candidate.role} endpoint ${candidate.name}`,
+      field: existing ? "endpoint enrichment" : "endpoint",
+      currentValue: existing ? endpointSummary(existing) : "",
+      proposedValue: endpointSummary(candidate),
+      confidence: candidate.confidence,
+      evidenceRefs: candidate.evidenceRefs,
+      reason: candidate.reason ?? "LLM found endpoint/environment evidence.",
+      conflictNotes: candidate.conflictNotes,
+    }, changed ? undefined : "rejected");
+    if (suggestion.status !== "accepted") continue;
+    if (existingIndex >= 0) {
+      endpoints[existingIndex] = fmdDraftEndpointSchema.parse(mergedPreview);
+    } else {
+      endpoints.push(fmdDraftEndpointSchema.parse(candidate));
     }
   }
-  return output;
+  return {
+    draft: fmdImportDraftSchema.parse({
+      ...draft,
+      endpoints: dedupeBy(endpoints, (endpoint) => `${endpoint.role}::${endpoint.name}`),
+    }),
+  };
+}
+
+function applyProcessFlowCandidates(
+  draft: FmdImportDraft,
+  candidates: FmdProcessFlowCandidate[],
+  recordSuggestion: (input: FmdResolverSuggestionInput, defaultStatus?: FmdResolverSuggestion["status"]) => FmdResolverSuggestion,
+): { draft: FmdImportDraft } {
+  if (candidates.length === 0) return { draft };
+  const processFlows = [...draft.processFlows];
+  for (const candidate of candidates.slice(0, 1)) {
+    const conflictNotes = [
+      ...candidate.conflictNotes,
+      ...processFlowGraphConflictNotes(candidate),
+    ];
+    const duplicate = processFlows.find((flow) => namesEqual(flow.name, candidate.name));
+    if (duplicate) {
+      conflictNotes.push("A process flow with this name already exists in the draft.");
+    }
+    const suggestion = recordSuggestion({
+      category: "flow",
+      target: `process flow ${candidate.name}`,
+      field: "processFlow",
+      currentValue: duplicate ? processFlowSummary(duplicate) : "",
+      proposedValue: processFlowSummary(candidate),
+      confidence: candidate.confidence,
+      evidenceRefs: candidate.evidenceRefs,
+      reason: candidate.reason ?? "LLM proposed a sample Boomi process flow from FMD evidence.",
+      conflictNotes,
+    });
+    if (suggestion.status !== "accepted") continue;
+    processFlows.push(fmdDraftProcessFlowSchema.parse({
+      id: candidate.id,
+      name: candidate.name,
+      nodes: candidate.nodes,
+      edges: candidate.edges,
+      notes: candidate.notes,
+      confidence: candidate.confidence,
+      evidenceRefs: candidate.evidenceRefs,
+    }));
+  }
+  return {
+    draft: fmdImportDraftSchema.parse({
+      ...draft,
+      processFlows: dedupeBy(processFlows, (flow) => flow.name),
+    }),
+  };
+}
+
+function processFlowGraphConflictNotes(flow: FmdDraftProcessFlow): string[] {
+  const notes: string[] = [];
+  const nodeIds = new Set<string>();
+  for (const node of flow.nodes) {
+    const normalized = node.id.trim();
+    if (nodeIds.has(normalized)) notes.push(`Duplicate process flow node id "${node.id}".`);
+    nodeIds.add(normalized);
+  }
+  const edgeIds = new Set<string>();
+  for (const edge of flow.edges) {
+    if (edgeIds.has(edge.id)) notes.push(`Duplicate process flow edge id "${edge.id}".`);
+    edgeIds.add(edge.id);
+    if (!nodeIds.has(edge.source)) notes.push(`Edge "${edge.id}" source "${edge.source}" is not a node id.`);
+    if (!nodeIds.has(edge.target)) notes.push(`Edge "${edge.id}" target "${edge.target}" is not a node id.`);
+  }
+  const startNodes = flow.nodes.filter((node) => node.type === "start" || node.type.startsWith("start-"));
+  if (startNodes.length === 0) notes.push("Process flow has no start node.");
+  const terminalNodes = flow.nodes.filter((node) => node.type === "stop" || node.type === "end" || node.type === "return");
+  if (terminalNodes.length === 0) notes.push("Process flow has no stop/end/return node.");
+  if (startNodes.length > 0) {
+    const reachable = new Set<string>([startNodes[0].id]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const edge of flow.edges) {
+        if (!reachable.has(edge.source) || reachable.has(edge.target)) continue;
+        reachable.add(edge.target);
+        changed = true;
+      }
+    }
+    const unreachable = flow.nodes.filter((node) => !reachable.has(node.id));
+    if (unreachable.length > 0) {
+      notes.push(`Process flow has unreachable node(s): ${unreachable.map((node) => node.id).slice(0, 5).join(", ")}.`);
+    }
+  }
+  return [...new Set(notes)];
+}
+
+function processFlowSummary(flow: Pick<FmdDraftProcessFlow, "name" | "nodes" | "edges" | "notes">) {
+  return [
+    `${flow.name}: ${flow.nodes.length} nodes, ${flow.edges.length} edges`,
+    flow.nodes.map((node) => `${node.id}:${node.type}:${node.label}`).join(" -> "),
+    flow.notes,
+  ].filter(Boolean).join(" | ").slice(0, 3000);
+}
+
+function mergeEndpoint(
+  existing: z.infer<typeof fmdDraftEndpointSchema>,
+  candidate: FmdEndpointCandidate,
+): z.infer<typeof fmdDraftEndpointSchema> {
+  const pick = (current: string, next: string) =>
+    !current || /^unknown$/i.test(current) ? next : current;
+  return {
+    ...existing,
+    connectorType: pick(existing.connectorType, candidate.connectorType),
+    profileType: pick(existing.profileType, candidate.profileType),
+    format: pick(existing.format, candidate.format),
+    purpose: pick(existing.purpose, candidate.purpose),
+    connectionInfo: pick(existing.connectionInfo, candidate.connectionInfo),
+    confidence: Math.max(existing.confidence, candidate.confidence),
+    evidenceRefs: [...new Set([...existing.evidenceRefs, ...candidate.evidenceRefs])],
+  };
+}
+
+function endpointSummary(endpoint: Pick<z.infer<typeof fmdDraftEndpointSchema>, "name" | "role" | "connectorType" | "format" | "connectionInfo">) {
+  return [endpoint.name, endpoint.role, endpoint.connectorType, endpoint.format, endpoint.connectionInfo]
+    .filter(Boolean)
+    .join(" | ")
+    .slice(0, 3000);
+}
+
+function projectConflictNotes(field: string, currentValue: string, proposedValue: string, confidence: number): string[] {
+  if (!currentValue || isGenericProjectValue(field, currentValue)) return [];
+  if (normalizeForMatch(currentValue) === normalizeForMatch(proposedValue)) return [];
+  if ((field === "description" || field === "schedule" || field === "integrationPattern") && confidence >= autoApplyConfidence) {
+    return [];
+  }
+  if (confidence >= 0.9) return [];
+  return [`Deterministic value "${currentValue}" differs from proposed "${proposedValue}".`];
+}
+
+function isGenericProjectValue(field: string, value: string) {
+  const normalized = normalizeForMatch(value);
+  if (!normalized) return true;
+  if (field === "owner" && normalized === "unassigned") return true;
+  if (field === "sourceSystem" && normalized === "unknown source") return true;
+  if (field === "destinationSystem" && normalized === "unknown destination") return true;
+  if (field === "description" && normalized.length < 12) return true;
+  return false;
+}
+
+function namesEqual(a: string | undefined, b: string | undefined) {
+  return normalizeForMatch(a ?? "") === normalizeForMatch(b ?? "");
+}
+
+function computeResolverConfidence(
+  draft: FmdImportDraft,
+  acceptedSuggestions: FmdResolverSuggestion[],
+  passes: FmdResolverPass[],
+) {
+  const passRatio = passes.length ? passes.filter((pass) => pass.ok).length / passes.length : 1;
+  const suggestionConfidence = acceptedSuggestions.length
+    ? acceptedSuggestions.reduce((sum, suggestion) => sum + suggestion.confidence, 0) / acceptedSuggestions.length
+    : draft.project.confidence;
+  return Math.max(0, Math.min(1, suggestionConfidence * (0.75 + passRatio * 0.25)));
+}
+
+function resolverCacheKey(
+  evidence: FmdWorkbookEvidence,
+  deterministicDraft: FmdImportDraft,
+  options: Record<string, unknown>,
+) {
+  return createHash("sha256")
+    .update(JSON.stringify({ version: resolverCacheVersion, evidence, deterministicDraft, options }))
+    .digest("hex");
+}
+
+function resolverCacheProviderKey(provider: LlmProviderRuntimeConfig) {
+  return {
+    providerId: provider.id ?? null,
+    providerType: provider.type,
+    providerName: provider.name,
+    providerSource: provider.source,
+    model: provider.model,
+    baseUrl: provider.baseUrl,
+    temperature: provider.temperature,
+    topP: provider.topP,
+    maxTokens: provider.maxTokens,
+    timeoutMs: provider.timeoutMs,
+    supportsJsonSchema: provider.supportsJsonSchema,
+  };
+}
+
+function isCachedLlmResult(value: unknown): value is { draft: FmdImportDraft; resolver: FmdResolverStatus } {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as { draft?: unknown; resolver?: unknown };
+  return fmdImportDraftSchema.safeParse(candidate.draft).success && !!candidate.resolver;
 }
 
 function parseJsonObject(content: string) {
@@ -1375,6 +1724,7 @@ function extractProjectMetadata(evidence: FmdWorkbookEvidence): FmdImportDraft["
   const description =
     findWorkbookValue(evidence, [/^概要$/i, /overview/i, /select condition/i, /要件/i]) ?? "";
   const schedule = findScheduleValue(evidence) ?? findWorkbookValue(evidence, [/ジョブスケジュール/i, /連携スケジュール/i, /schedule/i]);
+  const integrationPattern = inferIntegrationPattern(evidence);
   const sourceSystem =
     findWorkbookValue(evidence, [/連携元システム1/i, /source system/i, /source\/source system/i]) ??
     inferSystemFromMapping(evidence, "source") ??
@@ -1390,12 +1740,29 @@ function extractProjectMetadata(evidence: FmdWorkbookEvidence): FmdImportDraft["
     description,
     sourceSystem,
     destinationSystem,
+    integrationPattern,
     owner,
     schedule,
     status: "Draft",
     confidence: processId && name ? 0.72 : 0.45,
     evidenceRefs: collectKeyEvidenceRefs(evidence, [/プロセスID|process id/i, /プロセス名|process name/i]).slice(0, 8),
   };
+}
+
+function inferIntegrationPattern(evidence: FmdWorkbookEvidence) {
+  const text = normalizeForMatch(
+    evidence.sheets
+      .filter((sheet) => ["overview", "environment", "explanation", "fieldMapping"].includes(sheet.role))
+      .flatMap((sheet) => sheet.rows.slice(0, 40).map((row) => row.text))
+      .join(" "),
+  );
+  if (/webhook|event|queue|topic|jms|kafka/.test(text)) return "event-driven";
+  if (/rest|soap|http|api|endpoint|url|エンドポイント/.test(text)) return "api";
+  if (/database|jdbc|sql|table|テーブル|db\b/.test(text)) return "database-sync";
+  if (/master|マスタ|lookup|参照/.test(text)) return "master-data-sync";
+  if (/etl|data warehouse|warehouse|dwh/.test(text)) return "etl";
+  if (/sftp|ftp|file|csv|tsv|固定長|ファイル|batch|daily|日次/.test(text)) return "batch-file";
+  return undefined;
 }
 
 const workbookMetadataHeaderPatterns = [
@@ -1963,6 +2330,14 @@ export function draftToProjectPreview(currentProject: Project, draft: FmdImportD
     };
   });
 
+  const previewProcessFlows = draft.processFlows.map((flow, flowIndex) => ({
+    id: `draft-flow-${flowIndex + 1}`,
+    name: flow.name,
+    nodes: flow.nodes,
+    edges: flow.edges,
+    notes: flow.notes,
+  }));
+
   return {
     ...currentProject,
     processId: draft.project.processId || currentProject.processId,
@@ -1984,6 +2359,7 @@ export function draftToProjectPreview(currentProject: Project, draft: FmdImportD
     })),
     profiles: previewProfiles,
     mappingSets: previewMappingSets,
+    processFlows: previewProcessFlows.length > 0 ? previewProcessFlows : currentProject.processFlows,
     fmdSections: draft.fmdSections.map((section, index): FmdSection => ({
       id: `draft-section-${index + 1}`,
       title: section.title,

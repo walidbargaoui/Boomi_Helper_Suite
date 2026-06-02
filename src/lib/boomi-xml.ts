@@ -1,12 +1,15 @@
 /**
- * Real-Boomi-schema XML generators and template patchers for the dry-run path.
+ * @legacy Boomi Companion Transition — v1 direct XML generation has been retired.
+ * This module is superseded by boomi-xml-engine.ts which generates Companion-
+ * reference-based XML for the direct build pipeline.
+ *
+ * Preserved only for backward compatibility with the legacy dry-run path
+ * and template-patching utilities. See docs/boomi-companion-transition-plan.md
+ * and docs/boomi-companion-direct-build-plan.md for details.
  *
  * Two modes per component type:
  *   - From-scratch scaffold when no template is attached (Strategy A fallback).
  *   - Template patching when a template is attached (Strategy B preferred).
- *
- * Aligned to actual sandbox samples in samples/boomi/ — keep that folder in sync
- * if Boomi's schema evolves.
  */
 
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
@@ -46,6 +49,19 @@ function dataFormatElement(boomiType: "character" | "number" | "datetime" | "boo
   }
   // boolean and character both use ProfileCharacterFormat per real samples
   return "<DataFormat><ProfileCharacterFormat/></DataFormat>";
+}
+
+function normalizeJsonParentPath(parentPath?: string | null): string {
+  const normalized = parentPath?.trim().replace(/\\/g, "/").replace(/\./g, "/") ?? "";
+  const segments = normalized.split("/").map((segment) => segment.trim()).filter(Boolean);
+  let index = 0;
+  if (segments[index]?.toLowerCase() === "root") index += 1;
+  if (segments[index]?.toLowerCase() === "object") index += 1;
+  return segments.slice(index).join("/");
+}
+
+function joinJsonPath(parent: string, child: string): string {
+  return parent ? `${parent}/${child}` : child;
 }
 
 function componentEnvelope(opts: {
@@ -153,10 +169,10 @@ export function buildFlatFileProfileXml(profile: Profile): string {
  * @returns A complete Boomi JSONProfile XML component envelope with nested objects and arrays.
  */
 export function buildJsonProfileXml(profile: Profile): string {
-  // Group fields by parentPath so dotted paths become nested JSONObjects.
+  // Group fields by parentPath. Root/Object is the intrinsic Boomi JSON root.
   const byParent = new Map<string, ProfileField[]>();
   for (const field of profile.fields) {
-    const parent = field.parentPath ?? "";
+    const parent = normalizeJsonParentPath(field.parentPath);
     const bucket = byParent.get(parent) ?? [];
     bucket.push(field);
     byParent.set(parent, bucket);
@@ -169,7 +185,7 @@ export function buildJsonProfileXml(profile: Profile): string {
   function renderEntries(parent: string): string {
     const children = byParent.get(parent) ?? [];
     return children.map((field) => {
-      const fullPath = parent ? `${parent}.${field.name}` : field.name;
+      const fullPath = joinJsonPath(parent, field.name);
       const boomiType = mapBoomiDataType(field);
       const nested = byParent.get(fullPath);
       const entryKey = key++;
@@ -181,19 +197,21 @@ export function buildJsonProfileXml(profile: Profile): string {
 
         if (isArray) {
           return (
-            `<JSONObjectEntry dataType="character" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}">` +
+            `<JSONObjectEntry dataType="character" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}" validateData="false">` +
             `<DataFormat><ProfileCharacterFormat/></DataFormat>` +
             `<JSONArray isMappable="false" isNode="true" key="${containerKey}" name="Array">` +
             `<JSONArrayElement isMappable="false" isNode="true" key="${containerKey + 1}" name="Element">${inner}</JSONArrayElement>` +
             `</JSONArray>` +
+            `<Qualifiers><QualifierList/></Qualifiers>` +
             `</JSONObjectEntry>`
           );
         }
 
         return (
-          `<JSONObjectEntry dataType="character" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}">` +
+          `<JSONObjectEntry dataType="character" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}" validateData="false">` +
           `<DataFormat><ProfileCharacterFormat/></DataFormat>` +
           `<JSONObject isMappable="false" isNode="true" key="${containerKey}" name="Object">${inner}</JSONObject>` +
+          `<Qualifiers><QualifierList/></Qualifiers>` +
           `</JSONObjectEntry>`
         );
       }
@@ -202,19 +220,21 @@ export function buildJsonProfileXml(profile: Profile): string {
         const arrayKey = key++;
         const arrayElKey = key++;
         return (
-          `<JSONObjectEntry dataType="character" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}">` +
+          `<JSONObjectEntry dataType="character" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}" validateData="false">` +
           `<DataFormat><ProfileCharacterFormat/></DataFormat>` +
           `<JSONArray isMappable="true" isNode="true" key="${arrayKey}" name="Array">` +
           `<JSONArrayElement dataType="${boomiType}" isMappable="true" isNode="true" key="${arrayElKey}" name="Element">` +
           dataFormatElement(boomiType, field) +
           `</JSONArrayElement>` +
           `</JSONArray>` +
+          `<Qualifiers><QualifierList/></Qualifiers>` +
           `</JSONObjectEntry>`
         );
       }
       return (
-        `<JSONObjectEntry dataType="${boomiType}" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}">` +
+        `<JSONObjectEntry dataType="${boomiType}" isMappable="true" isNode="true" key="${entryKey}" name="${escapeXml(field.name)}" validateData="false">` +
         dataFormatElement(boomiType, field) +
+        `<Qualifiers><QualifierList/></Qualifiers>` +
         `</JSONObjectEntry>`
       );
     }).join("");
@@ -224,8 +244,7 @@ export function buildJsonProfileXml(profile: Profile): string {
   const inner =
     `<JSONProfile xmlns="" strict="false">` +
     `<DataElements>` +
-    `<JSONRootValue dataType="character" isMappable="true" isNode="true" key="${rootKey}" name="Root">` +
-    `<DataFormat><ProfileCharacterFormat/></DataFormat>` +
+    `<JSONRootValue dataType="character" isMappable="false" isNode="true" key="${rootKey}" name="Root" validateData="false">` +
     `<JSONObject isMappable="false" isNode="true" key="${rootObjectKey}" name="Object">${rootEntries}</JSONObject>` +
     `<Qualifiers><QualifierList/></Qualifiers>` +
     `</JSONRootValue>` +

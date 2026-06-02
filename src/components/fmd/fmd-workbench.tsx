@@ -38,10 +38,11 @@ import { PanelHeader, StatusPill, WorkspacePanel, InfoRow } from "@/components/a
 import { extractError } from "@/lib/api-utils";
 import { FmdOutline } from "@/components/fmd/fmd-outline";
 import { FmdContextPanel } from "@/components/fmd/fmd-context-panel";
+import { FmdImportPanel } from "@/components/fmd/fmd-import-panel";
 import type { FmdSectionType } from "@/lib/fmd-section-schemas";
 import { normalizeSectionType } from "@/lib/fmd-section-schemas";
-import { computeImportDiffs, type SectionDiff } from "@/lib/fmd-section-diff";
 import { createDefaultFmdSection, parseFmdSectionContent } from "@/lib/fmd-section-helpers";
+type SectionDiff = { sectionType: string; title: string; currentData: unknown; changed: boolean; summary: string };
 import { registerEditor, getEditor } from "@/lib/fmd-editor-registry";
 import { DocumentControlEditor } from "@/components/fmd/editors/document-control-editor";
 import { ProjectSummaryEditor } from "@/components/fmd/editors/project-summary-editor";
@@ -83,10 +84,12 @@ function FmdBuilder({
   project,
   setProject,
   setWorkspaceLockReason,
+  onNavigateTab,
 }: {
   project: Project;
   setProject: (project: Project) => void;
   setWorkspaceLockReason: (reason: string | null) => void;
+  onNavigateTab?: (tab: string) => void;
 }) {
   const [uploadState, setUploadState] = useState<"idle" | "resolving" | "done" | "error">("idle");
   const [summary, setSummary] = useState<NormalizedFmdWorkbook | null>(null);
@@ -96,8 +99,7 @@ function FmdBuilder({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [showImportPanel, setShowImportPanel] = useState(false);
-  const [importTab, setImportTab] = useState<"review" | "changes">("review");
-  const [showImportSummary, setShowImportSummary] = useState(false);
+    const [showImportSummary, setShowImportSummary] = useState(false);
   const [saving, setSaving] = useState(false);
   const [initializing, setInitializing] = useState(false);
   const resolving = uploadState === "resolving";
@@ -211,7 +213,6 @@ function FmdBuilder({
     setWorkspaceLockReason("Resolving FMD");
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("model", "qwen3:8b");
     try {
       const response = await fetch("/api/fmd/resolve", { method: "POST", body: formData });
       if (!response.ok) {
@@ -257,7 +258,33 @@ function FmdBuilder({
     if (!file) return;
     event.target.value = "";
     await resolveFmdFile(file);
-  }
+  };
+
+  // Handle project field-level updates (e.g., from FMD editor "Edit source" trigger)
+  const handleProjectUpdateField = useCallback(async (fieldKey: string, value: string): Promise<void> => {
+    try {
+      const res = await fetch(`/api/projects/${project.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          [fieldKey]: value,
+          version: project.version, // optimistic concurrency
+        }),
+      });
+
+      if (!res.ok) {
+        const errorMsg = await extractError(res);
+        toast.addToast({ message: errorMsg || `Failed to update field ${String(fieldKey)}`, type: "error" });
+        throw new Error(errorMsg || `Failed to update field ${String(fieldKey)}`);
+      }
+
+      const { project: patchedProject } = await res.json() as { project: Project };
+      setProject(patchedProject); // Refresh global project state after successful update
+    } catch (err) {
+      console.error(`Failed to update project field ${String(fieldKey)}:`, err instanceof Error ? err.message : String(err));
+      throw err;
+    }
+  }, [project.id, project.version, setProject, toast]);
 
   const handleAddSection = useCallback(
     async (sectionType: FmdSectionType) => {
@@ -641,6 +668,7 @@ function FmdBuilder({
                         project={project}
                         onSave={handleSaveSection}
                         saving={saving}
+                        onProjectFieldUpdate={handleProjectUpdateField}
                       />
                     );
                   }
@@ -669,7 +697,7 @@ function FmdBuilder({
 
         {/* Right: Context panel */}
         <div className="w-64 shrink-0 border-l border-[#d9ded8] bg-white">
-          <FmdContextPanel section={activeSection} />
+          <FmdContextPanel section={activeSection} project={project} onNavigateTab={onNavigateTab} />
         </div>
       </div>
 
@@ -719,72 +747,23 @@ function FmdBuilder({
         </div>
       )}
 
-      {/* Import review modal */}
+      {/* Import workspace panel */}
       {resolveResult && showImportPanel ? (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-black/30 pt-10">
-          <div className="relative w-full max-w-5xl rounded-lg bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#d9ded8] px-4 py-3">
-              <p className="text-sm font-semibold">Import Review</p>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setImportTab("review")}
-                  className={clsx(
-                    "inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium",
-                    importTab === "review"
-                      ? "bg-[#e3f3ed] text-[#1b5e4a]"
-                      : "text-[#66706a] hover:bg-[#eef1ee]",
-                  )}
-                >
-                  <CheckCircle2 size={13} />
-                  Review
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setImportTab("changes")}
-                  className={clsx(
-                    "inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium",
-                    importTab === "changes"
-                      ? "bg-[#e3f3ed] text-[#1b5e4a]"
-                      : "text-[#66706a] hover:bg-[#eef1ee]",
-                  )}
-                >
-                  <GitCompareArrows size={13} />
-                  Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowImportPanel(false)}
-                  className="grid h-7 w-7 place-items-center rounded-md text-[#66706a] hover:bg-[#eef1ee]"
-                  aria-label="Close import review"
-                >
-                  <X size={15} />
-                </button>
-              </div>
-            </div>
-            <div className="max-h-[80vh] overflow-auto">
-              {importTab === "review" ? (
-                <FmdImportReview
-                  result={resolveResult}
-                  project={project}
-                  setProject={setProject}
-                  setWorkspaceLockReason={setWorkspaceLockReason}
-                  onApplySuccess={async () => {
-                    await mutateFmd();
-                    setShowImportPanel(false);
-                    if (summary) {
-                      try {
-                        localStorage.setItem(`fmd-import-summary-${project.id}`, JSON.stringify(summary));
-                      } catch { /* ignore */ }
-                    }
-                  }}
-                />
-              ) : (
-                <FmdImportChanges diffs={computeImportDiffs(project, resolveResult.draft)} />
-              )}
-            </div>
-          </div>
-        </div>
+        <FmdImportPanel
+          result={resolveResult}
+          project={project}
+          setProject={setProject}
+          setWorkspaceLockReason={setWorkspaceLockReason}
+          setShowImportPanel={setShowImportPanel}
+          onApplied={async () => {
+            await mutateFmd();
+            if (summary) {
+              try {
+                localStorage.setItem("fmd-import-summary-" + project.id, JSON.stringify(summary));
+              } catch { /* ignore */ }
+            }
+          }}
+        />
       ) : null}
     </WorkspacePanel>
   );
@@ -813,8 +792,8 @@ const fmdResolveStages = [
   },
   {
     at: 20,
-    label: "Qwen3-8B review",
-    detail: "Asking local Ollama to return a compact correction patch for scattered FMD content.",
+    label: "LLM resolver review",
+    detail: "Asking the configured provider to resolve metadata, mappings, endpoints, and a sample flow.",
   },
   {
     at: 45,
@@ -985,7 +964,7 @@ function FmdResolveProgress({
 }
 
 const fmdApplyModes: Array<{ id: FmdApplyMode; label: string; description: string }> = [
-  { id: "merge", label: "Merge", description: "Add the draft to the current project (profiles, mappings, sections, endpoints)." },
+  { id: "merge", label: "Merge", description: "Add the draft to the current project (profiles, mappings, flows, sections, endpoints)." },
   { id: "mapping", label: "Mapping only", description: "Add only profiles + mapping sets and rules to the current project." },
   { id: "sections", label: "Sections only", description: "Add only the FMD sections to the current project." },
   { id: "create", label: "Create new", description: "Create a new project from the draft and apply everything to it." },
@@ -1007,7 +986,16 @@ function FmdImportReview({
   const router = useRouter();
   const totalFields = result.draft.profiles.reduce((count, profile) => count + profile.fields.length, 0);
   const totalRules = result.draft.mappingSets.reduce((count, mappingSet) => count + mappingSet.rules.length, 0);
+  const totalFlowNodes = result.draft.processFlows.reduce((count, flow) => count + flow.nodes.length, 0);
   const resolverTone = result.resolver.ok ? "green" : "amber";
+  const providerHost = useMemo(() => {
+    if (!result.resolver.baseUrl) return "";
+    try {
+      return new URL(result.resolver.baseUrl).host;
+    } catch {
+      return result.resolver.baseUrl;
+    }
+  }, [result.resolver.baseUrl]);
   const strategySummary = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const mappingSet of result.draft.mappingSets) {
@@ -1049,11 +1037,14 @@ function FmdImportReview({
     const draftEndpointCount = result.draft.endpoints.length;
     const projectSectionCount = project.fmdSections.length;
     const draftSectionCount = result.draft.fmdSections.length;
+    const projectFlowCount = project.processFlows.length;
+    const draftFlowCount = result.draft.processFlows.length;
     return {
       profiles: { project: projectProfileCount, draft: draftProfileCount, diff: draftProfileCount - projectProfileCount },
       mappingSets: { project: projectMappingSetCount, draft: draftMappingSetCount, diff: draftMappingSetCount - projectMappingSetCount },
       rules: { project: projectRuleCount, draft: draftRuleCount, diff: draftRuleCount - projectRuleCount },
       endpoints: { project: projectEndpointCount, draft: draftEndpointCount, diff: draftEndpointCount - projectEndpointCount },
+      processFlows: { project: projectFlowCount, draft: draftFlowCount, diff: draftFlowCount - projectFlowCount },
       sections: { project: projectSectionCount, draft: draftSectionCount, diff: draftSectionCount - projectSectionCount },
     };
   }, [project, result.draft]);
@@ -1073,6 +1064,10 @@ function FmdImportReview({
   const defaultMappingSets = useMemo(
     () => result.draft.mappingSets.map((_, index) => index),
     [result.draft.mappingSets],
+  );
+  const defaultProcessFlows = useMemo(
+    () => result.draft.processFlows.map((_, index) => index),
+    [result.draft.processFlows],
   );
   const defaultSections = useMemo(
     () => result.draft.fmdSections.map((_, index) => index),
@@ -1096,6 +1091,7 @@ function FmdImportReview({
   const [endpointSelection, setEndpointSelection] = useState<number[]>(defaultEndpoints);
   const [profileSelection, setProfileSelection] = useState<number[]>(defaultProfiles);
   const [mappingSetSelection, setMappingSetSelection] = useState<number[]>(defaultMappingSets);
+  const [processFlowSelection, setProcessFlowSelection] = useState<number[]>(defaultProcessFlows);
   const [sectionSelection, setSectionSelection] = useState<number[]>(defaultSections);
   const [fieldSelection, setFieldSelection] = useState<Record<number, number[]>>(defaultFields);
   const [ruleSelection, setRuleSelection] = useState<Record<number, number[]>>(defaultRules);
@@ -1115,9 +1111,10 @@ function FmdImportReview({
       ruleIndexesByMappingSet: Object.fromEntries(
         Object.entries(ruleSelection).map(([key, value]) => [key, value]),
       ),
+      processFlowIndexes: processFlowSelection,
       sectionIndexes: sectionSelection,
     }),
-    [endpointSelection, profileSelection, fieldSelection, mappingSetSelection, ruleSelection, sectionSelection],
+    [endpointSelection, profileSelection, fieldSelection, mappingSetSelection, ruleSelection, processFlowSelection, sectionSelection],
   );
 
   const conflicts: FmdConflict[] = useMemo(() => {
@@ -1196,16 +1193,56 @@ function FmdImportReview({
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between gap-3 rounded-md border border-[#d9ded8] bg-white p-3">
             <div>
-              <p className="text-sm font-semibold">{result.resolver.model}</p>
+              <p className="text-sm font-semibold">{result.resolver.providerName ?? result.resolver.provider}</p>
+              <p className="mt-1 text-xs text-[#66706a]">
+                {result.resolver.model}
+                {providerHost ? ` · ${providerHost}` : ""}
+              </p>
               <p className="mt-1 text-xs leading-5 text-[#66706a]">{result.resolver.message}</p>
+              {typeof result.resolver.confidence === "number" ? (
+                <p className="mt-1 text-xs text-[#66706a]">
+                  Confidence {Math.round(result.resolver.confidence * 100)}%
+                  {result.resolver.cache ? ` · cache ${result.resolver.cache}` : ""}
+                </p>
+              ) : null}
             </div>
             <StatusPill label={result.resolver.ok ? "ready" : "fallback"} tone={resolverTone} />
           </div>
+          {result.resolver.provider === "deterministic" && !result.resolver.ok ? (
+            <a className="inline-flex text-xs font-medium text-[#1b5e4a] hover:underline" href="/admin/connections?tab=llm">
+              Manage LLM providers
+            </a>
+          ) : null}
+          {result.resolver.suggestions?.length ? (
+            <div className="rounded-md border border-[#d9ded8] bg-[#fbfbfa] p-3">
+              <p className="text-xs font-semibold uppercase text-[#66706a]">LLM Suggestions</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-[#1b1f23]">
+                <div>
+                  <p className="text-[10px] uppercase text-[#66706a]">Auto-applied</p>
+                  <p className="text-sm font-semibold">{result.resolver.acceptedSuggestions?.length ?? 0}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase text-[#66706a]">Needs review</p>
+                  <p className="text-sm font-semibold">{result.resolver.needsReview?.length ?? 0}</p>
+                </div>
+              </div>
+              {(result.resolver.needsReview ?? []).slice(0, 3).map((suggestion) => (
+                <div key={suggestion.id} className="mt-2 rounded border border-[#e8c8a8] bg-[#fff8e8] p-2 text-xs leading-5 text-[#7a5211]">
+                  <p className="font-medium">{suggestion.target} · {Math.round(suggestion.confidence * 100)}%</p>
+                  {suggestion.proposedValue ? <p className="break-words">{suggestion.proposedValue}</p> : null}
+                  {suggestion.evidenceRefs.length > 0 ? (
+                    <p className="break-words text-[10px]">Evidence: {suggestion.evidenceRefs.slice(0, 3).join(", ")}</p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          ) : null}
           <div className="grid grid-cols-2 gap-3">
             <InfoRow label="Profiles" value={String(result.draft.profiles.length)} />
             <InfoRow label="Fields" value={String(totalFields)} />
             <InfoRow label="Mapping Sets" value={String(result.draft.mappingSets.length)} />
             <InfoRow label="Rules" value={String(totalRules)} />
+            <InfoRow label="Flows" value={`${result.draft.processFlows.length} / ${totalFlowNodes} nodes`} />
           </div>
           <div className="rounded-md border border-[#d9ded8] bg-[#fbfbfa] p-3">
             <p className="text-xs font-semibold uppercase text-[#66706a]">Proposed Project</p>
@@ -1304,7 +1341,36 @@ function FmdImportReview({
                     ))}
                   </div>
                 </div>
-                {result.debug.promptText ? (
+                {result.debug.passes?.length ? (
+                  <>
+                    {result.debug.passes.map((p, i) => (
+                      <div key={i} className="rounded-md border border-[#d9ded8] bg-white p-3">
+                        <p className="text-xs font-semibold uppercase text-[#66706a]">
+                          Pass {i + 1}: {p.pass}
+                          {p.error ? <span className="ml-2 text-[#9c2a2a]">({p.error})</span> : p.durationMs ? <span className="ml-2 text-[#66706a]">({p.durationMs}ms)</span> : null}
+                        </p>
+                        {p.promptText ? (
+                          <details className="mt-1">
+                            <summary className="cursor-pointer text-[10px] text-[#66706a]">Prompt</summary>
+                            <pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap text-[10px] leading-4 text-[#66706a]">
+                              {p.promptText.slice(0, 2000)}
+                              {p.promptText.length > 2000 ? "…" : ""}
+                            </pre>
+                          </details>
+                        ) : null}
+                        {p.rawLlmResponse ? (
+                          <details className="mt-1">
+                            <summary className="cursor-pointer text-[10px] text-[#66706a]">Response</summary>
+                            <pre className="mt-1 max-h-64 overflow-auto whitespace-pre-wrap text-[10px] leading-4 text-[#66706a]">
+                              {p.rawLlmResponse.slice(0, 2000)}
+                              {p.rawLlmResponse.length > 2000 ? "…" : ""}
+                            </pre>
+                          </details>
+                        ) : null}
+                      </div>
+                    ))}
+                  </>
+                ) : result.debug.promptText ? (
                   <div className="rounded-md border border-[#d9ded8] bg-white p-3">
                     <p className="text-xs font-semibold uppercase text-[#66706a]">LLM Prompt</p>
                     <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap text-[10px] leading-4 text-[#66706a]">
@@ -1313,7 +1379,7 @@ function FmdImportReview({
                     </pre>
                   </div>
                 ) : null}
-                {result.debug.rawLlmResponse ? (
+                {result.debug.passes?.length ? null : result.debug.rawLlmResponse ? (
                   <div className="rounded-md border border-[#d9ded8] bg-white p-3">
                     <p className="text-xs font-semibold uppercase text-[#66706a]">LLM Response</p>
                     <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap text-[10px] leading-4 text-[#66706a]">
@@ -1384,7 +1450,8 @@ function FmdImportReview({
               <p className="mt-1">
                 Created {applyResult.createdProfiles} profiles, {applyResult.createdFields} fields,{" "}
                 {applyResult.createdMappingSets} mapping sets, {applyResult.createdRules} rules,{" "}
-                {applyResult.createdEndpoints} endpoints, {applyResult.createdSections} sections.
+                {applyResult.createdEndpoints} endpoints, {applyResult.createdProcessFlows} flows,{" "}
+                {applyResult.createdSections} sections.
               </p>
               {applyResult.warnings.length > 0 ? (
                 <ul className="mt-2 list-disc space-y-1 pl-5">
@@ -1435,6 +1502,7 @@ function FmdImportReview({
                     { label: "Mapping Sets", key: "mappingSets" as const },
                     { label: "Rules", key: "rules" as const },
                     { label: "Endpoints", key: "endpoints" as const },
+                    { label: "Process Flows", key: "processFlows" as const },
                     { label: "Sections", key: "sections" as const },
                   ].map(({ label, key }) => {
                     const stat = comparisonStats[key];
@@ -1462,6 +1530,70 @@ function FmdImportReview({
         </div>
 
         <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
+          {categories.processFlows ? (
+            <div className="panel">
+              <PanelHeader
+                icon={Network}
+                title="Process flows"
+                action={`${processFlowSelection.length} / ${result.draft.processFlows.length}`}
+              />
+              <div className="mt-3 space-y-3">
+                {result.draft.processFlows.map((flow, flowIndex) => {
+                  const selected = processFlowSelection.includes(flowIndex);
+                  return (
+                    <div key={`${flow.name}-${flowIndex}`} className="rounded-md border border-[#d9ded8] bg-white p-3">
+                      <label className="flex items-start gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => toggleIndex(setProcessFlowSelection, processFlowSelection, flowIndex)}
+                          className="mt-1"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="truncate text-sm font-semibold">{flow.name}</p>
+                            <StatusPill
+                              label={`${Math.round(flow.confidence * 100)}%`}
+                              tone={flow.confidence >= 0.82 ? "green" : "amber"}
+                            />
+                          </div>
+                          <p className="mt-1 text-xs text-[#66706a]">
+                            {flow.nodes.length} nodes · {flow.edges.length} edges
+                            {flow.evidenceRefs.length > 0 ? ` · ${flow.evidenceRefs.slice(0, 2).join(", ")}` : ""}
+                          </p>
+                          {flow.notes ? (
+                            <p className="mt-1 text-xs leading-5 text-[#66706a]">{flow.notes}</p>
+                          ) : null}
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {flow.nodes.slice(0, 10).map((node) => (
+                              <span
+                                key={node.id}
+                                className="rounded-md border border-[#cfd6cf] bg-[#fbfbfa] px-2 py-0.5 text-[10px] text-[#4a524d]"
+                                title={node.description}
+                              >
+                                {node.type}: {node.label}
+                              </span>
+                            ))}
+                            {flow.nodes.length > 10 ? (
+                              <span className="rounded-md border border-[#cfd6cf] bg-[#fbfbfa] px-2 py-0.5 text-[10px] text-[#66706a]">
+                                +{flow.nodes.length - 10} more
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  );
+                })}
+                {result.draft.processFlows.length === 0 ? (
+                  <p className="rounded-md border border-dashed border-[#cfd6cf] p-3 text-xs text-[#66706a]">
+                    No process flow was generated for this draft.
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+
           {categories.mappingSets ? (
             <div className="panel">
               <PanelHeader

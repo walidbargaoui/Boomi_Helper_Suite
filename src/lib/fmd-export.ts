@@ -75,10 +75,18 @@ export async function exportFmdWorkbookFromSections(
       if (sheetData) {
         addSheetFromData(workbook, sheetData);
       }
-      continue;
     }
 
-    buildFallbackSheet(workbook, project, section);
+    // fieldMapping sections also create individual mapping-set sheets
+    if (section.sectionType === "fieldMapping") {
+      for (const mappingSet of project.mappingSets) {
+        const sourceProfile = project.profiles.find((p) => p.id === mappingSet.sourceProfileId);
+        const destinationProfile = project.profiles.find((p) => p.id === mappingSet.destinationProfileId);
+        if (!sourceProfile || !destinationProfile) continue;
+        const sheet = workbook.addWorksheet(safeSheetName(mappingSet.name));
+        writeRows(sheet, standardMappingRows(mappingSet, sourceProfile, destinationProfile));
+      }
+    }
   }
 
   if (opts.includeSampleData) buildStandardSampleData(workbook, project);
@@ -95,32 +103,6 @@ function addSheetFromData(workbook: ExcelJS.Workbook, data: ExportSheetData): vo
   const rows: RowValues[] = [data.headers, ...data.rows];
   writeRows(sheet, rows);
   styleHeaderRow(sheet, 1);
-}
-
-function buildFallbackSheet(
-  workbook: ExcelJS.Workbook,
-  project: Project,
-  section: FmdSection,
-): void {
-  switch (section.sectionType) {
-    case "fieldMapping":
-      for (const mappingSet of project.mappingSets) {
-        const sourceProfile = project.profiles.find((p) => p.id === mappingSet.sourceProfileId);
-        const destinationProfile = project.profiles.find((p) => p.id === mappingSet.destinationProfileId);
-        if (!sourceProfile || !destinationProfile) continue;
-        const sheet = workbook.addWorksheet(safeSheetName(mappingSet.name));
-        writeRows(sheet, standardMappingRows(mappingSet, sourceProfile, destinationProfile));
-      }
-      break;
-    case "processFlow":
-      buildStandardProcessFlow(workbook, project);
-      break;
-    case "jobHandling":
-      buildStandardJobAndErrorHandling(workbook, project);
-      break;
-    default:
-      break;
-  }
 }
 
 // ─── Standard English Template ───────────────────────────────────────────────

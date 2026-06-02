@@ -4,6 +4,7 @@ import { decryptValue } from "@/lib/boomi-crypto";
 import { rollbackBoomiComponent, type BoomiConnectionInput } from "@/lib/boomi-sandbox";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
+import { isLegacyPublishEnabled } from "@/lib/boomi-companion-mutations";
 import type { BoomiComponentDraft } from "@/lib/domain";
 
 const rollbackRequestSchema = z.object({
@@ -13,6 +14,17 @@ const rollbackRequestSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  if (!isLegacyPublishEnabled()) {
+    return NextResponse.json(
+      {
+        error: "Direct rollback is no longer supported.",
+        detail:
+          "Direct publish and rollback have been retired. Use the Boomi Companion workflow instead.",
+      },
+      { status: 410 },
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = rollbackRequestSchema.safeParse(body);
 

@@ -28,7 +28,7 @@ export function validateMappingSet(
   const destinationById = new Map(destinationProfile.fields.map((field) => [field.id, field]));
   const rulesByDestination = new Map<string, typeof mappingSet.rules>();
 
-  for (const rule of mappingSet.rules) {
+  for (const rule of mappingSet.rules ?? []) {
     const matches = rulesByDestination.get(rule.destinationFieldId) ?? [];
     matches.push(rule);
     rulesByDestination.set(rule.destinationFieldId, matches);

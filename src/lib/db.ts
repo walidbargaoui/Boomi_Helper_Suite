@@ -57,6 +57,67 @@ export function sanitizeProjectForClient(project: Project): Project {
   };
 }
 
+type PrismaProjectResponseShape = {
+  boomiConnections?: Array<{ apiUsername: string; apiPassword: string }>;
+  boomiPublishEvents?: Array<{
+    requestXml?: string | null;
+    responseXml?: string | null;
+    errorDetail?: string | null;
+  }>;
+  fmdSections?: Array<{
+    id: string;
+    title: string;
+    sectionType: string;
+    contentJson: string;
+    sortOrder: number;
+  }>;
+};
+
+export function scrubPrismaProjectForClient<T extends PrismaProjectResponseShape>(row: T): T {
+  const next = { ...row } as T;
+  if (row.boomiConnections) {
+    next.boomiConnections = row.boomiConnections.map((conn) => {
+      let usernameDisplay = "";
+      try {
+        usernameDisplay = maskValue(decryptValue(conn.apiUsername));
+      } catch {
+        usernameDisplay = conn.apiUsername ? "[re-enter credentials]" : "";
+      }
+      return { ...conn, apiUsername: usernameDisplay, apiPassword: conn.apiPassword ? "••••••••" : "" };
+    }) as T["boomiConnections"];
+  }
+  if (row.boomiPublishEvents) {
+    next.boomiPublishEvents = row.boomiPublishEvents.map((event) => ({
+      ...event,
+      requestXml: "",
+      responseXml: null,
+      errorDetail:
+        event.errorDetail && event.errorDetail.length > 500
+          ? `${event.errorDetail.slice(0, 500)}…`
+          : event.errorDetail,
+      hasRequestXml: Boolean(event.requestXml && event.requestXml.trim().length > 0),
+      hasResponseXml: Boolean(event.responseXml && event.responseXml.trim().length > 0),
+    })) as T["boomiPublishEvents"];
+  }
+  if (row.fmdSections) {
+    next.fmdSections = row.fmdSections.map((section) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { contentJson, ...rest } = section;
+      return {
+        ...rest,
+        content: (() => {
+          try {
+            return JSON.parse(section.contentJson);
+          } catch {
+            return {};
+          }
+        })(),
+      };
+    }) as unknown as T["fmdSections"];
+  }
+  return next;
+}
+
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
@@ -123,7 +184,6 @@ export async function getWorkspaceProject(projectId?: string): Promise<Project> 
             mappingSets: { include: { rules: true, transformNodes: true } },
             processFlows: true,
             fmdSections: { orderBy: { sortOrder: "asc" } },
-            boomiConnections: true,
             boomiDrafts: true,
             boomiPublishEvents: { orderBy: { publishedAt: "desc" } },
           },
@@ -136,7 +196,6 @@ export async function getWorkspaceProject(projectId?: string): Promise<Project> 
             mappingSets: { include: { rules: true, transformNodes: true } },
             processFlows: true,
             fmdSections: { orderBy: { sortOrder: "asc" } },
-            boomiConnections: true,
             boomiDrafts: true,
             boomiPublishEvents: { orderBy: { publishedAt: "desc" } },
           },
@@ -145,6 +204,10 @@ export async function getWorkspaceProject(projectId?: string): Promise<Project> 
     if (!existing) {
       return { ...sampleProject, mode: "fallback" };
     }
+
+    const boomiConnections = await prisma.boomiConnection.findMany({
+      orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+    });
 
     return {
       id: existing.id,
@@ -232,7 +295,7 @@ export async function getWorkspaceProject(projectId?: string): Promise<Project> 
         content: JSON.parse(section.contentJson),
         sortOrder: section.sortOrder,
       })),
-      boomiConnections: existing.boomiConnections.map((connection) => ({
+      boomiConnections: boomiConnections.map((connection) => ({
         id: connection.id,
         accountId: connection.accountId,
         environmentName: connection.environmentName,
@@ -319,6 +382,9 @@ export async function recordBoomiPublishEvent(
 
 export async function seedSampleProject() {
   await prisma.project.deleteMany({ where: { processId: sampleProject.processId } });
+  await prisma.boomiConnection.deleteMany({
+    where: { id: { in: sampleProject.boomiConnections.map((connection) => connection.id) } },
+  });
   await prisma.project.create({
     data: {
       id: sampleProject.id,
@@ -430,7 +496,7 @@ export async function seedSampleProject() {
 
   for (const connection of sampleProject.boomiConnections) {
     await prisma.boomiConnection.create({
-      data: { ...connection, projectId: sampleProject.id },
+      data: connection,
     });
   }
 
@@ -474,39 +540,8 @@ export async function updateWorkspaceProject(project: Project): Promise<Project>
   }
 
   // Per-entity upserts instead of delete/recreate (M8.2 #10).
-  const existingConnIds = new Set(
-    (await prisma.boomiConnection.findMany({ where: { projectId: project.id }, select: { id: true } })).map((c) => c.id),
-  );
-  for (const conn of project.boomiConnections) {
-    await prisma.boomiConnection.upsert({
-      where: { id: conn.id },
-      create: {
-        id: conn.id,
-        projectId: project.id,
-        accountId: conn.accountId,
-        environmentName: conn.environmentName,
-        baseUrl: conn.baseUrl,
-        authMode: conn.authMode,
-        apiUsername: conn.apiUsername,
-        apiPassword: conn.apiPassword,
-        mode: conn.mode,
-        createdAt: new Date(conn.createdAt),
-      },
-      update: {
-        accountId: conn.accountId,
-        environmentName: conn.environmentName,
-        baseUrl: conn.baseUrl,
-        apiUsername: conn.apiUsername,
-        apiPassword: conn.apiPassword,
-        mode: conn.mode,
-      },
-    });
-    existingConnIds.delete(conn.id);
-  }
-  for (const staleId of existingConnIds) {
-    await prisma.boomiConnection.delete({ where: { id: staleId } });
-  }
-
+  // Boomi connections are global and are managed through /admin/connections,
+  // not through project writes.
   const existingDraftIds = new Set(
     (await prisma.boomiComponentDraft.findMany({ where: { projectId: project.id }, select: { id: true } })).map((d) => d.id),
   );

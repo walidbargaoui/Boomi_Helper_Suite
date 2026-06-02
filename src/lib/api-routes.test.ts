@@ -47,13 +47,55 @@ vi.mock("@/lib/db", () => ({
     mappingSet: {
       create: vi.fn(),
     },
+    boomiConnection: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
   },
-  // The connections route imports getWorkspaceProject / updateWorkspaceProject;
-  // we don't exercise those paths in these tests (we assert the early-return
-  // 400 for missing projectId), so stub them as no-ops.
   getWorkspaceProject: vi.fn(),
   updateWorkspaceProject: vi.fn(),
-  sanitizeProjectForClient: vi.fn((p: unknown) => p),
+  sanitizeProjectForClient: vi.fn((p: Record<string, unknown>) => {
+    const project = { ...p } as Record<string, unknown>;
+    if (Array.isArray(project.boomiConnections)) {
+      project.boomiConnections = project.boomiConnections.map((conn: Record<string, unknown>) => ({
+        ...conn,
+        apiUsername: "[re-enter credentials]",
+        apiPassword: "••••••••",
+      }));
+    }
+    if (Array.isArray(project.boomiPublishEvents)) {
+      project.boomiPublishEvents = project.boomiPublishEvents.map((event: Record<string, unknown>) => ({
+        ...event,
+        requestXml: "",
+        responseXml: null,
+        hasRequestXml: Boolean(event.requestXml),
+        hasResponseXml: Boolean(event.responseXml),
+      }));
+    }
+    return project;
+  }),
+  scrubPrismaProjectForClient: vi.fn((p: Record<string, unknown>) => ({
+    ...p,
+    boomiConnections: Array.isArray(p.boomiConnections)
+      ? p.boomiConnections.map((conn) => ({
+          ...(conn as Record<string, unknown>),
+          apiUsername: "[re-enter credentials]",
+          apiPassword: "••••••••",
+        }))
+      : p.boomiConnections,
+    boomiPublishEvents: Array.isArray(p.boomiPublishEvents)
+      ? p.boomiPublishEvents.map((event) => ({
+          ...(event as Record<string, unknown>),
+          requestXml: "",
+          responseXml: null,
+          hasRequestXml: Boolean((event as { requestXml?: string | null }).requestXml),
+          hasResponseXml: Boolean((event as { responseXml?: string | null }).responseXml),
+        }))
+      : p.boomiPublishEvents,
+  })),
 }));
 
 function mockRequest(jsonBody: unknown) {
@@ -129,38 +171,38 @@ describe("projects API routes", () => {
   });
 
   it("GET single project returns 404 when not found", async () => {
-    vi.mocked(prisma.project.findUnique).mockResolvedValue(null);
+    const { getWorkspaceProject } = await import("@/lib/db");
+    vi.mocked(getWorkspaceProject).mockResolvedValue({ mode: "fallback" } as never);
 
     const response = await getProject(mockRequest(null) as never, { params: params("missing") });
     expect(response.status).toBe(404);
   });
 
   it("GET single project returns project when found", async () => {
-    vi.mocked(prisma.project.findUnique).mockResolvedValue({
-      id: "p1", processId: "X1", name: "Demo", description: "", sourceSystem: "A", destinationSystem: "B", status: "Draft", owner: "Me", schedule: null, lastExportedAt: null, createdAt: new Date(), updatedAt: new Date(),
-      endpoints: [], profiles: [], mappingSets: [], processFlows: [], fmdSections: [], boomiConnections: [], boomiDrafts: [],
-    });
+    const { getWorkspaceProject } = await import("@/lib/db");
+    vi.mocked(getWorkspaceProject).mockResolvedValue({
+      id: "p1", processId: "X1", name: "Demo", description: "", sourceSystem: "A", destinationSystem: "B", status: "Draft", owner: "Me", schedule: null, lastExportedAt: null,
+      mode: "live", version: 1, endpoints: [], profiles: [], mappingSets: [], processFlows: [], fmdSections: [], boomiConnections: [], boomiDrafts: [], boomiPublishEvents: [],
+    } as never);
 
     const response = await getProject(mockRequest(null) as never, { params: params("p1") });
     expect(response.status).toBe(200);
   });
 
   it("GET single project sanitizes encrypted credentials in response", async () => {
-    // M8 "Fix First": credentials must never reach the client. The route uses
-    // scrubPrismaProjectForClient to mask the ciphertext apiUsername and replace
-    // apiPassword with the canonical bullets string.
-    vi.mocked(prisma.project.findUnique).mockResolvedValue({
+    const { getWorkspaceProject } = await import("@/lib/db");
+    vi.mocked(getWorkspaceProject).mockResolvedValue({
       id: "p2", processId: "X2", name: "Cred Demo", description: "", sourceSystem: "A", destinationSystem: "B",
-      status: "Draft", owner: "Me", schedule: null, lastExportedAt: null, createdAt: new Date(), updatedAt: new Date(),
-      endpoints: [], profiles: [], mappingSets: [], processFlows: [], fmdSections: [],
+      status: "Draft", owner: "Me", schedule: null, lastExportedAt: null,
+      mode: "live", version: 1, endpoints: [], profiles: [], mappingSets: [], processFlows: [], fmdSections: [],
       boomiConnections: [
         { id: "c1", projectId: "p2", accountId: "acc", environmentName: "Sandbox",
           baseUrl: "https://api.boomi.com", authMode: "Basic API Token",
           apiUsername: "RAW_ENCRYPTED_USERNAME", apiPassword: "RAW_ENCRYPTED_PASSWORD",
-          mode: "sandbox", createdAt: new Date() },
+          mode: "sandbox", createdAt: new Date().toISOString() },
       ],
-      boomiDrafts: [],
-    });
+      boomiDrafts: [], boomiPublishEvents: [],
+    } as never);
 
     const response = await getProject(mockRequest(null) as never, { params: params("p2") });
     expect(response.status).toBe(200);
@@ -172,25 +214,22 @@ describe("projects API routes", () => {
   });
 
   it("GET single project trims publish-event XML payloads from the response", async () => {
-    // M8 follow-up: publish-event requestXml / responseXml can be tens of KB
-    // each. The list view doesn't need them — sanitizer drops them and exposes
-    // hasRequestXml / hasResponseXml hints so the UI can fetch full detail
-    // on demand from /api/boomi/publish/events/[eventId].
+    const { getWorkspaceProject } = await import("@/lib/db");
     const heavyXml = `<bns:Component>${"x".repeat(20_000)}</bns:Component>`;
-    vi.mocked(prisma.project.findUnique).mockResolvedValue({
+    vi.mocked(getWorkspaceProject).mockResolvedValue({
       id: "p3", processId: "X3", name: "Big History", description: "", sourceSystem: "A", destinationSystem: "B",
-      status: "Draft", owner: "Me", schedule: null, lastExportedAt: null, createdAt: new Date(), updatedAt: new Date(),
-      endpoints: [], profiles: [], mappingSets: [], processFlows: [], fmdSections: [],
+      status: "Draft", owner: "Me", schedule: null, lastExportedAt: null,
+      mode: "live", version: 1, endpoints: [], profiles: [], mappingSets: [], processFlows: [], fmdSections: [],
       boomiConnections: [], boomiDrafts: [],
       boomiPublishEvents: [
         {
           id: "ev1", projectId: "p3", draftId: "d1", connectionId: "c1",
           componentId: "abc", componentName: "Big Map", componentType: "transform.map",
           version: 1, action: "update", requestXml: heavyXml, responseXml: heavyXml,
-          status: "success", errorDetail: null, publishedAt: new Date(),
+          status: "success", errorDetail: null, publishedAt: new Date().toISOString(),
         },
       ],
-    });
+    } as never);
 
     const response = await getProject(mockRequest(null) as never, { params: params("p3") });
     expect(response.status).toBe(200);
@@ -410,27 +449,58 @@ describe("profiles API routes", () => {
 });
 
 describe("Boomi connections route", () => {
-  it("PUT requires projectId so edits can't accidentally land on the wrong project", async () => {
+  it("PUT updates a global connection without projectId", async () => {
+    const now = new Date();
+    vi.mocked(prisma.boomiConnection.findUnique).mockResolvedValue({
+      id: "conn-1",
+      accountId: "acct",
+      environmentName: "Sandbox",
+      baseUrl: "https://api.boomi.com",
+      authMode: "Basic API Token",
+      apiUsername: "stored-user",
+      apiPassword: "stored-token",
+      mode: "sandbox",
+      createdAt: now,
+      updatedAt: now,
+    });
+    vi.mocked(prisma.boomiConnection.update).mockResolvedValue({
+      id: "conn-1",
+      accountId: "acct",
+      environmentName: "Sandbox",
+      baseUrl: "https://api.boomi.com",
+      authMode: "Basic API Token",
+      apiUsername: "stored-user",
+      apiPassword: "stored-token",
+      mode: "sandbox",
+      createdAt: now,
+      updatedAt: now,
+    });
+
     const request = new Request("http://localhost/test", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: "conn-1", baseUrl: "https://api.boomi.com" }),
     });
     const response = await updateConnection(request as never);
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.error).toMatch(/projectId is required/i);
+    expect(body.connection.baseUrl).toBe("https://api.boomi.com");
+    expect(prisma.boomiConnection.update).toHaveBeenCalledWith({
+      where: { id: "conn-1" },
+      data: { baseUrl: "https://api.boomi.com" },
+    });
   });
 
-  it("PUT with id but no payload fields rejects before reaching the project loader", async () => {
+  it("PUT with id but no payload fields rejects before reaching the database", async () => {
     const request = new Request("http://localhost/test", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: "conn-1", projectId: "proj-1" }),
+      body: JSON.stringify({ id: "conn-1" }),
     });
     const response = await updateConnection(request as never);
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body.error).toMatch(/no valid fields/i);
+    expect(prisma.boomiConnection.findUnique).not.toHaveBeenCalled();
   });
 });

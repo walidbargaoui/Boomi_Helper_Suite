@@ -26,6 +26,7 @@ function makeDraft(overrides: Partial<FmdApplyRequest["draft"]> = {}): FmdApplyR
     endpoints: [],
     profiles: [],
     mappingSets: [],
+    processFlows: [],
     fmdSections: [],
     warnings: [],
     unresolvedEvidenceRefs: [],
@@ -79,6 +80,7 @@ describe("categoriesForMode", () => {
       endpoints: true,
       profiles: true,
       mappingSets: true,
+      processFlows: true,
       sections: true,
     });
     expect(categoriesForMode("create")).toEqual({
@@ -86,6 +88,7 @@ describe("categoriesForMode", () => {
       endpoints: true,
       profiles: true,
       mappingSets: true,
+      processFlows: true,
       sections: true,
     });
   });
@@ -96,6 +99,7 @@ describe("categoriesForMode", () => {
       endpoints: false,
       profiles: true,
       mappingSets: true,
+      processFlows: false,
       sections: false,
     });
   });
@@ -106,6 +110,7 @@ describe("categoriesForMode", () => {
       endpoints: false,
       profiles: false,
       mappingSets: false,
+      processFlows: false,
       sections: true,
     });
   });
@@ -338,6 +343,7 @@ function buildPrismaApplyMock(initial?: {
     destinationProfileId: string;
     rules: Array<{ id: string; destinationFieldId: string }>;
   }>;
+  processFlows?: Array<{ id: string; name: string }>;
   sections?: Array<{ id: string; sortOrder: number }>;
 }) {
   const state = {
@@ -347,6 +353,7 @@ function buildPrismaApplyMock(initial?: {
     profileField: { create: vi.fn(), count: vi.fn() },
     mappingSet: { findMany: vi.fn(), create: vi.fn() },
     mappingRule: { create: vi.fn() },
+    processFlow: { findMany: vi.fn(), create: vi.fn() },
     fmdSection: { findMany: vi.fn(), create: vi.fn() },
   };
 
@@ -387,6 +394,11 @@ function buildPrismaApplyMock(initial?: {
 
   state.mappingRule.create.mockImplementation(({ data }: { data: object }) =>
     Promise.resolve({ id: `rule-${Math.random()}`, ...data }),
+  );
+
+  state.processFlow.findMany.mockResolvedValue(initial?.processFlows ?? []);
+  state.processFlow.create.mockImplementation(({ data }: { data: object }) =>
+    Promise.resolve({ id: `flow-${Math.random()}`, ...data }),
   );
 
   state.fmdSection.findMany.mockResolvedValue(initial?.sections ?? []);
@@ -491,6 +503,41 @@ describe("applyFmdDraft", () => {
           evidenceRefs: [],
         },
       ],
+      processFlows: [
+        {
+          name: "Demo Flow",
+          nodes: [
+            {
+              id: "start",
+              type: "start-connector",
+              label: "Start from SFTP",
+              description: "Receive the source file.",
+              position: { x: 80, y: 120 },
+            },
+            {
+              id: "map",
+              type: "map",
+              label: "Map to Snowflake",
+              description: "Transform source records into the destination profile.",
+              position: { x: 300, y: 120 },
+            },
+            {
+              id: "stop",
+              type: "stop",
+              label: "Stop",
+              description: "End processing.",
+              position: { x: 520, y: 120 },
+            },
+          ],
+          edges: [
+            { id: "e-start-map", source: "start", target: "map" },
+            { id: "e-map-stop", source: "map", target: "stop" },
+          ],
+          notes: "Generated from FMD evidence.",
+          confidence: 0.86,
+          evidenceRefs: ["Overview!R1"],
+        },
+      ],
     });
     const { prisma, state } = buildPrismaApplyMock();
     const result = await applyFmdDraft(prisma, { mode: "create", draft });
@@ -501,9 +548,11 @@ describe("applyFmdDraft", () => {
     expect(state.profileField.create).toHaveBeenCalledTimes(2);
     expect(state.mappingSet.create).toHaveBeenCalledTimes(1);
     expect(state.mappingRule.create).toHaveBeenCalledTimes(1);
+    expect(state.processFlow.create).toHaveBeenCalledTimes(1);
     expect(state.fmdSection.create).toHaveBeenCalledTimes(1);
     expect(result.createdProfiles).toBe(2);
     expect(result.createdRules).toBe(1);
+    expect(result.createdProcessFlows).toBe(1);
   });
 
   it("merges into existing project, reuses profile, adds new fields only", async () => {

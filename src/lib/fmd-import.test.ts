@@ -53,6 +53,7 @@ const sampleFiles = [
   "/Users/walidbargaoui/Documents/Downloads for Chrome/G06 - Employee Expense FMD V1.3.xlsx",
   "/Users/walidbargaoui/Documents/Downloads for Chrome/FMD_sheet_FOX_算定結果ステータス・業務日付更新.xlsx",
 ];
+const resolverPassCount = 7;
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -113,18 +114,25 @@ describe("FMD import resolver", () => {
   it("uses mocked Ollama JSON when available", async () => {
     const workbook = await createFmdWorkbook(sampleProject);
     const deterministic = await resolveFmdWorkbook(workbook, "generated.xlsx", { useLlm: false });
-    const aiDraft = {
-      ...deterministic.draft,
-      warnings: [...deterministic.draft.warnings, "Mock Qwen resolver adjusted labels."],
-    };
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(
-        new Response(JSON.stringify({ message: { content: JSON.stringify(aiDraft) } }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }),
-      ),
+      vi.fn((url: string) => {
+        if (url.endsWith("/api/tags")) {
+          return Promise.resolve(new Response(JSON.stringify({ models: [] }), { status: 200 }));
+        }
+        return Promise.resolve(new Response(JSON.stringify({
+          message: { content: JSON.stringify({
+            project: deterministic.draft.project,
+            profileRenames: [],
+            profileTypeFixes: [],
+            keyFieldSuggestions: [],
+            mappingSetNotes: [],
+            mappingTypeCorrections: [],
+            warnings: ["Mock Qwen resolver adjusted labels."],
+            unresolvedEvidenceRefs: [],
+          })}
+        }), { status: 200, headers: { "Content-Type": "application/json" } }));
+      }),
     );
 
     const result = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
@@ -133,6 +141,59 @@ describe("FMD import resolver", () => {
     expect(result.resolver.ok).toBe(true);
     expect(result.draft.warnings).toContain("Mock Qwen resolver adjusted labels.");
     expect(fetch).toHaveBeenCalledWith("http://localhost:11434/api/chat", expect.any(Object));
+  });
+
+  it("uses OpenAI-compatible providers with JSON schema response format", async () => {
+    const workbook = await createFmdWorkbook(sampleProject);
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.endsWith("/models")) {
+        return new Response(JSON.stringify({ data: [{ id: "qwen3" }] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return new Response(
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  profileRenames: [],
+                  mappingSetNotes: [],
+                  warnings: [],
+                  unresolvedEvidenceRefs: [],
+                }),
+              },
+            },
+          ],
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await resolveFmdWorkbook(workbook, "generated.xlsx", {
+      providerType: "openai-compatible",
+      baseUrl: "http://localhost:1234/v1",
+      model: "qwen3",
+      apiKey: "test-key",
+    });
+
+    expect(result.resolver.provider).toBe("openai-compatible");
+    expect(result.resolver.providerName).toBe("Request override");
+    expect(result.resolver.cache).toBe("miss");
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:1234/v1/models", expect.objectContaining({
+      headers: { Authorization: "Bearer test-key" },
+    }));
+    const chatCall = fetchMock.mock.calls.find((call) => String(call[0]).endsWith("/chat/completions"));
+    expect(chatCall).toBeDefined();
+    const chatInit = chatCall![1] as RequestInit;
+    expect(chatInit.headers).toEqual(expect.objectContaining({ Authorization: "Bearer test-key" }));
+    const body = JSON.parse(chatInit.body as string);
+    expect(body.response_format).toMatchObject({
+      type: "json_schema",
+      json_schema: { strict: true },
+    });
   });
 
   it("falls back when local Ollama is unavailable", async () => {
@@ -174,7 +235,7 @@ describe("FMD import resolver", () => {
         {
           mappingSetName: targetMappingSet!.name,
           note: "Resolver flagged scattered lookup logic.",
-          confidence: 0.7,
+          confidence: 0.86,
           evidenceRefs: ["マッピング!R12"],
         },
       ],
@@ -204,6 +265,7 @@ describe("FMD import resolver", () => {
     expect(renamedSet?.warnings).toContain("Resolver flagged scattered lookup logic.");
     expect(result.draft.warnings).toContain("Qwen noticed ambiguous date format.");
     expect(result.draft.unresolvedEvidenceRefs).toContain("マッピング!R99");
+    expect(result.resolver.acceptedSuggestions?.length).toBeGreaterThan(0);
   });
 
   it("preserves deterministic data when Ollama returns a patch that also satisfies the full-draft schema", async () => {
@@ -247,8 +309,109 @@ describe("FMD import resolver", () => {
     expect(result.resolver.provider).toBe("ollama");
     expect(result.draft.profiles.length).toBe(deterministic.draft.profiles.length);
     expect(result.draft.mappingSets.length).toBe(deterministic.draft.mappingSets.length);
-    expect(result.draft.project.sourceSystem).toBe("ServiceNow");
+    expect(result.draft.project.sourceSystem).toBe(deterministic.draft.project.sourceSystem);
+    expect(result.resolver.needsReview?.some((suggestion) => suggestion.proposedValue === "ServiceNow")).toBe(true);
     expect(result.draft.warnings).toContain("LLM patch was almost empty.");
+  });
+
+  it("keeps low-confidence metadata suggestions for review instead of applying them", async () => {
+    const workbook = await createFmdWorkbook(sampleProject);
+    const lowConfidencePatch = {
+      project: {
+        owner: "Low Confidence Owner",
+        confidence: 0.81,
+        evidenceRefs: ["Overview!R2"],
+      },
+      warnings: [],
+      unresolvedEvidenceRefs: [],
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        if (url.endsWith("/api/tags")) {
+          return new Response(JSON.stringify({ models: [] }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ message: { content: JSON.stringify(lowConfidencePatch) } }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }),
+    );
+
+    const result = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
+
+    expect(result.draft.project.owner).not.toBe("Low Confidence Owner");
+    expect(result.resolver.needsReview?.some((suggestion) => suggestion.target === "project.owner")).toBe(true);
+    expect(result.draft.warnings.some((warning) => warning.includes("suggestion(s) for review"))).toBe(true);
+  });
+
+  it("applies high-confidence endpoint candidates from the LLM", async () => {
+    const workbook = await createFmdWorkbook(sampleProject);
+    const endpointPatch = {
+      endpoints: [
+        {
+          name: "ServiceNow DEV",
+          role: "destination" as const,
+          connectorType: "HTTP POST",
+          profileType: "API",
+          format: "JSON",
+          purpose: "Create incident payloads",
+          connectionInfo: "https://example.service-now.com/api/now/table/incident",
+          confidence: 0.94,
+          evidenceRefs: ["Environment!R8"],
+          reason: "Environment row contains the ServiceNow API URL and POST method.",
+        },
+      ],
+      warnings: [],
+      unresolvedEvidenceRefs: [],
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        if (url.endsWith("/api/tags")) {
+          return new Response(JSON.stringify({ models: [] }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ message: { content: JSON.stringify(endpointPatch) } }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }),
+    );
+
+    const result = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
+
+    expect(result.draft.endpoints.some((endpoint) => endpoint.name === "ServiceNow DEV")).toBe(true);
+    expect(result.resolver.acceptedSuggestions?.some((suggestion) => suggestion.category === "endpoint")).toBe(true);
+  });
+
+  it("preserves high-confidence integration pattern in the import draft", async () => {
+    const workbook = await createFmdWorkbook(sampleProject);
+    const patternPatch = {
+      project: {
+        integrationPattern: "event-driven",
+        confidence: 0.92,
+        evidenceRefs: ["Overview!R4"],
+      },
+      warnings: [],
+      unresolvedEvidenceRefs: [],
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        if (url.endsWith("/api/tags")) {
+          return new Response(JSON.stringify({ models: [] }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ message: { content: JSON.stringify(patternPatch) } }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }),
+    );
+
+    const result = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
+
+    expect(result.draft.project.integrationPattern).toBe("event-driven");
+    expect(result.resolver.acceptedSuggestions?.some((suggestion) => suggestion.target === "project.integrationPattern")).toBe(true);
   });
 
   it("reconciles profile type/format after LLM rename when the new name has stronger evidence", async () => {
@@ -324,6 +487,97 @@ describe("FMD import resolver", () => {
     }
   });
 
+  it("accepts a high-confidence LLM process flow and carries it into preview", async () => {
+    const workbook = await createFmdWorkbook(sampleProject);
+    const flowPatch = {
+      processFlows: [
+        {
+          name: "Generated Order Flow",
+          nodes: [
+            {
+              id: "start",
+              type: "start-connector",
+              label: "Start from source",
+              description: "Receive source data for the integration.",
+              position: { x: 80, y: 140 },
+            },
+            {
+              id: "map",
+              type: "map",
+              label: "Map to destination",
+              description: "Apply the FMD field mappings.",
+              position: { x: 300, y: 140 },
+            },
+            {
+              id: "send",
+              type: "connector",
+              label: "Send to destination",
+              description: "Deliver transformed records to the destination system.",
+              position: { x: 520, y: 140 },
+            },
+            {
+              id: "stop",
+              type: "stop",
+              label: "Stop",
+              description: "Finish the process.",
+              position: { x: 740, y: 140 },
+            },
+          ],
+          edges: [
+            { id: "e-start-map", source: "start", target: "map" },
+            { id: "e-map-send", source: "map", target: "send" },
+            { id: "e-send-stop", source: "send", target: "stop" },
+          ],
+          notes: "Sample flow generated from the FMD overview and mapping context.",
+          confidence: 0.9,
+          evidenceRefs: ["Overview!R1", "Field Mapping!R1"],
+        },
+      ],
+      suggestions: [],
+      warnings: [],
+      unresolvedEvidenceRefs: [],
+    };
+    const emptyPatch = {
+      suggestions: [],
+      profileRenames: [],
+      profileTypeFixes: [],
+      keyFieldSuggestions: [],
+      mappingSetNotes: [],
+      mappingTypeCorrections: [],
+      endpoints: [],
+      warnings: [],
+      unresolvedEvidenceRefs: [],
+    };
+    const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+      if (url.endsWith("/api/tags")) {
+        return new Response(JSON.stringify({ models: [] }), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+      const body = typeof init?.body === "string" ? JSON.parse(init.body) as { messages?: Array<{ content?: string }> } : {};
+      const systemPrompt = body.messages?.[0]?.content ?? "";
+      const payload = systemPrompt.includes("FLOW PASS") ? flowPatch : emptyPatch;
+      return new Response(JSON.stringify({ message: { content: JSON.stringify(payload) } }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
+    expect(result.draft.processFlows).toHaveLength(1);
+    expect(result.draft.processFlows[0].nodes.map((node) => node.type)).toEqual([
+      "start-connector",
+      "map",
+      "connector",
+      "stop",
+    ]);
+    expect(result.resolver.acceptedSuggestions?.some((suggestion) => suggestion.category === "flow")).toBe(true);
+
+    const preview = draftToProjectPreview(sampleProject, result.draft);
+    expect(preview.processFlows).toHaveLength(1);
+    expect(preview.processFlows[0].id).toBe("draft-flow-1");
+    expect(preview.processFlows[0].nodes).toHaveLength(4);
+  });
+
   it("inferProfileTypeFromEvidence picks up file-extension hints (extension beats other signals)", () => {
     // .json filename in the environment row → JSON profile, even though REST API is mentioned.
     const evidence = evidenceFor("ServiceNow REST API endpoint /v1/batch sends orders.json file daily.");
@@ -396,7 +650,7 @@ describe("FMD import resolver", () => {
     const result = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
 
     expect(tagsHandler).toHaveBeenCalledTimes(1);
-    expect(chatHandler).toHaveBeenCalledTimes(1);
+    expect(chatHandler).toHaveBeenCalledTimes(resolverPassCount);
     expect(result.resolver.provider).toBe("ollama");
   });
 });
@@ -457,7 +711,7 @@ describe("FMD resolve route — debug gating", () => {
 });
 
 describe("FMD resolver cache integration", () => {
-  it("caches Ollama results and skips fetch on second call", async () => {
+  it("caches LLM resolutions by workbook and model", async () => {
     const workbook = await createFmdWorkbook(sampleProject);
     const fetchMock = vi.fn(async (url: string) => {
       if (url.endsWith("/api/tags")) {
@@ -484,15 +738,17 @@ describe("FMD resolver cache integration", () => {
 
     const result1 = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
     expect(result1.resolver.provider).toBe("ollama");
-    expect(fetchMock).toHaveBeenCalledTimes(2); // /api/tags + /api/chat
+    expect(result1.resolver.cache).toBe("miss");
+    expect(fetchMock).toHaveBeenCalledTimes(1 + resolverPassCount); // /api/tags + resolver passes
 
     const result2 = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
     expect(result2.resolver.provider).toBe("ollama");
-    expect(fetchMock).toHaveBeenCalledTimes(2); // no extra calls
+    expect(result2.resolver.cache).toBe("hit");
+    expect(fetchMock).toHaveBeenCalledTimes(1 + resolverPassCount); // served from cache
     expect(result2.draft).toEqual(result1.draft);
   });
 
-  it("does not reuse cache across different model options", async () => {
+  it("different model options produce separate resolutions", async () => {
     const workbook = await createFmdWorkbook(sampleProject);
     const fetchMock = vi.fn(async (url: string) => {
       if (url.endsWith("/api/tags")) {
@@ -519,6 +775,52 @@ describe("FMD resolver cache integration", () => {
 
     await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
     await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:4b" });
-    expect(fetchMock).toHaveBeenCalledTimes(4); // tags+chat for each distinct model
+    expect(fetchMock).toHaveBeenCalledTimes((1 + resolverPassCount) * 2); // separate cache key per model
+  });
+
+  it("keeps resolver cache entries separate by provider type and base URL", async () => {
+    const workbook = await createFmdWorkbook(sampleProject);
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.endsWith("/api/tags")) {
+        return new Response(JSON.stringify({ models: [] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      if (url.endsWith("/models")) {
+        return new Response(JSON.stringify({ data: [{ id: "qwen3" }] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      if (url.endsWith("/chat/completions")) {
+        return new Response(
+          JSON.stringify({ choices: [{ message: { content: JSON.stringify({ profileRenames: [], mappingSetNotes: [], warnings: [], unresolvedEvidenceRefs: [] }) } }] }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(
+        JSON.stringify({ message: { content: JSON.stringify({ profileRenames: [], mappingSetNotes: [], warnings: [], unresolvedEvidenceRefs: [] }) } }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const ollamaResult = await resolveFmdWorkbook(workbook, "generated.xlsx", { model: "qwen3:8b" });
+    const openAiResult = await resolveFmdWorkbook(workbook, "generated.xlsx", {
+      providerType: "openai-compatible",
+      baseUrl: "http://localhost:1234/v1",
+      model: "qwen3:8b",
+    });
+    const openAiCached = await resolveFmdWorkbook(workbook, "generated.xlsx", {
+      providerType: "openai-compatible",
+      baseUrl: "http://localhost:1234/v1",
+      model: "qwen3:8b",
+    });
+
+    expect(ollamaResult.resolver.cache).toBe("miss");
+    expect(openAiResult.resolver.cache).toBe("miss");
+    expect(openAiCached.resolver.cache).toBe("hit");
+    expect(fetchMock).toHaveBeenCalledTimes((1 + resolverPassCount) * 2);
   });
 });

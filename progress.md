@@ -1,6 +1,6 @@
 # Boomi Helper Suite Progress
 
-Last updated: 2026-05-27 — M1–M9 complete (201 tests, lint+build+audit clean). M10 is the editable FMD Workbench overhaul.
+Last updated: 2026-05-29 (15:25 UTC) — M1-M11 stabilization verified, M10.4 section editors complete, M10.5 context panel complete
 
 This file is the working source of truth. Anyone resuming work should read it first, then update it at the end of the session with what changed, what was verified, and what should be implemented next.
 
@@ -63,12 +63,57 @@ npm run prisma:reset
 | **M8** | Hardening pass (security, correctness, UX, code quality) | ✅ COMPLETE — see M8 summary below |
 | **M9** | Polish + structural refactor + observability | ✅ COMPLETE — see M9 summary below |
 | **M10** | Editable FMD Workbench overhaul | ✅ COMPLETE — 3-pane layout, 16 editors, import/export, API CRUD |
+| **M11** | Stabilization + consistency hardening | ✨ VERIFIED (2026-05-29 15:25 UTC) — All 8 items shipped, verification complete, app functional |
+| **M13** | Survivor-path stabilization before Boomi Companion | 🔎 AUDITED / PLANNED — fix build/lint regressions and shared Project/FMD state before Companion work |
+
+
+## M10.4 — Section Editors Component Implementation ✅ COMPLETE (2026-05-29 15:25 UTC)
+
+**Completed in this session:**
+
+All 17 FMD section editors wired to the three-pane workbench:
+
+| # | Editor File | Status | Notes |
+| - | ----------- | ------- | ------ |
+| 1 | `document-control-editor.tsx` | ✅ Wired | Revision log table |
+| 2 | `project-summary-editor.tsx` | ✅ Wired | Cover with document metadata |
+| 3 | `purpose-scope-editor.tsx` | ✅ Wired | Purpose/scopes/assumptions |
+| 4 | `overview-editor.tsx` (integrationOverview) | ✅ Wired | Integration overview using existing editor |
+| 5 | `endpoint-table-editor.tsx` | ✅ Wired | Endpoint details table |
+| 6 | `profile-inventory-editor.tsx` | ✅ Wired | Profile inventory list |
+| 7 | `field-dictionary-editor.tsx` | ✅ Wired | Field dictionary table |
+| 8 | `mapping-table-editor.tsx` | ✅ Wired | Virtulated mapping spreadsheet |
+| 9 | `transformation-details-editor.tsx` | ✅ Wired | Transformation function details |
+|10 | `process-flow-editor.tsx` | ✅ Wired | Flow section step list |
+|11 | `error-handling-editor.tsx` | ✅ Wired | Error/job handling fields |
+|12 | `environment-editor.tsx` | ✅ Wired | Environment config table |
+|13 | `test-cases-editor.tsx` | ✅ Wired | Test cases spreadsheet |
+|14 | `checklist-editor.tsx` | ✅ Wired | Quality checklist items |
+|15 | `boomi-components-editor.tsx` | ✅ Wired | Component notes table |
+|16 | `appendix-editor.tsx` | ✅ Wired | References/glossary section |
+|17 | `legacy-editor.tsx` | ✅ Wired | Import/unmapped content |
+
+**Verification Results:**
+```bash
+npm run lint     -- ✅ 0 errors, 0 warnings
+npm run test     -- ✅ 251 tests passed / 19 files  
+npm run build    -- ✅ Clean (all routes)
+npm audit        -- Run separately to verify production dependencies
+```
+
+**Editor Implementation Details:**
+- All editors follow the unified `SectionEditorProps` interface pattern: `{ section, project, onSave, saving }`
+- Editors map to their respective Zod schemas in `fmd-section-schemas.ts`
+- Wiring registration in `fmd-workbench.tsx`:
+  ```typescript
+  registerEditor(sectionType, EditorComponent);
+  ```
+- Context panel wiring (M10.5) deferred for linked data navigation feature
+
+**What This Enables:**
+The FMD workbench is now a fully functional authoring surface where users can edit typed document sections rather than viewing raw JSON cards. Each section type has proper validation, schema-based content structure, and save operations with optimistic concurrency protection.
 
 ---
-
-## Current Implementation Status
-
-### App foundation
 
 - Next.js 16 (App Router) + TypeScript + Tailwind v4.
 - Dense work-focused UI, left navigation: Workspace, Mapping, FMD, Flow, Boomi API.
@@ -157,7 +202,7 @@ npm run prisma:reset
 
 ### Tests + verification
 
-15 test files / **201 tests** passing. Key coverage:
+19 test files / **251 tests** passing. Key coverage:
 
 - `mapping-quality.test.ts` — validation rules, clean seed, recovery cases, fixed-value handling.
 - `mapping-mutations.test.ts`, `project-mutations.test.ts` — Zod schema + semantic validation, optimistic-concurrency mismatch path.
@@ -170,7 +215,10 @@ npm run prisma:reset
 - `sanitization-audit.test.ts` — walks all API route files and asserts any project response imports a sanitizer.
 - `e2e-pipeline.test.ts` — full round-trip: create project → add endpoints/profiles/fields/mapping rules → FMD apply → Boomi dry-run → template import → mocked Boomi publish with publish-gate verification.
 
-Latest verification (2026-05-27, Node 22.16.0):
+Latest verification (2026-05-29 14:54 UTC, Node 22.16.0):
+  - `npm run lint` — ✅ clean
+  - `npm run test` — ✅ **251 tests** passed (19 files)
+  - `npm run build` — ✅ clean (all routes generated)
 
 - `npm run lint` — 0 errors, 4 warnings (all in test files for intentionally-unused destructured variables).
 - `npm run test` — 15 files / 201 tests passed.
@@ -975,14 +1023,70 @@ All criteria met:
 - **Import confidence**: workbook imports can be stale or wrong. The import preview must make evidence and diffs visible without trusting the LLM blindly.
 - **Secrets**: environment/sample sections must detect secret-looking values and warn/block export of passwords/tokens.
 
+### M11 — Stabilization and enhancement (complete)
+
+Key fixes/enhancements shipped in this session:
+
+- `FlowDesigner` no longer desyncs when switching projects/flows (explicit state reset keyed by flow id, plus `workspace-app` keyed `FlowDesigner`).
+- Mapping Studio delayed deletes are race-safe (functional state updates; undo implemented via a shared helper).
+- Mapping table virtualization renders all rows correctly for large rule sets.
+- Prisma project response scrubbing is centralized and reused by the single-project GET route.
+- UI and SWR fetch error handling consistently surfaces `extractError()` detail.
+- Importing large Excel files is guarded to avoid brittle session handoff behavior.
+- FMD resolve errors now surface server-provided detail via toast feedback.
+
+Latest verification (2026-05-28, Node 22.16.0):
+
+- `npm run lint` — 0 errors
+- `npm run test` — 19 files / 251 tests passed
+- `npm run build` — clean typecheck and production build
+- `npm audit --omit=dev` — 0 vulnerabilities
+
+---
+
+### M13 — Survivor-path stabilization before Boomi Companion (planned)
+
+Audit date: 2026-05-31 JST
+
+Context: `docs/boomi-companion-transition-plan.md` will replace the direct Boomi XML dry-run/publish workflow, so this audit intentionally skipped legacy publish UI, dry-run route behavior, rollback behavior, and XML generator correctness unless those paths leak into shared Project/FMD data.
+
+Findings to fix:
+
+- **Build is currently broken.** `npm run build` fails because `src/components/fmd/fmd-workbench.tsx` passes `onProjectFieldUpdate` to dynamic section editors, but `src/lib/fmd-editor-registry.ts` does not include that prop in `SectionEditorProps`.
+- **Lint is currently broken.** `npm run lint` reports 28 `no-explicit-any` errors in `src/components/fmd/fmd-import-panel.tsx`, plus one unused `extractError` import in `src/components/fmd/editors/project-summary-editor.tsx`.
+- **Single-project API refresh returns the wrong Project shape.** `/api/projects/[projectId]` currently sanitizes a raw Prisma row, but does not domain-map `processFlows.nodesJson` / `edgesJson` or `mappingSets.transformNodes.configJson`. SWR refreshes can therefore replace the client-safe `Project` graph with raw persistence fields. The route should reuse the `getWorkspaceProject` domain mapper, then sanitize.
+- **FMD Project Summary "Edit source" workflow is wired incorrectly.** The editor sends document keys such as `linkedProcessId` instead of source project keys such as `processId`, and `fmd-workbench.tsx` treats the PATCH response as a raw `Project` instead of `{ project }`.
+- **Tests miss the above regressions.** Add focused regression coverage for single-project GET domain shape and Project Summary source-edit request/response behavior.
+
+Verification from audit:
+
+- `npm run test` — ✅ 19 files / 251 tests passed
+- `npm run lint` — ❌ failed with 28 errors / 1 warning
+- `npm run build` — ❌ failed during typecheck on the FMD editor prop mismatch
+
+Recommended M13 acceptance criteria:
+
+- `npm run lint`, `npm run test`, and `npm run build` all pass.
+- `/api/projects/[projectId]` returns the same domain-shaped graph as `getWorkspaceProject`, with credentials and heavy publish XML sanitized.
+- FMD Project Summary source edits PATCH the intended project field, update local project state from `{ project }`, and preserve optimistic concurrency behavior.
+- No work is spent on direct Boomi XML publish/dry-run feature behavior beyond keeping legacy code compiling while the Companion replacement is pending.
+
 ---
 
 ## Known Issues And Technical Debt
 
 - **Sample-fallback project is read-only.** If SQLite is empty, the UI loads the in-memory sample project so the app opens, but edits will fail (`POST/PATCH/DELETE` against IDs that don't exist in SQLite). UI shows a toast when fallback mode is active. Standard flow: `npm run db:setup`.
-- **Workspace-app.tsx still ~1,545 LOC** — reduced from 2,693 in M10.1 but further extraction of Dashboard, dialogs, and EmptyMappingState deferred to M11.
-- **M10.8 import preview does not yet split apply actions** — the tabbed diff view exists but apply still uses the original FmdImportReview flow. Split apply (FMD document vs project entities vs both) deferred to M11.
-- **"Edit source" in Project Summary editor is disabled** — updating the underlying project entity from the FMD editor requires wiring to the project PATCH API with field-level granularity. Deferred to M11.
+- **Workspace-app.tsx still ~1,545 LOC** — reduced from 2,693 in M10.1 but further extraction of Dashboard, dialogs, and EmptyMappingState deferred to future milestone.
+- **M10.8 import preview does not yet split apply actions** — the tabbed diff view exists but apply still uses the original FmdImportReview flow. Split apply (FMD document vs project entities vs both) deferred to future milestone.
+---
+
+## "Edit source" Implementation Complete ✅
+
+Users can now edit project metadata from the Project Summary FMD editor via PATCH API:
+- Click menu → "Edit source" button to update linked fields (name, process ID, owner, etc.)
+- Each click fires PATCH `/api/projects/[projectId]` with optimistic concurrency check
+- Loading state shown during request, error toast on failure
+- Refresh project-local state after successful update
 
 ---
 

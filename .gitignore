@@ -44,3 +44,9 @@ next-env.d.ts
 /src/generated/prisma
 prisma/*.db
 prisma/*.db-journal
+
+# vendored companion scripts (regenerated on setup)
+/boomi-companion-scripts
+
+# generated Companion agent workspaces
+/.boomi-helper

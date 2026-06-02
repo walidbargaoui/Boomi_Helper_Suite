@@ -203,6 +203,15 @@ describe("profile field mutations", () => {
     });
   });
 
+  it("clears field parentPath when null is provided", async () => {
+    const prisma = buildPrismaMock();
+    await updateProfileField(prisma, "f-1", { parentPath: null });
+    expect(prisma.profileField.update).toHaveBeenCalledWith({
+      where: { id: "f-1" },
+      data: { parentPath: null },
+    });
+  });
+
   it("deletes a profile field", async () => {
     const prisma = buildPrismaMock();
     await deleteProfileField(prisma, "f-9");
@@ -230,9 +239,11 @@ describe("mapping set creation", () => {
       sourceProfileId: "p1",
       destinationProfileId: "p2",
     });
-    expect(prisma.mappingSet.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({ direction: "source-to-destination" }),
-    });
+    expect(prisma.mappingSet.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ direction: "source-to-destination" }),
+      }),
+    );
   });
 });
 

@@ -6,8 +6,11 @@
     "node": ">=20.0.0"
   },
   "scripts": {
+    "predev": "tsx scripts/companion-setup.ts",
+    "prebuild": "tsx scripts/companion-setup.ts",
     "dev": "next dev",
     "build": "next build",
+    "companion:setup": "tsx scripts/companion-setup.ts",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
@@ -21,6 +24,7 @@
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "@tanstack/react-virtual": "^3.13.26",
+    "adm-zip": "^0.5.17",
     "clsx": "^2.1.1",
     "diff": "^9.0.0",
     "exceljs": "^4.4.0",
@@ -35,6 +39,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/adm-zip": "^0.5.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

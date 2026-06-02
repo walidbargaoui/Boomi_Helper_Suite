@@ -1,80 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { decryptValue, maskValue } from "@/lib/boomi-crypto";
+import { getWorkspaceProject, sanitizeProjectForClient } from "@/lib/db";
 import { deleteProject, projectUpdateSchema, updateProject } from "@/lib/project-mutations";
+import { prisma } from "@/lib/db";
 import { markSectionsStale } from "@/lib/fmd-mutations";
-
-/**
- * Inline credential + payload scrubber for the Prisma row shape returned by
- * this route. Mirrors sanitizeProjectForClient in db.ts but operates on the
- * raw Prisma row so we don't have to round-trip through the full domain mapper.
- *
- * Two responsibilities:
- *  1. Mask `apiUsername` / `apiPassword` on every boomi connection.
- *  2. Drop `requestXml` / `responseXml` from publish events (they can each be
- *     tens of KB of Component XML — the list view doesn't need them; fetch
- *     full event details from /api/boomi/publish/events/[eventId] on demand).
- */
-function scrubPrismaProjectForClient<
-  T extends {
-    boomiConnections?: Array<{ apiUsername: string; apiPassword: string }>;
-    boomiPublishEvents?: Array<{
-      requestXml?: string | null;
-      responseXml?: string | null;
-      errorDetail?: string | null;
-    }>;
-    fmdSections?: Array<{
-      id: string;
-      title: string;
-      sectionType: string;
-      contentJson: string;
-      sortOrder: number;
-    }>;
-  },
->(row: T): T {
-  const next = { ...row } as T;
-  if (row.boomiConnections) {
-    next.boomiConnections = row.boomiConnections.map((conn) => {
-      let usernameDisplay = "";
-      try {
-        usernameDisplay = maskValue(decryptValue(conn.apiUsername));
-      } catch {
-        usernameDisplay = conn.apiUsername ? "[re-enter credentials]" : "";
-      }
-      return { ...conn, apiUsername: usernameDisplay, apiPassword: conn.apiPassword ? "••••••••" : "" };
-    }) as T["boomiConnections"];
-  }
-  if (row.boomiPublishEvents) {
-    next.boomiPublishEvents = row.boomiPublishEvents.map((event) => ({
-      ...event,
-      requestXml: "",
-      responseXml: null,
-      errorDetail:
-        event.errorDetail && event.errorDetail.length > 500
-          ? `${event.errorDetail.slice(0, 500)}…`
-          : event.errorDetail,
-      hasRequestXml: Boolean(event.requestXml && event.requestXml.trim().length > 0),
-      hasResponseXml: Boolean(event.responseXml && event.responseXml.trim().length > 0),
-    })) as T["boomiPublishEvents"];
-  }
-  if (row.fmdSections) {
-    next.fmdSections = row.fmdSections.map((section) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { contentJson, ...rest } = section;
-      return {
-        ...rest,
-        content: (() => {
-          try {
-            return JSON.parse(section.contentJson);
-          } catch {
-            return {};
-          }
-        })(),
-      };
-    }) as unknown as T["fmdSections"];
-  }
-  return next;
-}
 
 export async function GET(
   _request: NextRequest,
@@ -82,23 +10,11 @@ export async function GET(
 ) {
   const { projectId } = await params;
   try {
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: {
-        endpoints: true,
-        profiles: { include: { fields: { orderBy: { ordinal: "asc" } } } },
-        mappingSets: { include: { rules: true, transformNodes: true } },
-        processFlows: true,
-        fmdSections: { orderBy: { sortOrder: "asc" } },
-        boomiConnections: true,
-        boomiDrafts: true,
-        boomiPublishEvents: { orderBy: { publishedAt: "desc" } },
-      },
-    });
-    if (!project) {
+    const project = await getWorkspaceProject(projectId);
+    if (project.mode === "fallback") {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
-    return NextResponse.json({ project: scrubPrismaProjectForClient(project) });
+    return NextResponse.json({ project: sanitizeProjectForClient(project) });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch project", detail: error instanceof Error ? error.message : "Unknown error" },

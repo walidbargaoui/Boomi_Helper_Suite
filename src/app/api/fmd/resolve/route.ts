@@ -18,10 +18,13 @@ export async function POST(request: NextRequest) {
   }
 
   const useLlm = formData.get("useLlm") !== "false";
+  const providerId = formData.get("providerId");
+  const providerType = formData.get("providerType");
   const model = formData.get("model");
   const baseUrl = formData.get("baseUrl");
+  const apiKey = formData.get("apiKey");
 
-  // The resolver internally captures the full Qwen prompt and the raw LLM
+  // The resolver internally captures the full provider prompt and the raw LLM
   // response as a `debug` field — useful for the in-app "Show resolver context"
   // panel but it can be ~hundreds of KB and could echo back workbook rows
   // (already redacted, but still). Gate it behind an explicit opt-in: either
@@ -37,8 +40,11 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const result = await resolveFmdWorkbook(buffer, file.name, {
       useLlm,
+      providerId: typeof providerId === "string" && providerId.trim() ? providerId.trim() : undefined,
+      providerType: providerType === "ollama" || providerType === "openai-compatible" ? providerType : undefined,
       model: typeof model === "string" && model.trim() ? model.trim() : undefined,
       baseUrl: typeof baseUrl === "string" && baseUrl.trim() ? baseUrl.trim() : undefined,
+      apiKey: typeof apiKey === "string" && apiKey.trim() ? apiKey.trim() : undefined,
     });
     if (!includeDebug && result.debug) {
       const { debug: _debug, ...rest } = result;

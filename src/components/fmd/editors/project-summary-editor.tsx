@@ -13,6 +13,7 @@ interface EditorProps {
   project: Project;
   onSave: (content: Record<string, unknown>) => Promise<void>;
   saving: boolean;
+  onProjectFieldUpdate?: (field: string, value: string) => Promise<void>;
 }
 
 const projectStatusOptions: Project["status"][] = [
@@ -41,7 +42,7 @@ const editableFields: Array<{ key: keyof Data; label: string }> = [
   { key: "approvedBy", label: "Approved By" },
 ];
 
-export function ProjectSummaryEditor({ section, project, onSave, saving }: EditorProps) {
+export function ProjectSummaryEditor({ section, project, onSave, saving, onProjectFieldUpdate }: EditorProps) {
   const wrapper = parseFmdSectionContent(section.content);
   const [data, setData] = useState<Data>(projectSummaryDataSchema.parse(wrapper.data ?? {}));
   const [overrides, setOverrides] = useState<Record<string, unknown>>(
@@ -49,6 +50,7 @@ export function ProjectSummaryEditor({ section, project, onSave, saving }: Edito
   );
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [editingField, setEditingField] = useState<{ key: keyof Data; isSaving: boolean } | null>(null);
 
   const handleSave = () => {
     onSave({ ...wrapper, overrides, data } as unknown as Record<string, unknown>);
@@ -57,6 +59,18 @@ export function ProjectSummaryEditor({ section, project, onSave, saving }: Edito
   const updateField = (key: keyof Data, value: string) => {
     setData({ ...data, [key]: value });
   };
+
+  const handleEditSource = async (field: { key: keyof Data; sourceKey: keyof Project }) => {
+    setEditingField({ key: field.key, isSaving: true });
+    try {
+      return await onProjectFieldUpdate?.(field.sourceKey as string, String(project[field.sourceKey] ?? ""));
+    } catch (err) {
+      console.error("Failed to edit project field:", err);
+    } finally {
+      setEditingField(null);
+    }
+  };
+
 
   const getSourceValue = (field: { key: keyof Data; sourceKey: keyof Project }): string => {
     const val = project[field.sourceKey];
@@ -157,16 +171,16 @@ export function ProjectSummaryEditor({ section, project, onSave, saving }: Edito
                   </button>
 
                   {openMenu === field.key && (
-                    <div className="absolute right-0 top-full z-10 mt-1 w-48 rounded-md border border-[#cfd6cf] bg-white py-1 shadow-lg">
-                      <button
-                        type="button"
-                        disabled
-                        title="Coming soon"
-                        className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-[#999] cursor-not-allowed"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                        Edit source
-                      </button>
+                     <div className="absolute right-0 top-full z-10 mt-1 w-48 rounded-md border border-[#cfd6cf] bg-white py-1 shadow-lg">
+                       <button
+                         type="button"
+                         onClick={editingField?.key === field.key ? undefined : () => handleEditSource(field)}
+                         disabled={!!editingField?.isSaving}
+                         className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-[#1b5e4a] hover:bg-[#eef1ee] disabled:opacity-50 disabled:cursor-wait"
+                       >
+                         <Pencil className="h-3.5 w-3.5" />
+                         Edit source {editingField?.isSaving ? "(saving...)" : ""}
+                       </button>
                       {!overridden && (
                         <button
                           type="button"

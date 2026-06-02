@@ -27,18 +27,18 @@ function ensureDir(filePath: string) {
   const path = getPath();
   if (!fs || !path) return;
   const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(/*turbopackIgnore: true*/ dir)) {
+    fs.mkdirSync(/*turbopackIgnore: true*/ dir, { recursive: true });
   }
 }
 
 function readEntries(): CacheEntry[] {
   const fs = getFs();
-  if (!fs || !fs.existsSync(cacheFilePath)) {
+  if (!fs || !fs.existsSync(/*turbopackIgnore: true*/ cacheFilePath)) {
     return [];
   }
   try {
-    const raw = fs.readFileSync(cacheFilePath, "utf-8");
+    const raw = fs.readFileSync(/*turbopackIgnore: true*/ cacheFilePath, "utf-8");
     const parsed = JSON.parse(raw) as CacheEntry[];
     if (!Array.isArray(parsed)) return [];
     return parsed;
@@ -51,7 +51,7 @@ function writeEntries(entries: CacheEntry[]) {
   const fs = getFs();
   if (!fs) return;
   ensureDir(cacheFilePath);
-  fs.writeFileSync(cacheFilePath, JSON.stringify(entries, null, 2));
+  fs.writeFileSync(/*turbopackIgnore: true*/ cacheFilePath, JSON.stringify(entries, null, 2));
 }
 
 const CACHE_MAX_SIZE = 5;
@@ -92,8 +92,8 @@ export function storeCache(hash: string, result: unknown): void {
 export function clearResolverCache(): void {
   if (!isServer) return;
   const fs = getFs();
-  if (fs && fs.existsSync(cacheFilePath)) {
-    fs.unlinkSync(cacheFilePath);
+  if (fs && fs.existsSync(/*turbopackIgnore: true*/ cacheFilePath)) {
+    fs.unlinkSync(/*turbopackIgnore: true*/ cacheFilePath);
   }
 }
 
